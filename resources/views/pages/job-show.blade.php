@@ -105,8 +105,8 @@
 
         <section class="relative mx-auto max-w-7xl px-4 pb-14 pt-28 sm:px-6 sm:pb-16 sm:pt-32 lg:px-8 lg:pb-20 lg:pt-44">
             <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-8">
-                <div class="max-w-4xl text-white">
-                    <div class="flex flex-wrap items-center gap-2.5 text-xs sm:gap-3 sm:text-sm">
+                <div class="max-w-4xl text-center text-white lg:text-left">
+                    <div class="flex flex-wrap items-center justify-center gap-2.5 text-xs sm:gap-3 sm:text-sm lg:justify-start">
                         <span class="rounded-full bg-orange-100 px-3 py-1 font-semibold text-orange-700">{{ $job['badge'] }}</span>
                         <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-slate-100">{{ $job['category'] ?: 'Категорија' }}</span>
                         <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-slate-100">{{ $job['company'] }}</span>
@@ -114,7 +114,7 @@
 
                     <h1 class="mt-4 max-w-4xl text-[2.1rem] font-extrabold tracking-tight sm:mt-5 sm:text-5xl lg:text-[3.7rem] lg:leading-[1.03]">{{ $job['title'] }}</h1>
 
-                    <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm text-slate-200 sm:mt-6 sm:gap-x-6 sm:text-base">
+                    <div class="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-sm text-slate-200 sm:mt-6 sm:gap-x-6 sm:text-base lg:justify-start">
                         <div class="inline-flex items-center gap-2">
                             <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 text-emerald-300" aria-hidden="true">
                                 <path fill-rule="evenodd" d="M9.69 18.933a1 1 0 01-1.38-.367C6.104 14.658 4 11.777 4 9a6 6 0 1112 0c0 2.777-2.104 5.658-4.31 9.566a1 1 0 01-1.38.367zM10 11.5A2.5 2.5 0 1010 6.5a2.5 2.5 0 000 5z" clip-rule="evenodd" />
@@ -138,7 +138,7 @@
                         </a>
                     </div>
 
-                    <div class="mt-5 flex flex-wrap items-center gap-2.5 sm:mt-6 sm:gap-3">
+                    <div class="mt-5 flex flex-wrap items-center justify-center gap-2.5 sm:mt-6 sm:gap-3 lg:justify-start">
                         <span class="text-sm font-medium text-slate-300">Сподели оглас:</span>
                         <a href="{{ $facebookShareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">
                             <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
@@ -155,16 +155,16 @@
                     </div>
                 </div>
 
-                <div class="rounded-[1.6rem] border border-white/10 bg-white/10 p-5 text-white shadow-[0_24px_70px_-36px_rgba(15,23,42,0.9)] backdrop-blur sm:rounded-[1.9rem] sm:p-6">
+                <div class="rounded-[1.6rem] border border-white/10 bg-white/10 p-5 text-center text-white shadow-[0_24px_70px_-36px_rgba(15,23,42,0.9)] backdrop-blur sm:rounded-[1.9rem] sm:p-6 lg:text-left">
                     <p class="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-300">Брз преглед</p>
                     <div class="mt-4">
                         <p class="text-sm text-slate-300">Дневница / плата</p>
                         <p class="mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">{{ $salaryLabel }}</p>
                     </div>
-                    <div class="mt-6 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Локација</p>
-                            <p class="mt-2 text-sm font-semibold text-white">{{ $job['location'] ?: 'По договор' }}</p>
+                        <div class="mt-6 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Локација</p>
+                                <p class="mt-2 text-sm font-semibold text-white">{{ $job['location'] ?: 'По договор' }}</p>
                         </div>
                         <div>
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Компанија</p>
@@ -369,7 +369,7 @@
         </section>
 
         <section class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8 lg:pb-20">
-            <div class="mb-6 sm:mb-8">
+            <div class="mb-6 text-center sm:mb-8 lg:text-left">
                 <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Слични огласи</h2>
                 <p class="mt-2 text-sm text-slate-600">Погледнете уште неколку ангажмани што може да ви одговараат.</p>
             </div>

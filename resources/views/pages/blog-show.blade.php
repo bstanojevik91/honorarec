@@ -16,8 +16,8 @@
         @include('partials.header')
 
         <section class="relative mx-auto max-w-7xl px-4 pb-14 pt-28 sm:px-6 sm:pb-18 sm:pt-32 lg:px-8 lg:pb-24 lg:pt-44">
-            <div class="max-w-5xl text-white">
-                <div class="flex flex-wrap items-center gap-2.5 text-xs sm:gap-3 sm:text-sm">
+            <div class="max-w-5xl text-center text-white lg:text-left">
+                <div class="flex flex-wrap items-center justify-center gap-2.5 text-xs sm:gap-3 sm:text-sm lg:justify-start">
                     <span class="rounded-full bg-emerald-500/15 px-3 py-1 font-semibold text-emerald-300">{{ $post['category'] }}</span>
                     <span class="text-slate-300">{{ $post['published_at'] }}</span>
                     <span class="h-1 w-1 rounded-full bg-slate-500"></span>
@@ -126,7 +126,7 @@
         </section>
 
         <section class="mx-auto max-w-7xl px-4 pb-12 pt-2 sm:px-6 sm:pt-4 lg:px-8 lg:pb-20 lg:pt-8">
-            <div class="mb-6 sm:mb-10">
+            <div class="mb-6 text-center sm:mb-10">
                 <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Слични статии</h2>
                 <p class="mt-2 text-sm text-slate-600">Прочитајте уште неколку корисни теми поврзани со работа, ангажмани и кариера.</p>
             </div>

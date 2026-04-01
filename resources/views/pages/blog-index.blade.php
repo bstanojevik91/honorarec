@@ -13,7 +13,7 @@
 
         <section class="relative mx-auto max-w-7xl px-4 pb-14 pt-28 sm:px-6 sm:pb-18 sm:pt-32 lg:px-8 lg:pb-20 lg:pt-44">
             <div class="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end lg:gap-10">
-                <div class="max-w-4xl text-white">
+                <div class="max-w-4xl text-center text-white lg:text-left">
                     <p class="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-300">Honorarec Блог</p>
                     <h1 class="mt-4 text-[2.1rem] font-extrabold tracking-tight sm:text-5xl lg:text-[3.5rem] lg:leading-[1.04]">Совети, новости и корисни статии за работа и ангажмани</h1>
                     <p class="mt-4 max-w-3xl text-sm leading-7 text-slate-200 sm:mt-6 sm:text-lg sm:leading-8">
@@ -37,7 +37,7 @@
 
     <main class="bg-stone-50">
         <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-            <div class="mb-6 sm:mb-8">
+            <div class="mb-6 text-center sm:mb-8">
                 <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Сите статии</h2>
                 <p class="mt-2 text-sm text-slate-600">Разгледајте статии што може да ви помогнат при барање работа, аплицирање и избор на вистински ангажман.</p>
             </div>

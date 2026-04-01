@@ -9,7 +9,7 @@
         @include('partials.header')
 
         <section class="relative mx-auto max-w-7xl px-4 pb-14 pt-28 sm:px-6 sm:pb-18 sm:pt-32 lg:px-8 lg:pb-24 lg:pt-44">
-            <div class="max-w-3xl text-white">
+            <div class="mx-auto max-w-3xl text-center text-white">
                 <p class="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-300">Поддршка</p>
                 <h1 class="mt-3 text-[2.15rem] font-extrabold tracking-tight sm:mt-4 sm:text-5xl">Често поставувани прашања</h1>
                 <p class="mt-3 text-base leading-7 text-slate-200 sm:mt-4 sm:text-xl">

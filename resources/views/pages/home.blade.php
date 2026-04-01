@@ -11,9 +11,9 @@
         @include('partials.header')
 
         <section class="relative mx-auto max-w-7xl px-4 pb-14 pt-28 sm:px-6 sm:pb-20 sm:pt-32 lg:px-8 lg:pb-32 lg:pt-44">
-            <div class="max-w-3xl text-white">
-                <h1 class="max-w-2xl text-[2.15rem] font-extrabold tracking-tight sm:text-5xl lg:text-[4.1rem] lg:leading-[1.02]">{{ $hero['title'] }}</h1>
-                <p class="mt-3 max-w-xl text-base font-medium leading-7 text-slate-300 sm:mt-4 sm:max-w-2xl sm:text-xl">{{ $hero['subtitle'] }}</p>
+            <div class="mx-auto max-w-3xl text-center text-white lg:mx-0 lg:text-left">
+                <h1 class="mx-auto max-w-2xl text-[2.15rem] font-extrabold tracking-tight sm:text-5xl lg:mx-0 lg:text-[4.1rem] lg:leading-[1.02]">{{ $hero['title'] }}</h1>
+                <p class="mt-3 mx-auto max-w-xl text-base font-medium leading-7 text-slate-300 sm:mt-4 sm:max-w-2xl sm:text-xl lg:mx-0">{{ $hero['subtitle'] }}</p>
             </div>
 
             <form method="GET" action="{{ route('jobs.index') }}" class="mt-8 max-w-6xl rounded-[1.45rem] border border-white/10 bg-white/96 p-3 shadow-[0_34px_90px_-34px_rgba(15,23,42,0.85)] sm:mt-10 sm:rounded-[1.75rem] xl:p-4">
@@ -58,7 +58,7 @@
 
     <main>
         <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
-            <div>
+            <div class="text-center lg:text-left">
                 <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Последно додадени огласи:</h2>
             </div>
 
@@ -77,7 +77,7 @@
 
         <section class="bg-white py-12 sm:py-16 lg:py-20">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="text-center">
+                <div class="mx-auto max-w-2xl text-center">
                     <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Категории</h2>
                 </div>
 
@@ -97,11 +97,11 @@
 
         <section class="bg-slate-950 py-12 text-white sm:py-16 lg:py-20">
             <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_1fr] lg:items-center lg:px-8 lg:gap-12">
-                <div>
-                    <h2 class="max-w-xl text-2xl font-bold tracking-tight sm:text-[2.45rem] sm:leading-tight">{{ $promo['title'] }}</h2>
+                <div class="text-center lg:text-left">
+                    <h2 class="mx-auto max-w-xl text-2xl font-bold tracking-tight sm:text-[2.45rem] sm:leading-tight lg:mx-0">{{ $promo['title'] }}</h2>
                     <div class="mt-6 space-y-3 sm:mt-8 sm:space-y-4">
                         @foreach ($promo['points'] as $point)
-                            <div class="flex items-start gap-3 text-sm text-slate-200 sm:items-center sm:text-base">
+                            <div class="flex items-start justify-center gap-3 text-sm text-slate-200 sm:items-center sm:text-base lg:justify-start">
                                 <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-300">
                                     <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
                                         <path fill-rule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-7.2 7.2a1 1 0 01-1.415 0l-3-3a1 1 0 111.414-1.42l2.293 2.294 6.493-6.494a1 1 0 011.415 0z" clip-rule="evenodd" />
@@ -130,7 +130,7 @@
 
         <section class="bg-stone-50 py-12 sm:py-16 lg:py-20">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="text-center">
+                <div class="mx-auto max-w-2xl text-center">
                     <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Нашите задоволни корисници 😍</h2>
                     <p class="mt-2 text-sm text-slate-600 sm:mt-3 sm:text-base">Прочитајте дел од рецензиите!</p>
                 </div>
@@ -145,7 +145,7 @@
 
         <section class="bg-white py-12 sm:py-16 lg:py-20">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="text-center">
+                <div class="mx-auto max-w-2xl text-center">
                     <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Нашиот блог</h2>
                     <p class="mt-2 text-sm text-slate-600 sm:mt-3 sm:text-base">Прочитајте некои интересни статии кои може да ви помогнат.</p>
                 </div>

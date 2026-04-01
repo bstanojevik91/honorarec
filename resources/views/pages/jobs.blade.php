@@ -9,7 +9,7 @@
         @include('partials.header')
 
         <section class="relative mx-auto max-w-7xl px-4 pb-14 pt-28 sm:px-6 sm:pb-18 sm:pt-32 lg:px-8 lg:pb-24 lg:pt-44">
-            <div class="max-w-3xl text-white">
+            <div class="mx-auto max-w-3xl text-center text-white lg:mx-0 lg:text-left">
                 <p class="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-300">Огласи</p>
                 <h1 class="mt-3 text-[2.15rem] font-extrabold tracking-tight sm:mt-4 sm:text-5xl">Сите огласи</h1>
                 <p class="mt-3 text-base leading-7 text-slate-200 sm:mt-4 sm:text-xl">
@@ -79,7 +79,7 @@
             </div>
 
             <div class="mb-6 mt-8 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
-                <div>
+                <div class="text-center sm:text-left">
                     <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Достапни работни ангажмани</h2>
                     <p class="mt-2 text-sm text-slate-600">Пронајдени се {{ count($jobs) }} огласи според избраните филтри.</p>
                 </div>
