@@ -13,7 +13,9 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/blog', [HomeController::class, 'blog'])->name('blog.index');
 Route::get('/chpp', [HomeController::class, 'faq'])->name('faq');
+Route::get('/blog/{slug}', [HomeController::class, 'showBlogPost'])->name('blog.show');
 Route::get('/oglasi', [HomeController::class, 'jobs'])->name('jobs.index');
 Route::get('/oglasi/{slug}', [HomeController::class, 'showJob'])->name('jobs.show');
 Route::post('/oglasi/{slug}/apliciraj', [HomeController::class, 'apply'])->name('jobs.apply');

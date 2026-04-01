@@ -48,6 +48,7 @@
         <div class="mt-8 flex flex-wrap items-center justify-center gap-6 border-t border-white/10 pt-6 text-sm text-slate-400">
             <a href="{{ route('home') }}" class="transition hover:text-white">Почетна</a>
             <a href="{{ route('jobs.index') }}" class="transition hover:text-white">Сите огласи</a>
+            <a href="{{ route('blog.index') }}" class="transition hover:text-white">Блог</a>
             <a href="{{ route('faq') }}" class="transition hover:text-white">ЧПП</a>
             <a href="{{ route('faq') }}" class="transition hover:text-white">Контакт</a>
             <a href="{{ route('employer.register') }}" class="transition hover:text-white">Регистрација за компании</a>
