@@ -41,41 +41,60 @@
                         <p class="mt-5 max-w-3xl text-[1.02rem] leading-8 text-slate-600">{{ $post['excerpt'] }}</p>
                     </div>
 
-                    <div class="mt-12 max-w-3xl space-y-14">
-                        @foreach ($post['sections'] as $index => $section)
-                            <section class="{{ $index > 0 ? 'border-t border-slate-100 pt-12' : '' }}">
-                                <h2 class="text-[2rem] font-extrabold tracking-tight text-slate-900 sm:text-[2.15rem]">{{ $section['heading'] }}</h2>
-                                <p class="mt-6 text-[1.02rem] leading-9 text-slate-600">{{ $section['content'] }}</p>
+                    @if (!empty($post['content']))
+                        <div class="mt-12 max-w-3xl space-y-14">
+                            <div class="rounded-[1.4rem] border border-emerald-100 bg-emerald-50/70 px-6 py-5">
+                                <p class="text-base font-semibold leading-8 text-emerald-900">
+                                    „Најдобро поминуваат кандидатите што аплицираат брзо, јасно и со точни контакт податоци.“
+                                </p>
+                            </div>
 
-                                @if (!empty($section['subheading']))
-                                    <h3 class="mt-10 text-xl font-bold tracking-tight text-slate-900 sm:text-[1.45rem]">{{ $section['subheading'] }}</h3>
-                                @endif
+                            <div class="blog-content space-y-6 text-[1.02rem] leading-9 text-slate-600 [&_h2]:mt-12 [&_h2]:text-[2rem] [&_h2]:font-extrabold [&_h2]:tracking-tight [&_h2]:text-slate-900 [&_h3]:mt-10 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:tracking-tight [&_h3]:text-slate-900 [&_p]:mt-6 [&_p]:leading-9 [&_ul]:mt-7 [&_ul]:space-y-4 [&_ul]:pl-6 [&_li]:list-disc [&_li]:pl-1 [&_a]:font-semibold [&_a]:text-emerald-700 [&_a]:underline [&_strong]:font-semibold [&_strong]:text-slate-900">
+                                {!! $post['content'] !!}
+                            </div>
 
-                                @if (!empty($section['points']))
-                                    <ul class="mt-7 space-y-4 pl-6 text-[1.02rem] leading-9 text-slate-600">
-                                        @foreach ($section['points'] as $point)
-                                            <li class="list-disc pl-1">{{ $point }}</li>
-                                        @endforeach
-                                    </ul>
-                                @endif
+                            <div class="rounded-[1.4rem] border border-slate-200 bg-slate-50 px-6 py-5">
+                                <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Корисен совет</p>
+                                <p class="mt-3 text-[0.98rem] leading-8 text-slate-600">Пред објава секогаш префрли го текстот уште еднаш за да бидеш сигурен дека пораката е јасна, структурирана и лесна за читање.</p>
+                            </div>
+                        </div>
+                    @else
+                        <div class="mt-12 max-w-3xl space-y-14">
+                            @foreach ($post['sections'] as $index => $section)
+                                <section class="{{ $index > 0 ? 'border-t border-slate-100 pt-12' : '' }}">
+                                    <h2 class="text-[2rem] font-extrabold tracking-tight text-slate-900 sm:text-[2.15rem]">{{ $section['heading'] }}</h2>
+                                    <p class="mt-6 text-[1.02rem] leading-9 text-slate-600">{{ $section['content'] }}</p>
 
-                                @if ($index === 0)
-                                    <blockquote class="mt-10 rounded-[1.4rem] border border-emerald-100 bg-emerald-50/70 px-6 py-5">
-                                        <p class="text-base font-semibold leading-8 text-emerald-900">
-                                            „Најдобро поминуваат кандидатите што аплицираат брзо, јасно и со точни контакт податоци.“
-                                        </p>
-                                    </blockquote>
-                                @endif
+                                    @if (!empty($section['subheading']))
+                                        <h3 class="mt-10 text-xl font-bold tracking-tight text-slate-900 sm:text-[1.45rem]">{{ $section['subheading'] }}</h3>
+                                    @endif
 
-                                @if (!empty($section['points']))
-                                    <div class="mt-10 rounded-[1.4rem] border border-slate-200 bg-slate-50 px-6 py-5">
-                                        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Корисен совет</p>
-                                        <p class="mt-3 text-[0.98rem] leading-8 text-slate-600">Пред аплицирање одвои една минута за да провериш дали пораката е јасна, а телефонот и градот се внесени точно.</p>
-                                    </div>
-                                @endif
-                            </section>
-                        @endforeach
-                    </div>
+                                    @if (!empty($section['points']))
+                                        <ul class="mt-7 space-y-4 pl-6 text-[1.02rem] leading-9 text-slate-600">
+                                            @foreach ($section['points'] as $point)
+                                                <li class="list-disc pl-1">{{ $point }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+
+                                    @if ($index === 0)
+                                        <blockquote class="mt-10 rounded-[1.4rem] border border-emerald-100 bg-emerald-50/70 px-6 py-5">
+                                            <p class="text-base font-semibold leading-8 text-emerald-900">
+                                                „Најдобро поминуваат кандидатите што аплицираат брзо, јасно и со точни контакт податоци.“
+                                            </p>
+                                        </blockquote>
+                                    @endif
+
+                                    @if (!empty($section['points']))
+                                        <div class="mt-10 rounded-[1.4rem] border border-slate-200 bg-slate-50 px-6 py-5">
+                                            <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Корисен совет</p>
+                                            <p class="mt-3 text-[0.98rem] leading-8 text-slate-600">Пред аплицирање одвои една минута за да провериш дали пораката е јасна, а телефонот и градот се внесени точно.</p>
+                                        </div>
+                                    @endif
+                                </section>
+                            @endforeach
+                        </div>
+                    @endif
                 </article>
 
                 <aside class="space-y-5">

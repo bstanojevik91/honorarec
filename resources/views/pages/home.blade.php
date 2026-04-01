@@ -3,13 +3,9 @@
 @section('content')
     <div class="relative isolate overflow-hidden bg-slate-950">
         <div class="absolute inset-0">
-            <img
-                src="{{ $hero['image'] }}"
-                alt="Хонорарец херој слика"
-                class="h-full w-full object-cover"
-            >
-            <div class="absolute inset-0 bg-slate-950/75"></div>
-            <div class="absolute inset-0 bg-gradient-to-b from-slate-950/35 via-slate-950/72 to-stone-50"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.18),transparent_36%),radial-gradient(circle_at_78%_18%,rgba(14,116,144,0.22),transparent_28%),linear-gradient(180deg,rgba(2,6,23,0.98)_0%,rgba(3,7,18,0.96)_48%,rgba(2,6,23,1)_100%)]"></div>
+            <div class="absolute inset-0 opacity-[0.08]" style="background-image: linear-gradient(rgba(148,163,184,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.18) 1px, transparent 1px); background-size: 72px 72px;"></div>
+            <div class="absolute left-1/2 top-12 h-72 w-72 -translate-x-1/2 rounded-full bg-emerald-500/10 blur-3xl"></div>
         </div>
 
         @include('partials.header')
@@ -17,10 +13,10 @@
         <section class="relative mx-auto max-w-7xl px-4 pb-24 pt-36 sm:px-6 sm:pb-28 lg:px-8 lg:pb-32 lg:pt-44">
             <div class="max-w-3xl text-white">
                 <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-[4.1rem] lg:leading-[1.02]">{{ $hero['title'] }}</h1>
-                <p class="mt-4 text-lg font-medium text-slate-200 sm:text-xl">{{ $hero['subtitle'] }}</p>
+                <p class="mt-4 max-w-2xl text-lg font-medium text-slate-300 sm:text-xl">{{ $hero['subtitle'] }}</p>
             </div>
 
-            <form method="GET" action="{{ route('jobs.index') }}" class="mt-10 max-w-6xl rounded-[1.75rem] border border-black/5 bg-white/95 p-3 shadow-[0_30px_80px_-30px_rgba(2,6,23,0.65)] backdrop-blur xl:p-4">
+            <form method="GET" action="{{ route('jobs.index') }}" class="mt-10 max-w-6xl rounded-[1.75rem] border border-white/10 bg-white/96 p-3 shadow-[0_34px_90px_-34px_rgba(15,23,42,0.85)] xl:p-4">
                 <div class="grid gap-3 lg:grid-cols-[1.55fr_0.9fr_0.9fr_auto]">
                     <label class="block">
                         <span class="sr-only">Клучен збор</span>

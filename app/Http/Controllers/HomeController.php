@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobApplicationRequest;
+use App\Models\BlogPost;
 use App\Models\Company;
 use App\Models\JobApplication;
 use App\Models\JobListing;
@@ -26,7 +27,7 @@ class HomeController extends Controller
         $hero = [
             'title' => 'Хонорарец.мк',
             'subtitle' => 'Најди работа на дневница',
-            'image' => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80',
+            'image' => 'https://images.pexels.com/photos/4481260/pexels-photo-4481260.jpeg?auto=compress&cs=tinysrgb&w=1600',
         ];
 
         $categories = [
@@ -49,8 +50,8 @@ class HomeController extends Controller
                 'Сезонска работа',
                 'Втора работа',
             ],
-            'primary_image' => 'https://images.unsplash.com/photo-1484981138541-3d074aa97716?auto=format&fit=crop&w=900&q=80',
-            'secondary_image' => 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=700&q=80',
+            'primary_image' => 'https://images.pexels.com/photos/30411827/pexels-photo-30411827.jpeg?auto=compress&cs=tinysrgb&w=1200',
+            'secondary_image' => 'https://images.pexels.com/photos/16647493/pexels-photo-16647493.jpeg?auto=compress&cs=tinysrgb&w=900',
         ];
 
         $testimonials = [
@@ -74,7 +75,7 @@ class HomeController extends Controller
             ],
         ];
 
-        $posts = $this->blogPosts();
+        $posts = $this->publicBlogPosts();
 
         $jobs = $this->frontendJobs();
         $searchCategories = $jobs
@@ -134,7 +135,7 @@ class HomeController extends Controller
 
     public function blog(): View
     {
-        $posts = collect($this->blogPosts());
+        $posts = collect($this->publicBlogPosts());
 
         return view('pages.blog-index', [
             'posts' => $posts->all(),
@@ -208,7 +209,7 @@ class HomeController extends Controller
 
     public function showBlogPost(string $slug): View
     {
-        $posts = collect($this->blogPosts());
+        $posts = collect($this->publicBlogPosts());
         $post = $posts->firstWhere('slug', $slug);
 
         abort_if($post === null, 404);
@@ -310,7 +311,48 @@ class HomeController extends Controller
     /**
      * @return array<int, array<string, mixed>>
      */
-    private function blogPosts(): array
+    private function publicBlogPosts(): array
+    {
+        if (Schema::hasTable('blog_posts') && BlogPost::query()->where('status', BlogPost::STATUS_PUBLISHED)->exists()) {
+            return BlogPost::query()
+                ->where('status', BlogPost::STATUS_PUBLISHED)
+                ->latest('published_at')
+                ->latest()
+                ->get()
+                ->map(fn (BlogPost $post): array => $this->mapBlogPost($post))
+                ->all();
+        }
+
+        return $this->fallbackBlogPosts();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function mapBlogPost(BlogPost $post): array
+    {
+        return [
+            'slug' => $post->slug,
+            'title' => $post->title,
+            'excerpt' => $post->excerpt,
+            'meta_description' => $post->meta_description ?: $post->excerpt,
+            'category' => $post->category ?: 'Блог',
+            'reading_time' => $this->estimateReadingTime($post->content),
+            'published_at' => ($post->published_at ?? $post->created_at)?->format('d.m.Y'),
+            'image' => $post->featured_image
+                ? asset('storage/' . $post->featured_image)
+                : 'https://images.pexels.com/photos/4481260/pexels-photo-4481260.jpeg?auto=compress&cs=tinysrgb&w=1400',
+            'intro' => $post->excerpt,
+            'content' => $post->content,
+            'author' => 'Тимот на Honorarec.mk',
+            'sections' => [],
+        ];
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function fallbackBlogPosts(): array
     {
         return [
             [
@@ -321,7 +363,7 @@ class HomeController extends Controller
                 'category' => 'Совети за кандидати',
                 'reading_time' => '4 минути читање',
                 'published_at' => '01 април 2026',
-                'image' => 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80',
+                'image' => 'https://images.pexels.com/photos/16647493/pexels-photo-16647493.jpeg?auto=compress&cs=tinysrgb&w=1400',
                 'intro' => 'Брзата работа на дневница најчесто ја добиваат оние што имаат јасна порака, точен телефон и кратка, но уверлива апликација.',
                 'sections' => [
                     [
@@ -351,7 +393,7 @@ class HomeController extends Controller
                 'category' => 'Пазар на труд',
                 'reading_time' => '3 минути читање',
                 'published_at' => '30 март 2026',
-                'image' => 'https://images.unsplash.com/photo-1484981138541-3d074aa97716?auto=format&fit=crop&w=1400&q=80',
+                'image' => 'https://images.pexels.com/photos/4481260/pexels-photo-4481260.jpeg?auto=compress&cs=tinysrgb&w=1400',
                 'intro' => 'Сезонските ангажмани се меѓу најбараните огласи, особено во логистика, продажба, угостителство и промоции.',
                 'sections' => [
                     [
@@ -381,7 +423,7 @@ class HomeController extends Controller
                 'category' => 'Кариера',
                 'reading_time' => '5 минути читање',
                 'published_at' => '28 март 2026',
-                'image' => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80',
+                'image' => 'https://images.pexels.com/photos/34029802/pexels-photo-34029802.jpeg?auto=compress&cs=tinysrgb&w=1400',
                 'intro' => 'Добрата втора работа не е само дополнителен приход, туку и ангажман што можеш реално да го вклопиш во секојдневието без да се преоптовариш.',
                 'sections' => [
                     [
@@ -404,6 +446,14 @@ class HomeController extends Controller
                 ],
             ],
         ];
+    }
+
+    private function estimateReadingTime(string $content): string
+    {
+        $wordCount = max(1, str_word_count(strip_tags($content)));
+        $minutes = max(1, (int) ceil($wordCount / 180));
+
+        return $minutes . ' минути читање';
     }
 
     /**

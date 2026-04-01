@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\JobApplicationController;
 use App\Http\Controllers\Admin\JobListingController;
 use App\Http\Controllers\Employer\ApplicationController as EmployerApplicationController;
@@ -34,6 +35,8 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
 
         Route::resource('companies', CompanyController::class)->except('show');
         Route::resource('jobs', JobListingController::class)->except('show');
+        Route::resource('blog-posts', BlogPostController::class)->parameters(['blog-posts' => 'blog_post'])->except('show');
+        Route::patch('/blog-posts/{blog_post}/toggle-status', [BlogPostController::class, 'toggleStatus'])->name('blog-posts.toggle-status');
 
         Route::get('/applications', [JobApplicationController::class, 'index'])->name('applications.index');
         Route::get('/applications/{application}', [JobApplicationController::class, 'show'])->name('applications.show');

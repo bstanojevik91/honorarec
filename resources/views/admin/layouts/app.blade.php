@@ -43,6 +43,9 @@
                 <a href="{{ route('admin.jobs.index') }}" class="{{ request()->routeIs('admin.jobs.*') ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white' }} rounded-xl px-4 py-3 font-medium transition">
                     Огласи
                 </a>
+                <a href="{{ route('admin.blog-posts.index') }}" class="{{ request()->routeIs('admin.blog-posts.*') ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white' }} rounded-xl px-4 py-3 font-medium transition">
+                    Постови
+                </a>
                 <a href="{{ route('admin.applications.index') }}" class="{{ request()->routeIs('admin.applications.*') ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white' }} rounded-xl px-4 py-3 font-medium transition">
                     Апликации
                 </a>
