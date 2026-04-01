@@ -103,18 +103,18 @@
 
         @include('partials.header')
 
-        <section class="relative mx-auto max-w-7xl px-4 pb-16 pt-36 sm:px-6 lg:px-8 lg:pb-20 lg:pt-44">
-            <div class="grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+        <section class="relative mx-auto max-w-7xl px-4 pb-14 pt-28 sm:px-6 sm:pb-16 sm:pt-32 lg:px-8 lg:pb-20 lg:pt-44">
+            <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-8">
                 <div class="max-w-4xl text-white">
-                    <div class="flex flex-wrap items-center gap-3 text-sm">
+                    <div class="flex flex-wrap items-center gap-2.5 text-xs sm:gap-3 sm:text-sm">
                         <span class="rounded-full bg-orange-100 px-3 py-1 font-semibold text-orange-700">{{ $job['badge'] }}</span>
                         <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-slate-100">{{ $job['category'] ?: 'Категорија' }}</span>
                         <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-slate-100">{{ $job['company'] }}</span>
                     </div>
 
-                    <h1 class="mt-5 max-w-4xl text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-[3.7rem] lg:leading-[1.03]">{{ $job['title'] }}</h1>
+                    <h1 class="mt-4 max-w-4xl text-[2.1rem] font-extrabold tracking-tight sm:mt-5 sm:text-5xl lg:text-[3.7rem] lg:leading-[1.03]">{{ $job['title'] }}</h1>
 
-                    <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-slate-200 sm:text-base">
+                    <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm text-slate-200 sm:mt-6 sm:gap-x-6 sm:text-base">
                         <div class="inline-flex items-center gap-2">
                             <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 text-emerald-300" aria-hidden="true">
                                 <path fill-rule="evenodd" d="M9.69 18.933a1 1 0 01-1.38-.367C6.104 14.658 4 11.777 4 9a6 6 0 1112 0c0 2.777-2.104 5.658-4.31 9.566a1 1 0 01-1.38.367zM10 11.5A2.5 2.5 0 1010 6.5a2.5 2.5 0 000 5z" clip-rule="evenodd" />
@@ -129,24 +129,24 @@
                         </div>
                     </div>
 
-                    <div class="mt-8 flex flex-wrap items-center gap-4">
-                        <a href="#apply-form" class="inline-flex items-center justify-center rounded-full bg-emerald-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500">
+                    <div class="mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+                        <a href="#apply-form" class="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 sm:w-auto">
                             Аплицирај
                         </a>
-                        <a href="{{ route('jobs.index') }}" class="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10">
+                        <a href="{{ route('jobs.index') }}" class="inline-flex w-full items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto">
                             Сите огласи
                         </a>
                     </div>
 
-                    <div class="mt-6 flex flex-wrap items-center gap-3">
+                    <div class="mt-5 flex flex-wrap items-center gap-2.5 sm:mt-6 sm:gap-3">
                         <span class="text-sm font-medium text-slate-300">Сподели оглас:</span>
-                        <a href="{{ $facebookShareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10">
+                        <a href="{{ $facebookShareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">
                             <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
                                 <path d="M13.5 21v-7h2.4l.4-3h-2.8V9.3c0-.9.3-1.5 1.6-1.5H16V5.1c-.3 0-1.1-.1-2.1-.1-2.1 0-3.5 1.3-3.5 3.8V11H8v3h2.3v7h3.2z" />
                             </svg>
                             Facebook
                         </a>
-                        <a href="{{ $linkedinShareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10">
+                        <a href="{{ $linkedinShareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">
                             <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
                                 <path d="M6.94 8.5A1.56 1.56 0 105.38 6.94 1.56 1.56 0 006.94 8.5zM5.56 10h2.77v8.44H5.56zm4.5 0h2.65v1.15h.04a2.9 2.9 0 012.61-1.43c2.79 0 3.3 1.84 3.3 4.22V18.4h-2.77v-3.96c0-.94-.02-2.15-1.31-2.15s-1.51 1.02-1.51 2.08v4.03h-2.77z" />
                             </svg>
@@ -155,11 +155,11 @@
                     </div>
                 </div>
 
-                <div class="rounded-[1.9rem] border border-white/10 bg-white/10 p-6 text-white shadow-[0_24px_70px_-36px_rgba(15,23,42,0.9)] backdrop-blur">
+                <div class="rounded-[1.6rem] border border-white/10 bg-white/10 p-5 text-white shadow-[0_24px_70px_-36px_rgba(15,23,42,0.9)] backdrop-blur sm:rounded-[1.9rem] sm:p-6">
                     <p class="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-300">Брз преглед</p>
                     <div class="mt-4">
                         <p class="text-sm text-slate-300">Дневница / плата</p>
-                        <p class="mt-2 text-3xl font-extrabold tracking-tight">{{ $salaryLabel }}</p>
+                        <p class="mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">{{ $salaryLabel }}</p>
                     </div>
                     <div class="mt-6 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
                         <div>
@@ -181,14 +181,14 @@
     </div>
 
     <main class="bg-stone-50">
-        <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-            <div class="grid gap-8 lg:grid-cols-[minmax(0,1.75fr)_minmax(18rem,0.75fr)] lg:items-start">
-                <div class="space-y-12">
-                    <div class="rounded-[1.7rem] border border-slate-200 bg-white p-7 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.24)] sm:p-8">
+        <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
+            <div class="grid gap-6 lg:grid-cols-[minmax(0,1.75fr)_minmax(18rem,0.75fr)] lg:items-start lg:gap-8">
+                <div class="space-y-8 sm:space-y-10 lg:space-y-12">
+                    <div class="rounded-[1.45rem] border border-slate-200 bg-white p-5 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.18)] sm:rounded-[1.7rem] sm:p-8">
                         <div class="border-b border-slate-100 pb-6">
                             <p class="text-sm font-semibold uppercase tracking-[0.22em] text-emerald-600">Преглед на оглас</p>
-                            <h2 class="mt-3 text-2xl font-bold tracking-tight text-slate-900">Краток вовед</h2>
-                            <p class="mt-4 text-base leading-8 text-slate-600">
+                            <h2 class="mt-3 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">Краток вовед</h2>
+                            <p class="mt-4 text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
                                 {{ $jobIntro }}
                             </p>
                         </div>
@@ -234,17 +234,17 @@
 
                     <div class="grid gap-4 md:grid-cols-3">
                         @foreach ($trustItems as $trustItem)
-                            <div class="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.16)]">
+                            <div class="rounded-[1.35rem] border border-slate-200 bg-white p-5 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.14)] sm:rounded-[1.5rem] sm:p-6">
                                 <p class="text-base font-bold text-slate-900">{{ $trustItem['title'] }}</p>
                                 <p class="mt-3 text-sm leading-7 text-slate-600">{{ $trustItem['text'] }}</p>
                             </div>
                         @endforeach
                     </div>
 
-                    <div id="apply-form" class="rounded-[1.7rem] border border-slate-200 bg-white p-7 shadow-[0_24px_50px_-34px_rgba(15,23,42,0.22)]">
+                    <div id="apply-form" class="rounded-[1.45rem] border border-slate-200 bg-white p-5 shadow-[0_24px_50px_-34px_rgba(15,23,42,0.18)] sm:rounded-[1.7rem] sm:p-7">
                         <div>
                             <p class="text-sm font-semibold uppercase tracking-[0.22em] text-emerald-600">Апликација</p>
-                            <h2 class="mt-3 text-2xl font-bold tracking-tight text-slate-900">Аплицирај за оваа позиција</h2>
+                            <h2 class="mt-3 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">Аплицирај за оваа позиција</h2>
                             <div class="mt-4 rounded-[1.3rem] bg-slate-50 px-4 py-4">
                                 <p class="text-sm leading-7 text-slate-600">
                                     Пополнете ги основните податоци и испратете кратка порака. Формата е едноставна и апликацијата трае само неколку минути.
@@ -268,7 +268,7 @@
                         @if ($applicationEnabled)
                             <form method="POST" action="{{ route('jobs.apply', $job['slug']) }}" enctype="multipart/form-data" class="mt-6 space-y-6">
                                 @csrf
-                                <div class="rounded-[1.35rem] border border-slate-200 p-4">
+                                <div class="rounded-[1.25rem] border border-slate-200 p-4 sm:rounded-[1.35rem]">
                                     <p class="text-sm font-semibold text-slate-900">Основни податоци</p>
                                     <div class="mt-4 grid gap-5">
                                         <div>
@@ -290,7 +290,7 @@
                                     </div>
                                 </div>
 
-                                <div class="rounded-[1.35rem] border border-slate-200 p-4">
+                                <div class="rounded-[1.25rem] border border-slate-200 p-4 sm:rounded-[1.35rem]">
                                     <p class="text-sm font-semibold text-slate-900">Дополнителни информации</p>
                                     <div class="mt-4 space-y-5">
                                         <div>
@@ -306,7 +306,7 @@
                                     </div>
                                 </div>
 
-                                <div class="rounded-[1.35rem] bg-slate-50 px-4 py-4">
+                                <div class="rounded-[1.25rem] bg-slate-50 px-4 py-4 sm:rounded-[1.35rem]">
                                     <div class="flex items-start gap-3">
                                         <span class="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
                                             <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
@@ -332,8 +332,8 @@
                     </div>
                 </div>
 
-                <div class="lg:sticky lg:top-24">
-                    <div class="rounded-[1.7rem] border border-slate-200 bg-white p-7 shadow-[0_24px_50px_-34px_rgba(15,23,42,0.26)]">
+                <div class="order-first lg:order-none lg:sticky lg:top-24">
+                    <div class="rounded-[1.45rem] border border-slate-200 bg-white p-5 shadow-[0_24px_50px_-34px_rgba(15,23,42,0.2)] sm:rounded-[1.7rem] sm:p-7">
                         <p class="text-sm font-semibold uppercase tracking-[0.22em] text-emerald-600">Резиме</p>
 
                         <div class="mt-5 space-y-5">
@@ -358,7 +358,7 @@
                             </div>
                         </div>
 
-                        <a href="#apply-form" class="mt-7 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500">
+                        <a href="#apply-form" class="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 sm:mt-7">
                             Аплицирај
                         </a>
 
@@ -368,13 +368,13 @@
             </div>
         </section>
 
-        <section class="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8 lg:pb-20">
-            <div class="mb-8">
-                <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Слични огласи</h2>
+        <section class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8 lg:pb-20">
+            <div class="mb-6 sm:mb-8">
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Слични огласи</h2>
                 <p class="mt-2 text-sm text-slate-600">Погледнете уште неколку ангажмани што може да ви одговараат.</p>
             </div>
 
-            <div class="grid gap-6 lg:grid-cols-3">
+            <div class="grid gap-5 lg:grid-cols-3 sm:gap-6">
                 @foreach ($relatedJobs as $relatedJob)
                     @include('partials.job-card', ['job' => $relatedJob, 'showAction' => true])
                 @endforeach

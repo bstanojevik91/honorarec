@@ -21,7 +21,7 @@
         };
     </script>
 </head>
-<body class="bg-stone-50 font-sans text-slate-900 antialiased">
+<body class="overflow-x-hidden bg-stone-50 font-sans text-slate-900 antialiased">
     @yield('content')
 </body>
 </html>

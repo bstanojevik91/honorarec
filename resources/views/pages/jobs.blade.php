@@ -8,11 +8,11 @@
 
         @include('partials.header')
 
-        <section class="relative mx-auto max-w-7xl px-4 pb-20 pt-36 sm:px-6 lg:px-8 lg:pb-24 lg:pt-44">
+        <section class="relative mx-auto max-w-7xl px-4 pb-14 pt-28 sm:px-6 sm:pb-18 sm:pt-32 lg:px-8 lg:pb-24 lg:pt-44">
             <div class="max-w-3xl text-white">
                 <p class="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-300">Огласи</p>
-                <h1 class="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">Сите огласи</h1>
-                <p class="mt-4 text-lg text-slate-200 sm:text-xl">
+                <h1 class="mt-3 text-[2.15rem] font-extrabold tracking-tight sm:mt-4 sm:text-5xl">Сите огласи</h1>
+                <p class="mt-3 text-base leading-7 text-slate-200 sm:mt-4 sm:text-xl">
                     Прегледај ги достапните огласи и пронајди ангажман што одговара на твоето време, локација и интереси.
                 </p>
             </div>
@@ -20,13 +20,13 @@
     </div>
 
     <main class="bg-stone-50">
-        <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
-            <div class="rounded-[1.6rem] border border-slate-200 bg-white p-5 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.18)] sm:p-6">
+        <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+            <div class="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.18)] sm:rounded-[1.6rem] sm:p-6">
                 <form method="GET" action="{{ route('jobs.index') }}" class="space-y-5">
-                    <div class="grid gap-4 lg:grid-cols-[1.45fr_1fr_1fr_1fr_auto]">
+                    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-[1.45fr_1fr_1fr_1fr_auto]">
                     <div>
                         <label for="q" class="mb-2 block text-sm font-semibold text-slate-700">Клучен збор / назив на работа</label>
-                        <input id="q" name="q" type="text" value="{{ $filters['q'] }}" placeholder="Пр. промотер, магационер..." class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
+                        <input id="q" name="q" type="text" value="{{ $filters['q'] }}" placeholder="Пр. промотер, магационер..." class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 sm:col-span-2 xl:col-span-1">
                     </div>
                     <div>
                         <label for="city" class="mb-2 block text-sm font-semibold text-slate-700">Град</label>
@@ -50,11 +50,11 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="flex items-end gap-3">
-                        <button type="submit" class="inline-flex h-12 items-center justify-center rounded-2xl bg-emerald-600 px-6 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500">
+                    <div class="grid gap-3 sm:grid-cols-2 xl:flex xl:items-end">
+                        <button type="submit" class="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-emerald-600 px-6 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 xl:w-auto">
                             Пребарувај
                         </button>
-                        <a href="{{ route('jobs.index') }}" class="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 px-5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50">
+                        <a href="{{ route('jobs.index') }}" class="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-slate-200 px-5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 xl:w-auto">
                             Исчисти
                         </a>
                     </div>
@@ -67,7 +67,7 @@
                                 @foreach ($availableTags as $tag)
                                     <label class="inline-flex cursor-pointer items-center">
                                         <input type="checkbox" name="tags[]" value="{{ $tag }}" class="peer sr-only" @checked(in_array($tag, $filters['tags'], true))>
-                                        <span class="inline-flex rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition peer-checked:border-emerald-200 peer-checked:bg-emerald-50 peer-checked:text-emerald-700 hover:border-slate-300 hover:bg-slate-50">
+                                        <span class="inline-flex rounded-full border border-slate-200 px-3.5 py-2 text-sm font-semibold text-slate-600 transition peer-checked:border-emerald-200 peer-checked:bg-emerald-50 peer-checked:text-emerald-700 hover:border-slate-300 hover:bg-slate-50 sm:px-4">
                                             {{ $tag }}
                                         </span>
                                     </label>
@@ -78,15 +78,15 @@
                 </form>
             </div>
 
-            <div class="mb-8 mt-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div class="mb-6 mt-8 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Достапни работни ангажмани</h2>
+                    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Достапни работни ангажмани</h2>
                     <p class="mt-2 text-sm text-slate-600">Пронајдени се {{ count($jobs) }} огласи според избраните филтри.</p>
                 </div>
             </div>
 
             @if (count($jobs) > 0)
-                <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3 sm:gap-6">
                     @foreach ($jobs as $job)
                         @include('partials.job-card', [
                             'job' => $job,
@@ -95,10 +95,10 @@
                     @endforeach
                 </div>
             @else
-                <div class="rounded-[1.6rem] border border-slate-200 bg-white px-6 py-12 text-center shadow-[0_20px_45px_-34px_rgba(15,23,42,0.18)]">
+                <div class="rounded-[1.35rem] border border-slate-200 bg-white px-5 py-10 text-center shadow-[0_20px_45px_-34px_rgba(15,23,42,0.18)] sm:rounded-[1.6rem] sm:px-6 sm:py-12">
                     <h3 class="text-xl font-bold text-slate-900">Нема огласи за овие критериуми</h3>
                     <p class="mt-3 text-sm leading-7 text-slate-600">Пробај со друг клучен збор, друг град или избери поширока категорија.</p>
-                    <a href="{{ route('jobs.index') }}" class="mt-6 inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500">
+                    <a href="{{ route('jobs.index') }}" class="mt-6 inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 sm:w-auto">
                         Прикажи ги сите огласи
                     </a>
                 </div>
