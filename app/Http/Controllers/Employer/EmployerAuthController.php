@@ -8,7 +8,6 @@ use App\Http\Requests\Employer\RegisterRequest;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -96,16 +95,35 @@ class EmployerAuthController extends Controller
         return view('employer.auth.verify-email');
     }
 
-    public function verifyEmail(EmailVerificationRequest $request): RedirectResponse
+    public function verifyEmail(Request $request): RedirectResponse
     {
-        if (! $request->user()->hasVerifiedEmail()) {
-            $request->fulfill();
-            event(new Verified($request->user()));
+        $user = User::query()
+            ->whereKey($request->route('id'))
+            ->where('is_admin', false)
+            ->whereNotNull('company_id')
+            ->first();
+
+        if ($user === null || ! hash_equals((string) $request->route('hash'), sha1($user->getEmailForVerification()))) {
+            abort(403, 'Невалиден линк за потврда.');
+        }
+
+        if (! $user->hasVerifiedEmail()) {
+            $user->forceFill([
+                'email_verified_at' => now(),
+            ])->save();
+
+            event(new Verified($user));
+        }
+
+        if (Auth::check()) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
         }
 
         return redirect()
-            ->route('employer.dashboard')
-            ->with('status', 'Регистрацијата е успешна и е-поштата е потврдена.');
+            ->route('employer.login')
+            ->with('status', 'Е-поштата е потврдена. Најавете се за да продолжите кон employer панелот.');
     }
 
     public function resendVerification(Request $request): RedirectResponse

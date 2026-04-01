@@ -52,12 +52,13 @@ Route::prefix('employer')->name('employer.')->group(function (): void {
         Route::post('/register', [EmployerAuthController::class, 'register'])->name('register.store');
     });
 
+    Route::get('/verify-email/{id}/{hash}', [EmployerAuthController::class, 'verifyEmail'])
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
+
     Route::middleware(['auth', 'employer'])->group(function (): void {
         Route::post('/logout', [EmployerAuthController::class, 'destroy'])->name('logout');
         Route::get('/verify-email', [EmployerAuthController::class, 'verificationNotice'])->name('verification.notice');
-        Route::get('/verify-email/{id}/{hash}', [EmployerAuthController::class, 'verifyEmail'])
-            ->middleware(['signed', 'throttle:6,1'])
-            ->name('verification.verify');
         Route::post('/email/verification-notification', [EmployerAuthController::class, 'resendVerification'])
             ->middleware('throttle:6,1')
             ->name('verification.send');
