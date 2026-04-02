@@ -21,7 +21,7 @@
                             <div class="mx-auto max-w-xl lg:-translate-y-5 lg:mx-0 lg:max-w-3xl lg:text-left">
                                 <h1 class="text-[1.86rem] font-extrabold leading-[1.04] tracking-[-0.03em] text-white sm:text-[2.15rem] lg:max-w-[11ch] lg:text-[4rem] lg:leading-[1.02]">{{ $hero['title'] }}</h1>
 
-                                <span class="mt-4 inline-flex items-center rounded-full border border-white/12 bg-white/10 px-3.5 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/90 backdrop-blur-md">
+                                <span class="mt-4 inline-flex items-center rounded-full border border-white/12 bg-white/10 px-3.5 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/90 backdrop-blur-md lg:mt-[30px]">
                                     Брзо пребарување на работа
                                 </span>
                             </div>
@@ -97,12 +97,11 @@
 
     <main class="bg-stone-50">
         <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
-            <div class="mb-5 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
+            <div class="mb-5 text-center sm:mb-6">
                 <div>
                     <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-emerald-600">Најнови огласи</p>
                     <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-[1.85rem]">Избрани работни ангажмани</h2>
                 </div>
-                <a href="{{ route('jobs.index') }}" class="text-sm font-semibold text-emerald-700 transition hover:text-emerald-600">Сите огласи</a>
             </div>
 
             <div class="grid gap-4 lg:grid-cols-3 sm:gap-5">
@@ -110,16 +109,21 @@
                     @include('partials.job-card', ['job' => $job])
                 @endforeach
             </div>
+
+            <div class="mt-6 text-center">
+                <a href="{{ route('jobs.index') }}" class="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-white px-5 py-2.5 text-sm font-semibold text-emerald-700 shadow-[0_12px_24px_-18px_rgba(5,150,105,0.45)] transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800">
+                    Сите огласи
+                </a>
+            </div>
         </section>
 
         <section class="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
             <div class="rounded-[1.8rem] bg-white p-5 shadow-[0_18px_42px_-34px_rgba(15,23,42,0.18)] sm:p-6">
-                <div class="mb-5 flex flex-col gap-2 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
+                <div class="mb-5 text-center sm:mb-6">
                     <div>
                         <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-emerald-600">Категории</p>
                         <h2 class="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-[1.65rem]">Прегледај по тип на работа</h2>
                     </div>
-                    <a href="{{ route('jobs.index') }}" class="text-sm font-semibold text-emerald-700 transition hover:text-emerald-600">Пребарај по категории</a>
                 </div>
 
                 <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 sm:gap-4">
@@ -127,12 +131,18 @@
                         @include('partials.category-card', ['category' => $category])
                     @endforeach
                 </div>
+
+                <div class="mt-6 text-center">
+                    <a href="{{ route('jobs.index') }}" class="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-white px-5 py-2.5 text-sm font-semibold text-emerald-700 shadow-[0_12px_24px_-18px_rgba(5,150,105,0.45)] transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800">
+                        Пребарај по категории
+                    </a>
+                </div>
             </div>
         </section>
 
         <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
             <div class="rounded-[1.8rem] bg-slate-900 p-5 text-white shadow-[0_22px_46px_-30px_rgba(15,23,42,0.5)] sm:p-6">
-                <div class="mb-5">
+                <div class="mb-5 text-center">
                     <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-emerald-300">Предности</p>
                     <h2 class="mt-2 text-xl font-bold tracking-tight sm:text-[1.65rem]">{{ $promo['title'] }}</h2>
                 </div>
@@ -153,7 +163,7 @@
         </section>
 
         <section class="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
-            <div class="mb-5">
+            <div class="mb-5 text-center">
                 <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-emerald-600">Искуства</p>
                 <h2 class="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-[1.65rem]">Што велат корисниците</h2>
             </div>
@@ -166,18 +176,23 @@
         </section>
 
         <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
-            <div class="mb-5 flex flex-col gap-2 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
+            <div class="mb-5 text-center sm:mb-6">
                 <div>
                     <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-emerald-600">Блог</p>
                     <h2 class="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-[1.65rem]">Кратки совети за побрзо вработување</h2>
                 </div>
-                <a href="{{ route('blog.index') }}" class="text-sm font-semibold text-emerald-700 transition hover:text-emerald-600">Сите статии</a>
             </div>
 
             <div class="grid gap-4 lg:grid-cols-2 sm:gap-5">
                 @foreach ($posts as $post)
                     @include('partials.blog-card', ['post' => $post])
                 @endforeach
+            </div>
+
+            <div class="mt-6 text-center">
+                <a href="{{ route('blog.index') }}" class="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-white px-5 py-2.5 text-sm font-semibold text-emerald-700 shadow-[0_12px_24px_-18px_rgba(5,150,105,0.45)] transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800">
+                    Сите статии
+                </a>
             </div>
         </section>
 
