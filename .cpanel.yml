@@ -1,21 +1,29 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/bovioklt/honorarec
-    - /bin/cp -a app "$DEPLOYPATH"
-    - /bin/cp -a bootstrap "$DEPLOYPATH"
-    - /bin/cp -a config "$DEPLOYPATH"
-    - /bin/cp -a database "$DEPLOYPATH"
-    - /bin/cp -a public "$DEPLOYPATH"
-    - /bin/cp -a resources "$DEPLOYPATH"
-    - /bin/cp -a routes "$DEPLOYPATH"
-    - /bin/cp -a artisan "$DEPLOYPATH"
-    - /bin/cp -a composer.json "$DEPLOYPATH"
-    - /bin/cp -a composer.lock "$DEPLOYPATH"
-    - /bin/cp -a package.json "$DEPLOYPATH"
-    - /bin/cp -a package-lock.json "$DEPLOYPATH"
-    - /bin/cp -a vite.config.js "$DEPLOYPATH"
-    - /bin/cp -a phpunit.xml "$DEPLOYPATH"
-    - cd "$DEPLOYPATH"
+    - export APPPATH=/home/bovioklt/honorarec
+    - export PUBLICPATH=/home/bovioklt/public_html
+    - /bin/cp -a app "$APPPATH"
+    - /bin/cp -a bootstrap "$APPPATH"
+    - /bin/cp -a config "$APPPATH"
+    - /bin/cp -a database "$APPPATH"
+    - /bin/cp -a public "$APPPATH"
+    - /bin/cp -a resources "$APPPATH"
+    - /bin/cp -a routes "$APPPATH"
+    - /bin/cp -a artisan "$APPPATH"
+    - /bin/cp -a composer.json "$APPPATH"
+    - /bin/cp -a composer.lock "$APPPATH"
+    - /bin/cp -a package.json "$APPPATH"
+    - /bin/cp -a package-lock.json "$APPPATH"
+    - /bin/cp -a vite.config.js "$APPPATH"
+    - /bin/cp -a phpunit.xml "$APPPATH"
+    - /bin/mkdir -p "$PUBLICPATH/images"
+    - /bin/mkdir -p "$PUBLICPATH/build"
+    - /bin/cp -a public/.htaccess "$PUBLICPATH/.htaccess"
+    - /bin/cp -a public/favicon.ico "$PUBLICPATH/favicon.ico"
+    - /bin/cp -a public/robots.txt "$PUBLICPATH/robots.txt"
+    - /bin/cp -a public/images/. "$PUBLICPATH/images/"
+    - /bin/cp -a public/build/. "$PUBLICPATH/build/"
+    - cd "$APPPATH"
     - php artisan migrate --force
     - php artisan optimize:clear
