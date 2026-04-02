@@ -3,54 +3,90 @@
 @section('content')
     <div class="relative isolate overflow-hidden bg-slate-950">
         <div class="absolute inset-0">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.18),transparent_36%),radial-gradient(circle_at_78%_18%,rgba(14,116,144,0.22),transparent_28%),linear-gradient(180deg,rgba(2,6,23,0.98)_0%,rgba(3,7,18,0.96)_48%,rgba(2,6,23,1)_100%)]"></div>
-            <div class="absolute inset-0 opacity-[0.08]" style="background-image: linear-gradient(rgba(148,163,184,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.18) 1px, transparent 1px); background-size: 72px 72px;"></div>
-            <div class="absolute left-1/2 top-12 h-72 w-72 -translate-x-1/2 rounded-full bg-emerald-500/10 blur-3xl"></div>
+            <img src="{{ $hero['image'] }}" alt="Hero background" class="h-full w-full object-cover object-center">
+            <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,7,18,0.42)_0%,rgba(7,10,24,0.62)_18%,rgba(10,14,29,0.72)_38%,rgba(5,8,20,0.9)_68%,rgba(2,6,23,0.98)_100%)]"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.16),transparent_30%),radial-gradient(circle_at_80%_20%,rgba(14,116,144,0.2),transparent_24%)]"></div>
+            <div class="absolute inset-0 opacity-[0.08]" style="background-image: linear-gradient(rgba(248,250,252,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(248,250,252,0.2) 1px, transparent 1px); background-size: 72px 72px;"></div>
         </div>
 
         @include('partials.header')
 
-        <section class="relative mx-auto max-w-7xl px-4 pb-14 pt-28 sm:px-6 sm:pb-20 sm:pt-32 lg:px-8 lg:pb-32 lg:pt-44">
-            <div class="mx-auto max-w-3xl text-center text-white lg:mx-0 lg:text-left">
-                <h1 class="mx-auto max-w-2xl text-[2.15rem] font-extrabold tracking-tight sm:text-5xl lg:mx-0 lg:text-[4.1rem] lg:leading-[1.02]">{{ $hero['title'] }}</h1>
-                <p class="mt-3 mx-auto max-w-xl text-base font-medium leading-7 text-slate-300 sm:mt-4 sm:max-w-2xl sm:text-xl lg:mx-0">{{ $hero['subtitle'] }}</p>
+        <section class="relative mx-auto max-w-7xl px-4 pb-14 pt-24 sm:px-6 sm:pb-16 sm:pt-28 lg:px-8 lg:pb-24 lg:pt-36">
+            <div class="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/20 shadow-[0_30px_90px_-35px_rgba(15,23,42,0.85)] backdrop-blur-[2px] sm:rounded-[2.5rem]">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(9,12,26,0.14)_0%,rgba(9,12,26,0.55)_24%,rgba(7,10,21,0.82)_65%,rgba(2,6,23,0.92)_100%)] lg:bg-[linear-gradient(90deg,rgba(4,6,18,0.8)_0%,rgba(4,6,18,0.62)_42%,rgba(4,6,18,0.44)_72%,rgba(4,6,18,0.38)_100%)]"></div>
+
+                    <div class="relative flex min-h-[29rem] flex-col items-center justify-center px-6 pb-16 pt-24 text-center text-white sm:min-h-[33rem] sm:px-10 sm:pb-20 sm:pt-24 lg:min-h-[35rem] lg:items-start lg:justify-center lg:px-14 lg:pb-24 lg:pt-28 lg:text-left">
+                        <span class="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-white/90 backdrop-blur">
+                            {{ $hero['title'] }}
+                        </span>
+
+                        <h1 class="mt-6 max-w-[12ch] text-[2.5rem] font-extrabold leading-[1.02] tracking-tight sm:max-w-[13ch] sm:text-[3.35rem] lg:max-w-[10ch] lg:text-[4.5rem]">
+                            {{ $hero['subtitle'] }}
+                        </h1>
+
+                        <p class="mt-4 max-w-md text-sm font-medium leading-7 text-slate-200 sm:mt-5 sm:text-base lg:max-w-xl lg:text-lg">
+                            Прегледај активни огласи и најди флексибилен ангажман со чисто, брзо пребарување од телефон.
+                        </p>
+
+                        <a href="#home-search-card" class="mt-8 inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white shadow-lg shadow-slate-950/30 backdrop-blur transition hover:bg-white/15 lg:mt-10" aria-label="Оди до пребарување">
+                            <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+                                <path fill-rule="evenodd" d="M10 14.707l5.354-5.353-1.414-1.415L10 11.879 6.06 7.94 4.646 9.354 10 14.707z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <form method="GET" action="{{ route('jobs.index') }}" class="mt-8 max-w-6xl rounded-[1.45rem] border border-white/10 bg-white/96 p-3 shadow-[0_34px_90px_-34px_rgba(15,23,42,0.85)] sm:mt-10 sm:rounded-[1.75rem] xl:p-4">
-                <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1.55fr_0.9fr_0.9fr_auto]">
-                    <label class="block">
-                        <span class="sr-only">Клучен збор</span>
-                        <input
-                            name="q"
-                            type="text"
-                            placeholder="Клучен збор / назив на работа"
-                            class="h-13 w-full rounded-[1rem] border border-slate-200 bg-white px-4 text-sm font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 sm:h-14 sm:rounded-[1.15rem] sm:col-span-2 lg:col-span-1"
-                        >
-                    </label>
-                    <label class="block">
-                        <span class="sr-only">Град</span>
-                        <input
-                            name="city"
-                            type="text"
-                            placeholder="Град"
-                            class="h-13 w-full rounded-[1rem] border border-slate-200 bg-white px-4 text-sm font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 sm:h-14 sm:rounded-[1.15rem]"
-                        >
-                    </label>
-                    <label class="block">
-                        <span class="sr-only">Категорија</span>
-                        <select name="category" class="h-13 w-full rounded-[1rem] border border-slate-200 bg-white px-4 text-sm font-medium text-slate-500 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 sm:h-14 sm:rounded-[1.15rem]">
-                            <option value="" selected>Категорија</option>
-                            @foreach ($searchCategories as $category)
-                                <option value="{{ $category }}">{{ $category }}</option>
-                            @endforeach
-                        </select>
-                    </label>
-                    <button
-                        type="submit"
-                        class="inline-flex h-13 w-full items-center justify-center rounded-[1rem] bg-emerald-600 px-8 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 sm:h-14 sm:rounded-[1.15rem] sm:col-span-2 lg:col-span-1"
-                    >
-                        Пребарувај
-                    </button>
+            <form id="home-search-card" method="GET" action="{{ route('jobs.index') }}" class="relative z-10 mx-auto -mt-12 max-w-5xl rounded-[1.9rem] border border-slate-200/80 bg-white p-5 shadow-[0_28px_60px_-30px_rgba(15,23,42,0.4)] sm:-mt-16 sm:rounded-[2rem] sm:p-6 lg:-mt-20 lg:p-7">
+                <div class="space-y-4">
+                    <div class="text-center lg:text-left">
+                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-emerald-600">Брзо пребарување</p>
+                        <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Пронајди оглас за неколку секунди</h2>
+                    </div>
+
+                    <div class="grid gap-3 lg:grid-cols-[1.55fr_0.95fr_0.95fr_auto]">
+                        <label class="block">
+                            <span class="mb-2 block text-sm font-semibold text-slate-700">Позиција / клучен збор</span>
+                            <input
+                                name="q"
+                                type="text"
+                                value="{{ request('q') }}"
+                                placeholder="Пр. промотер, магационер..."
+                                class="h-14 w-full rounded-[1.15rem] border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+                            >
+                        </label>
+
+                        <label class="block">
+                            <span class="mb-2 block text-sm font-semibold text-slate-700">Локација</span>
+                            <input
+                                name="city"
+                                type="text"
+                                value="{{ request('city') }}"
+                                placeholder="Пр. Скопје"
+                                class="h-14 w-full rounded-[1.15rem] border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+                            >
+                        </label>
+
+                        <label class="block">
+                            <span class="mb-2 block text-sm font-semibold text-slate-700">Категорија</span>
+                            <select name="category" class="h-14 w-full rounded-[1.15rem] border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-600 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100">
+                                <option value="" @selected(request('category') === '')>Избери категорија</option>
+                                @foreach ($searchCategories as $category)
+                                    <option value="{{ $category }}" @selected(request('category') === $category)>{{ $category }}</option>
+                                @endforeach
+                            </select>
+                        </label>
+
+                        <div class="flex items-end">
+                            <button
+                                type="submit"
+                                class="inline-flex h-14 w-full items-center justify-center rounded-[1.15rem] bg-emerald-600 px-8 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 lg:min-w-[10rem]"
+                            >
+                                Пребарувај
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </form>
         </section>
