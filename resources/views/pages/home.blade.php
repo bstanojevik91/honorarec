@@ -95,105 +95,102 @@
         </section>
     </div>
 
-    <main>
-        <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
-            <div class="text-center lg:text-left">
-                <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Последно додадени огласи:</h2>
+    <main class="bg-stone-50">
+        <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+            <div class="mb-5 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-emerald-600">Најнови огласи</p>
+                    <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-[1.85rem]">Избрани работни ангажмани</h2>
+                </div>
+                <a href="{{ route('jobs.index') }}" class="text-sm font-semibold text-emerald-700 transition hover:text-emerald-600">Сите огласи</a>
             </div>
 
-            <div class="mt-6 grid gap-5 lg:grid-cols-3 sm:mt-8 sm:gap-6">
+            <div class="grid gap-4 lg:grid-cols-3 sm:gap-5">
                 @foreach ($jobs as $job)
                     @include('partials.job-card', ['job' => $job])
                 @endforeach
             </div>
-
-            <div class="mt-8 text-center sm:mt-9">
-                <a href="{{ route('jobs.index') }}" class="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 sm:min-w-44 sm:w-auto">
-                    Повеќе огласи
-                </a>
-            </div>
         </section>
 
-        <section class="bg-white py-12 sm:py-16 lg:py-20">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="mx-auto max-w-2xl text-center">
-                    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Категории</h2>
+        <section class="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+            <div class="rounded-[1.8rem] bg-white p-5 shadow-[0_18px_42px_-34px_rgba(15,23,42,0.18)] sm:p-6">
+                <div class="mb-5 flex flex-col gap-2 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                        <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-emerald-600">Категории</p>
+                        <h2 class="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-[1.65rem]">Прегледај по тип на работа</h2>
+                    </div>
+                    <a href="{{ route('jobs.index') }}" class="text-sm font-semibold text-emerald-700 transition hover:text-emerald-600">Пребарај по категории</a>
                 </div>
 
-                <div class="mt-6 grid gap-4 md:grid-cols-2 sm:mt-8 sm:gap-6">
+                <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 sm:gap-4">
                     @foreach ($categories as $category)
                         @include('partials.category-card', ['category' => $category])
                     @endforeach
                 </div>
-
-                <div class="mt-8 text-center sm:mt-9">
-                    <a href="{{ route('jobs.index') }}" class="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 sm:min-w-44 sm:w-auto">
-                        Сите Категории
-                    </a>
-                </div>
             </div>
         </section>
 
-        <section class="bg-slate-950 py-12 text-white sm:py-16 lg:py-20">
-            <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_1fr] lg:items-center lg:px-8 lg:gap-12">
-                <div class="text-center lg:text-left">
-                    <h2 class="mx-auto max-w-xl text-2xl font-bold tracking-tight sm:text-[2.45rem] sm:leading-tight lg:mx-0">{{ $promo['title'] }}</h2>
-                    <div class="mt-6 space-y-3 sm:mt-8 sm:space-y-4">
-                        @foreach ($promo['points'] as $point)
-                            <div class="flex items-start justify-center gap-3 text-sm text-slate-200 sm:items-center sm:text-base lg:justify-start">
-                                <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-300">
-                                    <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-7.2 7.2a1 1 0 01-1.415 0l-3-3a1 1 0 111.414-1.42l2.293 2.294 6.493-6.494a1 1 0 011.415 0z" clip-rule="evenodd" />
-                                    </svg>
-                                </span>
-                                {{ $point }}
-                            </div>
-                        @endforeach
-                    </div>
-
-                    <a href="{{ route('jobs.index') }}" class="mt-8 inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-950/30 transition hover:bg-emerald-500 sm:mt-10 sm:min-w-40 sm:w-auto">
-                        Види огласи
-                    </a>
+        <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+            <div class="rounded-[1.8rem] bg-slate-900 p-5 text-white shadow-[0_22px_46px_-30px_rgba(15,23,42,0.5)] sm:p-6">
+                <div class="mb-5">
+                    <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-emerald-300">Предности</p>
+                    <h2 class="mt-2 text-xl font-bold tracking-tight sm:text-[1.65rem]">{{ $promo['title'] }}</h2>
                 </div>
 
-                <div class="relative mx-auto w-full max-w-xl lg:mr-0">
-                    <div class="overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_28px_80px_-32px_rgba(0,0,0,0.75)]">
-                        <img src="{{ $promo['primary_image'] }}" alt="Работна средина" class="h-[18rem] w-full object-cover sm:h-[22rem] lg:h-[26rem]">
-                    </div>
-                    <div class="absolute -bottom-4 left-3 hidden w-40 overflow-hidden rounded-[1.25rem] border-4 border-slate-950 shadow-[0_24px_50px_-24px_rgba(0,0,0,0.9)] sm:block md:-bottom-6 md:-left-4 md:w-64 md:rounded-[1.5rem]">
-                        <img src="{{ $promo['secondary_image'] }}" alt="Тимска работа" class="h-40 w-full object-cover md:h-44">
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="bg-stone-50 py-12 sm:py-16 lg:py-20">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="mx-auto max-w-2xl text-center">
-                    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Нашите задоволни корисници 😍</h2>
-                    <p class="mt-2 text-sm text-slate-600 sm:mt-3 sm:text-base">Прочитајте дел од рецензиите!</p>
-                </div>
-
-                <div class="mt-6 grid gap-4 lg:grid-cols-3 sm:mt-8 sm:gap-6">
-                    @foreach ($testimonials as $testimonial)
-                        @include('partials.testimonial-card', ['testimonial' => $testimonial])
+                <div class="grid gap-3 lg:grid-cols-3">
+                    @foreach ($promo['points'] as $point)
+                        <div class="flex items-start gap-3 rounded-[1.2rem] bg-white/6 px-4 py-4">
+                            <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/18 text-emerald-300">
+                                <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-7.2 7.2a1 1 0 01-1.415 0l-3-3a1 1 0 111.414-1.42l2.293 2.294 6.493-6.494a1 1 0 011.415 0z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                            <p class="text-sm leading-6 text-slate-100">{{ $point }}</p>
+                        </div>
                     @endforeach
                 </div>
             </div>
         </section>
 
-        <section class="bg-white py-12 sm:py-16 lg:py-20">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="mx-auto max-w-2xl text-center">
-                    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Нашиот блог</h2>
-                    <p class="mt-2 text-sm text-slate-600 sm:mt-3 sm:text-base">Прочитајте некои интересни статии кои може да ви помогнат.</p>
-                </div>
+        <section class="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+            <div class="mb-5">
+                <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-emerald-600">Искуства</p>
+                <h2 class="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-[1.65rem]">Што велат корисниците</h2>
+            </div>
 
-                <div class="mt-6 grid gap-5 lg:grid-cols-3 sm:mt-8 sm:gap-6">
-                    @foreach ($posts as $post)
-                        @include('partials.blog-card', ['post' => $post])
-                    @endforeach
+            <div class="grid gap-3 lg:grid-cols-3 sm:gap-4">
+                @foreach ($testimonials as $testimonial)
+                    @include('partials.testimonial-card', ['testimonial' => $testimonial])
+                @endforeach
+            </div>
+        </section>
+
+        <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+            <div class="mb-5 flex flex-col gap-2 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-emerald-600">Блог</p>
+                    <h2 class="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-[1.65rem]">Кратки совети за побрзо вработување</h2>
                 </div>
+                <a href="{{ route('blog.index') }}" class="text-sm font-semibold text-emerald-700 transition hover:text-emerald-600">Сите статии</a>
+            </div>
+
+            <div class="grid gap-4 lg:grid-cols-2 sm:gap-5">
+                @foreach ($posts as $post)
+                    @include('partials.blog-card', ['post' => $post])
+                @endforeach
+            </div>
+        </section>
+
+        <section class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 sm:pb-14 lg:px-8 lg:pb-16">
+            <div class="rounded-[1.8rem] bg-white p-6 text-center shadow-[0_18px_42px_-34px_rgba(15,23,42,0.18)] sm:p-8">
+                <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-emerald-600">Следен чекор</p>
+                <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-[1.9rem]">Прегледај ги сите активни огласи</h2>
+                <p class="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+                    Ако веќе знаеш што бараш, отвори ги сите огласи и филтрирај според локација, категорија и тип на ангажман.
+                </p>
+                <a href="{{ route('jobs.index') }}" class="mt-6 inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-7 py-3.5 text-sm font-semibold text-white shadow-[0_18px_32px_-16px_rgba(5,150,105,0.6)] transition hover:bg-emerald-500 sm:w-auto sm:min-w-52">
+                    Пребарај огласи
+                </a>
             </div>
         </section>
     </main>

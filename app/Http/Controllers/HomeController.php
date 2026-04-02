@@ -41,14 +41,24 @@ class HomeController extends Controller
                 'name' => 'Сезонски ангажмани',
                 'count' => '8 огласи',
             ],
+            [
+                'icon' => 'briefcase',
+                'name' => 'Угостителство',
+                'count' => '9 огласи',
+            ],
+            [
+                'icon' => 'building-storefront',
+                'name' => 'Магацин и логистика',
+                'count' => '7 огласи',
+            ],
         ];
 
         $promo = [
-            'title' => 'Пронајди ја твојата работа од соништата',
+            'title' => 'Зошто пребарувањето е полесно со Honorarec.mk',
             'points' => [
-                'Дополнителен приход',
-                'Сезонска работа',
-                'Втора работа',
+                'Брзо филтрирање по клучен збор, локација и категорија',
+                'Проверени огласи што лесно се скенираат и споредуваат',
+                'Јасен пат од пребарување до аплицирање без непотребни чекори',
             ],
             'primary_image' => 'https://images.pexels.com/photos/30411827/pexels-photo-30411827.jpeg?auto=compress&cs=tinysrgb&w=1200',
             'secondary_image' => 'https://images.pexels.com/photos/16647493/pexels-photo-16647493.jpeg?auto=compress&cs=tinysrgb&w=900',
@@ -89,11 +99,11 @@ class HomeController extends Controller
         return view('pages.home', [
             'hero' => $hero,
             'jobs' => $jobs->take(3)->all(),
-            'categories' => $categories,
+            'categories' => collect($categories)->take(4)->all(),
             'searchCategories' => $searchCategories,
             'promo' => $promo,
             'testimonials' => $testimonials,
-            'posts' => $posts,
+            'posts' => collect($posts)->take(2)->all(),
             'footerStats' => $this->footerStats($jobs),
         ]);
     }
