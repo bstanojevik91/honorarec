@@ -4,7 +4,6 @@ namespace App\Http\Requests\Employer;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 
 class StoreEmployerJobRequest extends FormRequest
 {
@@ -28,7 +27,7 @@ class StoreEmployerJobRequest extends FormRequest
     }
 
     /**
-     * @return array<string, array<int, string|Rule>>
+     * @return array<string, array<int, string>>
      */
     public function rules(): array
     {
@@ -40,7 +39,6 @@ class StoreEmployerJobRequest extends FormRequest
             'location' => ['nullable', 'string', 'max:255'],
             'category' => ['nullable', 'string', 'max:255'],
             'featured' => ['nullable', 'boolean'],
-            'status' => ['nullable', Rule::in(['active', 'paused', 'filled'])],
             'expires_at' => ['nullable', 'date'],
         ];
     }
@@ -55,7 +53,6 @@ class StoreEmployerJobRequest extends FormRequest
             'daily_pay' => 'дневница / плата',
             'location' => 'локација',
             'category' => 'категорија',
-            'status' => 'статус',
             'expires_at' => 'датум на истекување',
             'description' => 'опис',
         ];

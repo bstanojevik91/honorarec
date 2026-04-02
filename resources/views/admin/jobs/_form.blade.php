@@ -1,3 +1,5 @@
+@php($statusOptions = \App\Models\JobListing::statusOptions())
+
 @if ($errors->any())
     <div class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-700">
         {{ $errors->first() }}
@@ -45,8 +47,8 @@
     <div>
         <label for="status" class="mb-2 block text-sm font-semibold text-slate-700">Статус</label>
         <select id="status" name="status" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
-            @foreach (['active' => 'active', 'paused' => 'paused', 'filled' => 'filled'] as $value => $label)
-                <option value="{{ $value }}" @selected(old('status', $job->status ?? 'active') === $value)>{{ $label }}</option>
+            @foreach ($statusOptions as $value => $label)
+                <option value="{{ $value }}" @selected(old('status', $job->status ?? \App\Models\JobListing::STATUS_ACTIVE) === $value)>{{ $label }}</option>
             @endforeach
         </select>
     </div>

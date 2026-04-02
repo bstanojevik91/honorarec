@@ -78,6 +78,28 @@ class JobListingController extends Controller
             ->with('status', 'Огласот е избришан.');
     }
 
+    public function approve(JobListing $job): RedirectResponse
+    {
+        $job->update([
+            'status' => JobListing::STATUS_ACTIVE,
+        ]);
+
+        return redirect()
+            ->route('admin.jobs.index')
+            ->with('status', 'Огласот е одобрен и објавен.');
+    }
+
+    public function reject(JobListing $job): RedirectResponse
+    {
+        $job->update([
+            'status' => JobListing::STATUS_REJECTED,
+        ]);
+
+        return redirect()
+            ->route('admin.jobs.index')
+            ->with('status', 'Огласот е одбиен.');
+    }
+
     /**
      * @param array<string, mixed> $data
      */

@@ -7,14 +7,9 @@
 
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div class="flex flex-col items-center gap-8 text-center lg:flex-row lg:items-center lg:justify-between lg:text-left">
-            <div class="flex items-center gap-4">
-                <span class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-base font-bold sm:h-12 sm:w-12 sm:text-lg">
-                    H
-                </span>
-                <div>
-                    <p class="text-base font-semibold">Honorarec.mk</p>
-                    <p class="text-sm text-slate-400">© {{ now()->year }} Сите права се задржани.</p>
-                </div>
+            <div class="flex flex-col items-center gap-3 lg:items-start">
+                <img src="{{ asset('images/honorarec-logo.png') }}" alt="Хонорарец" class="h-12 w-auto max-w-[14rem] object-contain">
+                <p class="text-sm text-slate-400">© {{ now()->year }} Сите права се задржани.</p>
             </div>
 
             <div class="grid w-full max-w-md grid-cols-2 gap-3 sm:max-w-xl sm:grid-cols-{{ count($footerStats) > 2 ? '4' : count($footerStats) }}">

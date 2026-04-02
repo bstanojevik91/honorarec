@@ -32,12 +32,26 @@
                             <td class="px-6 py-4 text-slate-700">{{ $job->company?->name }}</td>
                             <td class="px-6 py-4 text-slate-700">{{ $job->location }}</td>
                             <td class="px-6 py-4">
-                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $job->status === 'active' ? 'bg-emerald-100 text-emerald-700' : ($job->status === 'paused' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-700') }}">
-                                    {{ $job->status }}
+                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $job->status === 'active' ? 'bg-emerald-100 text-emerald-700' : ($job->status === 'pending' ? 'bg-sky-100 text-sky-700' : ($job->status === 'paused' ? 'bg-amber-100 text-amber-700' : ($job->status === 'rejected' ? 'bg-rose-100 text-rose-700' : 'bg-slate-200 text-slate-700'))) }}">
+                                    {{ $job->statusLabel() }}
                                 </span>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex justify-end gap-3">
+                                    @if ($job->status === \App\Models\JobListing::STATUS_PENDING || $job->status === \App\Models\JobListing::STATUS_REJECTED)
+                                        <form method="POST" action="{{ route('admin.jobs.approve', $job) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="rounded-full border border-emerald-200 px-4 py-2 font-semibold text-emerald-700 transition hover:bg-emerald-50">Одобри</button>
+                                        </form>
+                                    @endif
+                                    @if ($job->status !== \App\Models\JobListing::STATUS_REJECTED)
+                                        <form method="POST" action="{{ route('admin.jobs.reject', $job) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="rounded-full border border-amber-200 px-4 py-2 font-semibold text-amber-700 transition hover:bg-amber-50">Одбиј</button>
+                                        </form>
+                                    @endif
                                     <a href="{{ route('admin.jobs.edit', $job) }}" class="rounded-full border border-slate-200 px-4 py-2 font-semibold text-slate-700 transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700">Измени</a>
                                     <form method="POST" action="{{ route('admin.jobs.destroy', $job) }}" onsubmit="return confirm('Дали сте сигурни дека сакате да го избришете огласот?');">
                                         @csrf

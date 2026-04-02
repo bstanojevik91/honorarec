@@ -23,9 +23,8 @@
 <body class="min-h-screen bg-slate-950 font-sans text-slate-900 antialiased">
     <div class="grid min-h-screen lg:grid-cols-2">
         <div class="hidden bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.22),_transparent_35%),linear-gradient(180deg,_rgba(2,6,23,0.78),_rgba(2,6,23,0.98))] p-10 text-white lg:flex lg:flex-col lg:justify-between">
-            <a href="{{ route('home') }}" class="inline-flex items-center gap-3">
-                <span class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-lg font-bold">H</span>
-                <span class="text-lg font-semibold tracking-wide">Хонорарец</span>
+            <a href="{{ route('home') }}" class="inline-flex items-center">
+                <img src="{{ asset('images/honorarec-logo.png') }}" alt="Хонорарец" class="h-14 w-auto max-w-[18rem] object-contain lg:h-16">
             </a>
 
             <div class="max-w-xl">
@@ -38,7 +37,20 @@
         </div>
 
         <div class="flex items-center justify-center px-4 py-12 sm:px-6">
-            <div class="w-full max-w-md rounded-[2rem] bg-white p-8 shadow-[0_40px_100px_-40px_rgba(15,23,42,0.45)]">
+            <div class="w-full max-w-md">
+                <div class="mb-5 flex min-h-11 items-center md:hidden">
+                    <a
+                        href="{{ route('home') }}"
+                        class="inline-flex min-h-11 items-center gap-2 px-1 py-2 text-sm font-semibold text-slate-100 transition hover:text-white active:opacity-80"
+                    >
+                        <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M11.78 4.22a.75.75 0 010 1.06L7.06 10l4.72 4.72a.75.75 0 11-1.06 1.06l-5.25-5.25a.75.75 0 010-1.06l5.25-5.25a.75.75 0 011.06 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Врати се назад</span>
+                    </a>
+                </div>
+
+                <div class="rounded-[2rem] bg-white p-8 shadow-[0_40px_100px_-40px_rgba(15,23,42,0.45)]">
                 <div class="text-center">
                     <p class="text-sm font-semibold uppercase tracking-[0.24em] text-emerald-600">Employer Access</p>
                     <h2 class="mt-3 text-3xl font-bold tracking-tight text-slate-900">Најава за компанија</h2>
@@ -84,6 +96,7 @@
                         Регистрирај компанија
                     </a>
                 </div>
+            </div>
             </div>
         </div>
     </div>

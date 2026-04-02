@@ -1,0 +1,21 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/bovioklt/honorarec
+    - /bin/cp -a app "$DEPLOYPATH"
+    - /bin/cp -a bootstrap "$DEPLOYPATH"
+    - /bin/cp -a config "$DEPLOYPATH"
+    - /bin/cp -a database "$DEPLOYPATH"
+    - /bin/cp -a public "$DEPLOYPATH"
+    - /bin/cp -a resources "$DEPLOYPATH"
+    - /bin/cp -a routes "$DEPLOYPATH"
+    - /bin/cp -a artisan "$DEPLOYPATH"
+    - /bin/cp -a composer.json "$DEPLOYPATH"
+    - /bin/cp -a composer.lock "$DEPLOYPATH"
+    - /bin/cp -a package.json "$DEPLOYPATH"
+    - /bin/cp -a package-lock.json "$DEPLOYPATH"
+    - /bin/cp -a vite.config.js "$DEPLOYPATH"
+    - /bin/cp -a phpunit.xml "$DEPLOYPATH"
+    - cd "$DEPLOYPATH"
+    - php artisan migrate --force
+    - php artisan optimize:clear

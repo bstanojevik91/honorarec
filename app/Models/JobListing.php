@@ -11,9 +11,11 @@ class JobListing extends Model
 {
     use HasFactory;
 
+    public const STATUS_PENDING = 'pending';
     public const STATUS_ACTIVE = 'active';
     public const STATUS_PAUSED = 'paused';
     public const STATUS_FILLED = 'filled';
+    public const STATUS_REJECTED = 'rejected';
 
     protected $fillable = [
         'company_id',
@@ -40,9 +42,11 @@ class JobListing extends Model
     public static function statusOptions(): array
     {
         return [
+            self::STATUS_PENDING => 'Чека одобрување',
             self::STATUS_ACTIVE => 'Активен',
             self::STATUS_PAUSED => 'Паузиран',
             self::STATUS_FILLED => 'Пополнет',
+            self::STATUS_REJECTED => 'Одбиен',
         ];
     }
 

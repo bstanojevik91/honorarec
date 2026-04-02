@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\JobListing;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -45,7 +46,7 @@ class StoreJobListingRequest extends FormRequest
             'location' => ['nullable', 'string', 'max:255'],
             'category' => ['nullable', 'string', 'max:255'],
             'featured' => ['nullable', 'boolean'],
-            'status' => ['nullable', Rule::in(['active', 'paused', 'filled'])],
+            'status' => ['nullable', Rule::in(array_keys(JobListing::statusOptions()))],
             'expires_at' => ['nullable', 'date'],
             'new_company_name' => ['nullable', 'string', 'max:255', 'required_without:company_id'],
             'new_company_phone' => ['nullable', 'string', 'max:255'],

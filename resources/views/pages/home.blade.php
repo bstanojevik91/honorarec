@@ -11,24 +11,24 @@
 
         @include('partials.header')
 
-        <section class="relative mx-auto max-w-7xl px-4 pb-10 pt-20 sm:px-6 sm:pb-14 sm:pt-28 lg:px-8 lg:pb-24 lg:pt-40">
+        <section class="relative mx-auto max-w-7xl px-4 pb-8 pt-20 sm:px-6 sm:pb-14 sm:pt-28 lg:px-8 lg:pb-24 lg:pt-40">
             <div class="overflow-hidden rounded-[1.9rem] bg-slate-950/10 shadow-[0_32px_90px_-46px_rgba(15,23,42,0.82)] sm:rounded-[2.25rem]">
                 <div class="relative">
                     <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,6,23,0.16)_0%,rgba(2,6,23,0.34)_28%,rgba(2,6,23,0.54)_66%,rgba(2,6,23,0.68)_100%)] lg:bg-[linear-gradient(90deg,rgba(2,6,23,0.7)_0%,rgba(2,6,23,0.42)_44%,rgba(2,6,23,0.2)_100%)]"></div>
 
-                    <div class="relative px-5 pb-16 pt-16 text-center text-white sm:px-8 sm:pb-20 sm:pt-20 lg:px-12 lg:pb-24 lg:pt-20">
+                    <div class="relative px-5 pb-11 pt-12 text-center text-white sm:px-8 sm:pb-20 sm:pt-20 lg:px-12 lg:pb-24 lg:pt-20">
                         <div class="lg:grid lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.7fr)] lg:items-end lg:gap-10">
                             <div class="mx-auto max-w-xl lg:-translate-y-5 lg:mx-0 lg:max-w-3xl lg:text-left">
-                                <h1 class="text-[1.86rem] font-extrabold leading-[1.04] tracking-[-0.03em] text-white sm:text-[2.15rem] lg:max-w-[11ch] lg:text-[4rem] lg:leading-[1.02]">{{ $hero['title'] }}</h1>
+                                <h1 class="text-[1.72rem] font-extrabold leading-[1.05] tracking-[-0.03em] text-white sm:text-[2.15rem] lg:max-w-[11ch] lg:text-[4rem] lg:leading-[1.02]">{{ $hero['title'] }}</h1>
 
-                                <span class="mt-4 inline-flex items-center rounded-full border border-white/12 bg-white/10 px-3.5 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/90 backdrop-blur-md lg:mt-[30px]">
-                                    Брзо пребарување на работа
+                                <span class="mt-4 inline-flex items-center rounded-full border border-white/12 bg-white/10 px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/90 backdrop-blur-md lg:mt-[30px]">
+                                    Огласи за привремена работа
                                 </span>
                             </div>
 
-                            <div class="mx-auto mt-6 max-w-md rounded-[1.4rem] bg-white/8 p-5 text-left backdrop-blur-md lg:mx-0 lg:mt-0 lg:max-w-sm lg:self-center">
-                                <p class="text-[0.92rem] font-medium leading-6 text-slate-100/90 sm:text-[0.98rem] sm:leading-7 lg:text-lg">
-                                    {{ $hero['subtitle'] }} со поедноставно мобилно пребарување, подобра прегледност и побрз пат до огласите што ти одговараат.
+                            <div class="mx-auto mt-4 hidden max-w-md rounded-[1.25rem] bg-white/8 p-4 text-left backdrop-blur-md sm:block lg:mx-0 lg:mt-0 lg:max-w-sm lg:self-center lg:rounded-[1.4rem] lg:p-5">
+                                <p class="text-[0.88rem] font-medium leading-5 text-slate-100/88 sm:text-[0.98rem] sm:leading-7 lg:text-lg">
+                                    {{ $hero['subtitle'] }} со побрз и појасен преглед на огласите.
                                 </p>
                             </div>
                         </div>
@@ -36,40 +36,58 @@
                 </div>
             </div>
 
-            <form id="home-search-card" method="GET" action="{{ route('jobs.index') }}" class="relative z-10 mx-auto -mt-10 max-w-5xl rounded-[1.7rem] bg-white p-4 shadow-[0_32px_80px_-34px_rgba(15,23,42,0.34)] sm:-mt-12 sm:rounded-[2rem] sm:p-5 lg:-mt-18 lg:p-6">
-                <div class="space-y-5">
+            <form id="home-search-card" method="GET" action="{{ route('jobs.index') }}" class="relative z-10 mx-auto -mt-1 max-w-5xl rounded-[1.6rem] bg-white p-3.5 shadow-[0_28px_68px_-30px_rgba(15,23,42,0.34)] sm:-mt-12 sm:rounded-[2rem] sm:p-5 lg:-mt-18 lg:p-6">
+                <div class="space-y-4">
                     <div class="text-center lg:text-left">
-                        <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-emerald-600">Почни веднаш</p>
-                        <h2 class="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-[1.7rem]">Најди оглас за неколку секунди</h2>
+                        <h2 class="text-[1.55rem] font-bold tracking-tight text-slate-900 sm:text-[1.7rem]">Најди оглас за неколку секунди</h2>
                     </div>
 
-                    <div class="grid gap-4 lg:grid-cols-[1.55fr_0.9fr_0.9fr_auto]">
+                    <div class="grid gap-3.5 lg:grid-cols-[1.55fr_0.9fr_0.9fr_auto]">
                         <label class="block">
                             <span class="mb-2 block text-sm font-semibold text-slate-700">Клучен збор</span>
-                            <input
-                                name="q"
-                                type="text"
-                                value="{{ request('q') }}"
-                                placeholder="Пр. промотер, магационер..."
-                                class="hero-search-field h-[3.7rem] w-full rounded-[1.15rem] border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-0"
-                            >
+                            <span class="relative block">
+                                <span class="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-slate-400">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M8.5 3a5.5 5.5 0 013.937 9.34l3.111 3.112a.75.75 0 11-1.06 1.06l-3.112-3.11A5.5 5.5 0 118.5 3zm0 1.5a4 4 0 100 8 4 4 0 000-8z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                                <input
+                                    name="q"
+                                    type="text"
+                                    value="{{ request('q') }}"
+                                    placeholder="Пр. промотер, магационер..."
+                                    class="hero-search-field h-[3.55rem] w-full rounded-[1.25rem] border border-slate-200 bg-slate-50/90 pl-12 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-0"
+                                >
+                            </span>
                         </label>
 
                         <label class="block">
                             <span class="mb-2 block text-sm font-semibold text-slate-700">Локација</span>
-                            <input
-                                name="city"
-                                type="text"
-                                value="{{ request('city') }}"
-                                placeholder="Пр. Скопје"
-                                class="hero-search-field h-[3.7rem] w-full rounded-[1.15rem] border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-0"
-                            >
+                            <span class="relative block">
+                                <span class="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-slate-400">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M10 2.75a5.75 5.75 0 00-5.75 5.75c0 4.21 4.615 8.047 5.132 8.463a1 1 0 001.236 0c.517-.416 5.132-4.252 5.132-8.463A5.75 5.75 0 0010 2.75zm0 7.5a1.75 1.75 0 100-3.5 1.75 1.75 0 000 3.5z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                                <input
+                                    name="city"
+                                    type="text"
+                                    value="{{ request('city') }}"
+                                    placeholder="Пр. Скопје"
+                                    class="hero-search-field h-[3.55rem] w-full rounded-[1.25rem] border border-slate-200 bg-slate-50/90 pl-12 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-0"
+                                >
+                            </span>
                         </label>
 
                         <label class="block">
                             <span class="mb-2 block text-sm font-semibold text-slate-700">Категорија</span>
                             <span class="relative block">
-                                <select name="category" class="hero-search-field h-[3.7rem] w-full appearance-none rounded-[1.15rem] border border-slate-200 bg-slate-50 bg-none px-4 pr-11 text-sm font-medium text-slate-600 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-0">
+                                <span class="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-slate-400">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
+                                        <path d="M4.75 4A1.75 1.75 0 003 5.75v8.5C3 15.216 3.784 16 4.75 16h10.5A1.75 1.75 0 0017 14.25v-8.5A1.75 1.75 0 0015.25 4H4.75zM4.5 7.75A.75.75 0 015.25 7h9.5a.75.75 0 010 1.5h-9.5a.75.75 0 01-.75-.75zm.75 2.75a.75.75 0 000 1.5h5.5a.75.75 0 000-1.5h-5.5z"/>
+                                    </svg>
+                                </span>
+                                <select name="category" class="hero-search-field h-[3.55rem] w-full appearance-none rounded-[1.25rem] border border-slate-200 bg-slate-50/90 bg-none pl-12 pr-11 text-sm font-medium text-slate-600 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-0">
                                     <option value="" @selected(request('category') === '')>Избери категорија</option>
                                     @foreach ($searchCategories as $category)
                                         <option value="{{ $category }}" @selected(request('category') === $category)>{{ $category }}</option>
@@ -84,7 +102,7 @@
                         <div class="flex items-end">
                             <button
                                 type="submit"
-                                class="inline-flex h-[3.85rem] w-full items-center justify-center rounded-[1.2rem] bg-emerald-600 px-8 text-sm font-semibold text-white shadow-[0_22px_40px_-18px_rgba(5,150,105,0.82)] transition hover:bg-emerald-500 active:translate-y-px lg:min-w-[10rem]"
+                                class="inline-flex h-[4rem] w-full items-center justify-center rounded-[1.25rem] bg-emerald-600 px-8 text-base font-bold text-white shadow-[0_22px_40px_-16px_rgba(5,150,105,0.78)] transition hover:bg-emerald-500 active:translate-y-px active:shadow-[0_12px_24px_-14px_rgba(5,150,105,0.8)] lg:min-w-[10rem]"
                             >
                                 Пребарувај
                             </button>

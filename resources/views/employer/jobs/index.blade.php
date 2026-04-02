@@ -4,6 +4,10 @@
 ])
 
 @section('content')
+    <div class="mb-6 rounded-[1.35rem] border border-emerald-100 bg-emerald-50 px-5 py-4 text-sm text-emerald-900">
+        Новите огласи и измените на постоечките огласи прво одат на одобрување од администратор пред да станат јавно видливи.
+    </div>
+
     <div class="mb-6 flex items-center justify-end">
         <a href="{{ route('employer.jobs.create') }}" class="inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500">
             Објави оглас
@@ -30,7 +34,7 @@
                             </td>
                             <td class="px-6 py-4 text-slate-700">{{ $job->location ?: 'Не е внесено' }}</td>
                             <td class="px-6 py-4">
-                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $job->status === 'active' ? 'bg-emerald-100 text-emerald-700' : ($job->status === 'paused' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-700') }}">
+                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $job->status === 'active' ? 'bg-emerald-100 text-emerald-700' : ($job->status === 'pending' ? 'bg-sky-100 text-sky-700' : ($job->status === 'paused' ? 'bg-amber-100 text-amber-700' : ($job->status === 'rejected' ? 'bg-rose-100 text-rose-700' : 'bg-slate-200 text-slate-700'))) }}">
                                     {{ $job->statusLabel() }}
                                 </span>
                             </td>
