@@ -1,6 +1,6 @@
 <header class="absolute inset-x-0 top-0 z-20">
     <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
-        <div class="md:hidden">
+        <div class="relative z-30 md:hidden">
             <div class="grid grid-cols-[3rem_1fr_3rem] items-center gap-3">
                 <details class="relative">
                     <summary class="flex h-12 w-12 cursor-pointer list-none items-center justify-center rounded-full border border-white/15 bg-slate-950/55 text-white shadow-lg shadow-slate-950/30 ring-1 ring-white/10 backdrop-blur transition hover:bg-white/10">
@@ -44,7 +44,7 @@
                 <span class="truncate text-base font-semibold tracking-wide sm:text-lg">Хонорарец</span>
             </a>
 
-            <nav class="items-center gap-1 rounded-full border border-white/10 bg-slate-950/40 px-2 py-2 text-sm font-medium text-slate-100 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.75)] backdrop-blur md:flex">
+            <nav class="hidden items-center gap-1 rounded-full border border-white/10 bg-slate-950/40 px-2 py-2 text-sm font-medium text-slate-100 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.75)] backdrop-blur md:flex">
                 <a href="{{ route('jobs.index') }}" class="rounded-full px-4 py-2.5 transition hover:bg-white/10">Сите огласи</a>
                 <a href="{{ route('faq') }}" class="rounded-full px-4 py-2.5 transition hover:bg-white/10">ЧПП</a>
                 <a href="{{ route('faq') }}" class="rounded-full bg-white/10 px-4 py-2.5 transition hover:bg-white/15">Објави оглас / Контакт</a>
