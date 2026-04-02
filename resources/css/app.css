@@ -9,3 +9,29 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+@layer components {
+    .hero-search-field,
+    .hero-search-field:hover,
+    .hero-search-field:active {
+        -webkit-appearance: none;
+        appearance: none;
+        outline: none !important;
+        box-shadow: none !important;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    input.hero-search-field:focus,
+    input.hero-search-field:focus-visible,
+    select.hero-search-field:focus,
+    select.hero-search-field:focus-visible {
+        outline: none !important;
+        border-color: #10b981 !important;
+        box-shadow: 0 0 0 4px rgb(16 185 129 / 0.14) !important;
+    }
+
+    input.hero-search-field::-moz-focus-inner,
+    select.hero-search-field::-moz-focus-inner {
+        border: 0;
+    }
+}

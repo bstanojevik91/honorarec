@@ -16,17 +16,21 @@
                 <div class="relative">
                     <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,6,23,0.16)_0%,rgba(2,6,23,0.34)_28%,rgba(2,6,23,0.54)_66%,rgba(2,6,23,0.68)_100%)] lg:bg-[linear-gradient(90deg,rgba(2,6,23,0.7)_0%,rgba(2,6,23,0.42)_44%,rgba(2,6,23,0.2)_100%)]"></div>
 
-                    <div class="relative px-5 pb-16 pt-16 text-center text-white sm:px-8 sm:pb-20 sm:pt-20 lg:px-12 lg:pb-24 lg:pt-20 lg:text-left">
-                        <div class="mx-auto max-w-xl lg:mx-0 lg:max-w-3xl">
-                            <span class="inline-flex items-center rounded-full border border-white/12 bg-white/10 px-3.5 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/90 backdrop-blur-md">
-                                Брзо пребарување на работа
-                            </span>
+                    <div class="relative px-5 pb-16 pt-16 text-center text-white sm:px-8 sm:pb-20 sm:pt-20 lg:px-12 lg:pb-24 lg:pt-20">
+                        <div class="lg:grid lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.7fr)] lg:items-end lg:gap-10">
+                            <div class="mx-auto max-w-xl lg:-translate-y-5 lg:mx-0 lg:max-w-3xl lg:text-left">
+                                <h1 class="text-[1.86rem] font-extrabold leading-[1.04] tracking-[-0.03em] text-white sm:text-[2.15rem] lg:max-w-[11ch] lg:text-[4rem] lg:leading-[1.02]">{{ $hero['title'] }}</h1>
 
-                            <h1 class="mt-4 text-[1.86rem] font-extrabold leading-[1.04] tracking-[-0.03em] text-white sm:text-[2.15rem] lg:max-w-[11ch] lg:text-[4rem] lg:leading-[1.02]">{{ $hero['title'] }}</h1>
+                                <span class="mt-4 inline-flex items-center rounded-full border border-white/12 bg-white/10 px-3.5 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/90 backdrop-blur-md">
+                                    Брзо пребарување на работа
+                                </span>
+                            </div>
 
-                            <p class="mx-auto mt-3 max-w-[29rem] text-[0.92rem] font-medium leading-6 text-slate-100/90 sm:mt-4 sm:text-[0.98rem] sm:leading-7 lg:mx-0 lg:max-w-xl lg:text-lg">
-                                {{ $hero['subtitle'] }} со поедноставно мобилно пребарување, подобра прегледност и побрз пат до огласите што ти одговараат.
-                            </p>
+                            <div class="mx-auto mt-6 max-w-md rounded-[1.4rem] bg-white/8 p-5 text-left backdrop-blur-md lg:mx-0 lg:mt-0 lg:max-w-sm lg:self-center">
+                                <p class="text-[0.92rem] font-medium leading-6 text-slate-100/90 sm:text-[0.98rem] sm:leading-7 lg:text-lg">
+                                    {{ $hero['subtitle'] }} со поедноставно мобилно пребарување, подобра прегледност и побрз пат до огласите што ти одговараат.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -47,7 +51,7 @@
                                 type="text"
                                 value="{{ request('q') }}"
                                 placeholder="Пр. промотер, магационер..."
-                                class="h-[3.7rem] w-full rounded-[1.15rem] border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/14"
+                                class="hero-search-field h-[3.7rem] w-full rounded-[1.15rem] border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-0"
                             >
                         </label>
 
@@ -58,14 +62,14 @@
                                 type="text"
                                 value="{{ request('city') }}"
                                 placeholder="Пр. Скопје"
-                                class="h-[3.7rem] w-full rounded-[1.15rem] border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/14"
+                                class="hero-search-field h-[3.7rem] w-full rounded-[1.15rem] border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-0"
                             >
                         </label>
 
                         <label class="block">
                             <span class="mb-2 block text-sm font-semibold text-slate-700">Категорија</span>
                             <span class="relative block">
-                                <select name="category" class="h-[3.7rem] w-full appearance-none rounded-[1.15rem] border border-slate-200 bg-slate-50 px-4 pr-11 text-sm font-medium text-slate-600 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/14">
+                                <select name="category" class="hero-search-field h-[3.7rem] w-full appearance-none rounded-[1.15rem] border border-slate-200 bg-slate-50 bg-none px-4 pr-11 text-sm font-medium text-slate-600 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-0">
                                     <option value="" @selected(request('category') === '')>Избери категорија</option>
                                     @foreach ($searchCategories as $category)
                                         <option value="{{ $category }}" @selected(request('category') === $category)>{{ $category }}</option>
