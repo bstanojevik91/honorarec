@@ -55,6 +55,10 @@ class BlogPost extends Model
             return $this->featured_image;
         }
 
+        if (str_starts_with($this->featured_image, 'uploads/')) {
+            return asset($this->featured_image);
+        }
+
         return route('media.public', ['path' => $this->featured_image]);
     }
 }

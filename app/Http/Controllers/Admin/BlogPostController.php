@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreBlogPostRequest;
 use App\Http\Requests\Admin\UpdateBlogPostRequest;
 use App\Models\BlogPost;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -99,9 +101,7 @@ class BlogPostController extends Controller
 
     public function destroy(BlogPost $blogPost): RedirectResponse
     {
-        if ($blogPost->featured_image && !filter_var($blogPost->featured_image, FILTER_VALIDATE_URL)) {
-            Storage::disk('public')->delete($blogPost->featured_image);
-        }
+        $this->deleteFeaturedImage($blogPost->featured_image);
 
         $blogPost->delete();
 
@@ -140,15 +140,45 @@ class BlogPostController extends Controller
             : null;
 
         if ($request->hasFile('featured_image')) {
-            if ($blogPost?->featured_image && !filter_var($blogPost->featured_image, FILTER_VALIDATE_URL)) {
-                Storage::disk('public')->delete($blogPost->featured_image);
-            }
-
-            $data['featured_image'] = $request->file('featured_image')->store('blog', 'public');
+            $this->deleteFeaturedImage($blogPost?->featured_image);
+            $data['featured_image'] = $this->storeFeaturedImage($request->file('featured_image'));
         } elseif ($blogPost !== null) {
             $data['featured_image'] = $blogPost->featured_image;
         }
 
         return $data;
+    }
+
+    private function storeFeaturedImage(UploadedFile $file): string
+    {
+        $directory = public_path('uploads/blog');
+
+        if (!File::exists($directory)) {
+            File::makeDirectory($directory, 0755, true);
+        }
+
+        $filename = Str::uuid()->toString() . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
+        $file->move($directory, $filename);
+
+        return 'uploads/blog/' . $filename;
+    }
+
+    private function deleteFeaturedImage(?string $path): void
+    {
+        if (blank($path) || filter_var($path, FILTER_VALIDATE_URL)) {
+            return;
+        }
+
+        if (str_starts_with($path, 'uploads/')) {
+            $absolutePath = public_path($path);
+
+            if (File::exists($absolutePath)) {
+                File::delete($absolutePath);
+            }
+
+            return;
+        }
+
+        Storage::disk('public')->delete($path);
     }
 }
