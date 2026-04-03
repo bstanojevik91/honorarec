@@ -27,7 +27,7 @@
                 <img src="{{ asset('images/honorarec-logo.png') }}" alt="Хонорарец" class="h-14 w-auto max-w-[18rem] object-contain lg:h-16">
             </a>
 
-            <div class="mt-16 max-w-xl xl:mt-20">
+            <div class="mt-16 max-w-xl lg:ml-40 xl:mt-20">
                 <p class="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-300">Регистрација за компании</p>
                 <h1 class="mt-4 text-5xl font-extrabold tracking-tight">Отворете employer профил и објавувајте огласи</h1>
                 <p class="mt-5 text-lg leading-8 text-slate-300">
