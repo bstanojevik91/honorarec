@@ -1,3 +1,16 @@
+@php
+    $companyAccessRoute = auth()->check()
+        ? (auth()->user()->is_admin ? route('admin.dashboard') : route('employer.dashboard'))
+        : route('employer.login');
+    $companyAccessLabel = auth()->check()
+        ? (auth()->user()->is_admin ? 'Админ панел' : 'Employer панел')
+        : 'Најава за компании';
+    $companyRegisterRoute = auth()->check()
+        ? $companyAccessRoute
+        : route('employer.register');
+    $companyRegisterLabel = auth()->check() ? $companyAccessLabel : 'Регистрација за компании';
+@endphp
+
 <footer class="bg-slate-950 text-white">
     <div class="border-b border-white/10">
         <div class="mx-auto max-w-7xl px-4 py-8 text-center sm:px-6 sm:py-10 lg:px-8">
@@ -46,8 +59,8 @@
             <a href="{{ route('blog.index') }}" class="transition hover:text-white">Блог</a>
             <a href="{{ route('faq') }}" class="transition hover:text-white">ЧПП</a>
             <a href="{{ route('faq') }}" class="transition hover:text-white">Контакт</a>
-            <a href="{{ route('employer.register') }}" class="transition hover:text-white">Регистрација за компании</a>
-            <a href="{{ route('employer.login') }}" class="col-span-2 font-medium text-emerald-300 transition hover:text-white sm:col-auto">Најава за компании</a>
+            <a href="{{ $companyRegisterRoute }}" class="transition hover:text-white">{{ $companyRegisterLabel }}</a>
+            <a href="{{ $companyAccessRoute }}" class="col-span-2 font-medium text-emerald-300 transition hover:text-white sm:col-auto">{{ $companyAccessLabel }}</a>
         </div>
     </div>
 </footer>
