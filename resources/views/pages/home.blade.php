@@ -19,7 +19,7 @@
                     <div class="relative px-5 pb-11 pt-12 text-center text-white sm:px-8 sm:pb-20 sm:pt-20 lg:px-12 lg:pb-24 lg:pt-20">
                         <div class="lg:grid lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.7fr)] lg:items-end lg:gap-10">
                             <div class="mx-auto max-w-xl lg:-translate-y-5 lg:mx-0 lg:max-w-3xl lg:text-left">
-                                <h1 class="text-[1.72rem] font-extrabold leading-[1.05] tracking-[-0.03em] text-white sm:text-[2.15rem] lg:max-w-[11ch] lg:text-[4rem] lg:leading-[1.02]">{{ $hero['title'] }}</h1>
+                                <h1 class="text-[1.72rem] font-extrabold leading-[1.05] tracking-[-0.03em] text-white sm:text-[2.15rem] lg:max-w-[11ch] lg:text-[4rem] lg:leading-[1.02]">Најди работа на дневница</h1>
 
                                 <span class="mt-4 inline-flex items-center rounded-full border border-white/12 bg-white/10 px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/90 backdrop-blur-md lg:mt-[30px]">
                                     Огласи за привремена работа
