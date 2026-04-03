@@ -44,4 +44,17 @@ class BlogPost extends Model
     {
         return self::statusOptions()[$this->status] ?? 'Непознат статус';
     }
+
+    public function featuredImageUrl(): ?string
+    {
+        if (blank($this->featured_image)) {
+            return null;
+        }
+
+        if (filter_var($this->featured_image, FILTER_VALIDATE_URL)) {
+            return $this->featured_image;
+        }
+
+        return asset('storage/' . $this->featured_image);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Concerns\ImportsDefaultBlogPosts;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreBlogPostRequest;
 use App\Http\Requests\Admin\UpdateBlogPostRequest;
@@ -14,6 +15,8 @@ use Illuminate\View\View;
 
 class BlogPostController extends Controller
 {
+    use ImportsDefaultBlogPosts;
+
     public function index(Request $request): View
     {
         $search = trim((string) $request->string('search'));
@@ -42,7 +45,19 @@ class BlogPostController extends Controller
                 ->distinct()
                 ->orderBy('category')
                 ->pluck('category'),
+            'hasPosts' => BlogPost::query()->exists(),
         ]);
+    }
+
+    public function importDefaults(): RedirectResponse
+    {
+        $created = $this->importDefaultBlogPosts();
+
+        return redirect()
+            ->route('admin.blog-posts.index')
+            ->with('status', $created > 0
+                ? 'Стартните блог постови се внесени во админ системот.'
+                : 'Стартните блог постови веќе постојат во админ системот.');
     }
 
     public function create(): View
@@ -84,7 +99,7 @@ class BlogPostController extends Controller
 
     public function destroy(BlogPost $blogPost): RedirectResponse
     {
-        if ($blogPost->featured_image) {
+        if ($blogPost->featured_image && !filter_var($blogPost->featured_image, FILTER_VALIDATE_URL)) {
             Storage::disk('public')->delete($blogPost->featured_image);
         }
 
@@ -125,7 +140,7 @@ class BlogPostController extends Controller
             : null;
 
         if ($request->hasFile('featured_image')) {
-            if ($blogPost?->featured_image) {
+            if ($blogPost?->featured_image && !filter_var($blogPost->featured_image, FILTER_VALIDATE_URL)) {
                 Storage::disk('public')->delete($blogPost->featured_image);
             }
 

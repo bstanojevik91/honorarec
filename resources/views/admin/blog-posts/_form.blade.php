@@ -64,7 +64,7 @@
         @if (!empty($post?->featured_image))
             <p class="mb-2 block text-sm font-semibold text-slate-700">Тековна слика</p>
             <div class="overflow-hidden rounded-[1.2rem] border border-slate-200">
-                <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}" class="h-40 w-full object-cover">
+                <img src="{{ $post->featuredImageUrl() }}" alt="{{ $post->title }}" class="h-40 w-full object-cover">
             </div>
         @else
             <div class="flex h-full items-center rounded-[1.2rem] border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-500">

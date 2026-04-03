@@ -41,9 +41,20 @@
             </div>
         </form>
 
-        <a href="{{ route('admin.blog-posts.create') }}" class="inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500">
-            Додади пост
-        </a>
+        <div class="flex flex-wrap gap-3">
+            @if (! $hasPosts)
+                <form method="POST" action="{{ route('admin.blog-posts.import-defaults') }}">
+                    @csrf
+                    <button type="submit" class="inline-flex items-center justify-center rounded-full border border-sky-200 bg-sky-50 px-6 py-3 text-sm font-semibold text-sky-700 transition hover:bg-sky-100">
+                        Внеси ги моменталните постови
+                    </button>
+                </form>
+            @endif
+
+            <a href="{{ route('admin.blog-posts.create') }}" class="inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500">
+                Додади пост
+            </a>
+        </div>
     </div>
 
     <div class="overflow-hidden rounded-[1.6rem] bg-white shadow-[0_20px_45px_-34px_rgba(15,23,42,0.2)]">
@@ -63,8 +74,16 @@
                     @forelse ($posts as $post)
                         <tr>
                             <td class="px-6 py-4">
-                                <div class="font-semibold text-slate-900">{{ $post->title }}</div>
-                                <div class="mt-1 text-xs text-slate-500">{{ $post->slug }}</div>
+                                <div class="flex items-center gap-4">
+                                    @if ($post->featuredImageUrl())
+                                        <img src="{{ $post->featuredImageUrl() }}" alt="{{ $post->title }}" class="h-16 w-24 rounded-2xl object-cover">
+                                    @endif
+
+                                    <div>
+                                        <div class="font-semibold text-slate-900">{{ $post->title }}</div>
+                                        <div class="mt-1 text-xs text-slate-500">{{ $post->slug }}</div>
+                                    </div>
+                                </div>
                             </td>
                             <td class="px-6 py-4">
                                 <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $post->status === 'published' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">

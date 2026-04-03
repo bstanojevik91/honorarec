@@ -38,6 +38,7 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
         Route::patch('/jobs/{job}/reject', [JobListingController::class, 'reject'])->name('jobs.reject');
         Route::resource('jobs', JobListingController::class)->except('show');
         Route::resource('blog-posts', BlogPostController::class)->parameters(['blog-posts' => 'blog_post'])->except('show');
+        Route::post('/blog-posts/import-defaults', [BlogPostController::class, 'importDefaults'])->name('blog-posts.import-defaults');
         Route::patch('/blog-posts/{blog_post}/toggle-status', [BlogPostController::class, 'toggleStatus'])->name('blog-posts.toggle-status');
 
         Route::get('/applications', [JobApplicationController::class, 'index'])->name('applications.index');
