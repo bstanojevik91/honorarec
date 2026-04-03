@@ -24,7 +24,7 @@
     <div class="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
         <div class="hidden bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.22),_transparent_35%),linear-gradient(180deg,_rgba(2,6,23,0.78),_rgba(2,6,23,0.98))] p-10 text-white lg:flex lg:flex-col lg:justify-start">
             <a href="{{ route('home') }}" class="inline-flex items-center">
-                <img src="{{ asset('images/honorarec-logo.png') }}" alt="Хонорарец" class="h-14 w-auto max-w-[18rem] object-contain lg:h-16">
+                <img src="{{ asset('images/honorarec-logo.png') }}" alt="Хонорарец" class="h-14 w-auto max-w-[18rem] object-contain lg:h-16 lg:max-w-[12rem]">
             </a>
 
             <div class="mt-16 max-w-xl lg:ml-40 xl:mt-20">
