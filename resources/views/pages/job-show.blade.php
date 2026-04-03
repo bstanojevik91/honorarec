@@ -334,10 +334,10 @@
 
                 <div class="order-first lg:order-none lg:sticky lg:top-24">
                     <div class="rounded-[1.45rem] border border-slate-200 bg-white p-5 shadow-[0_24px_50px_-34px_rgba(15,23,42,0.2)] sm:rounded-[1.7rem] sm:p-7">
-                        <p class="text-sm font-semibold uppercase tracking-[0.22em] text-emerald-600">Резиме</p>
+                        <p class="text-center text-sm font-semibold uppercase tracking-[0.22em] text-emerald-600 lg:text-left">Резиме</p>
 
                         <div class="mt-5 space-y-5">
-                            <div class="rounded-[1.25rem] bg-emerald-50 px-5 py-4">
+                            <div class="mx-auto rounded-[1.25rem] bg-emerald-50 px-5 py-4 text-center lg:mx-0 lg:text-left">
                                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Дневница / плата</p>
                                 <p class="mt-2 text-2xl font-extrabold text-slate-900">{{ $salaryLabel }}</p>
                             </div>
