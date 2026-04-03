@@ -26,7 +26,7 @@
                                 </span>
                             </div>
 
-                            <div class="mx-auto mt-4 hidden max-w-md rounded-[1.25rem] bg-white/8 p-4 text-left backdrop-blur-md sm:block lg:mx-0 lg:mt-0 lg:max-w-sm lg:self-center lg:rounded-[1.4rem] lg:p-5">
+                            <div class="mx-auto mt-4 hidden max-w-md rounded-[1.25rem] bg-white/8 p-4 text-left backdrop-blur-md sm:block lg:hidden">
                                 <p class="text-[0.88rem] font-medium leading-5 text-slate-100/88 sm:text-[0.98rem] sm:leading-7 lg:text-lg">
                                     {{ $hero['subtitle'] }} со побрз и појасен преглед на огласите.
                                 </p>
