@@ -22,12 +22,12 @@
 </head>
 <body class="min-h-screen bg-slate-950 font-sans text-slate-900 antialiased">
     <div class="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
-        <div class="hidden bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.22),_transparent_35%),linear-gradient(180deg,_rgba(2,6,23,0.78),_rgba(2,6,23,0.98))] p-10 text-white lg:flex lg:flex-col lg:justify-between">
+        <div class="hidden bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.22),_transparent_35%),linear-gradient(180deg,_rgba(2,6,23,0.78),_rgba(2,6,23,0.98))] p-10 text-white lg:flex lg:flex-col lg:justify-start">
             <a href="{{ route('home') }}" class="inline-flex items-center">
                 <img src="{{ asset('images/honorarec-logo.png') }}" alt="Хонорарец" class="h-14 w-auto max-w-[18rem] object-contain lg:h-16">
             </a>
 
-            <div class="max-w-xl">
+            <div class="mt-16 max-w-xl xl:mt-20">
                 <p class="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-300">Регистрација за компании</p>
                 <h1 class="mt-4 text-5xl font-extrabold tracking-tight">Отворете employer профил и објавувајте огласи</h1>
                 <p class="mt-5 text-lg leading-8 text-slate-300">
