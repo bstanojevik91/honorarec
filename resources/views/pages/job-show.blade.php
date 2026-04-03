@@ -156,8 +156,8 @@
                 </div>
 
                 <div class="rounded-[1.6rem] border border-white/10 bg-white/10 p-5 text-center text-white shadow-[0_24px_70px_-36px_rgba(15,23,42,0.9)] backdrop-blur sm:rounded-[1.9rem] sm:p-6 lg:text-left">
-                    <p class="text-center text-xs font-semibold uppercase tracking-[0.28em] text-emerald-300 lg:text-left">Брз преглед</p>
-                    <div class="mx-auto mt-4 max-w-xs text-center lg:mx-0 lg:max-w-none lg:text-left">
+                    <p class="mx-auto w-fit text-center text-xs font-semibold uppercase tracking-[0.28em] text-emerald-300 lg:mx-0 lg:w-auto lg:text-left">Брз преглед</p>
+                    <div class="mx-auto mt-4 flex max-w-xs flex-col items-center text-center lg:mx-0 lg:max-w-none lg:items-start lg:text-left">
                         <p class="text-sm text-slate-300">Дневница / плата</p>
                         <p class="mt-2 text-center text-2xl font-extrabold tracking-tight sm:text-3xl lg:text-left">{{ $salaryLabel }}</p>
                     </div>
