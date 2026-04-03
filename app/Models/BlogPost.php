@@ -55,6 +55,6 @@ class BlogPost extends Model
             return $this->featured_image;
         }
 
-        return asset('storage/' . $this->featured_image);
+        return route('media.public', ['path' => $this->featured_image]);
     }
 }

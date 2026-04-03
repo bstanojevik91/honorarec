@@ -11,9 +11,11 @@ use App\Http\Controllers\Employer\DashboardController as EmployerDashboardContro
 use App\Http\Controllers\Employer\EmployerAuthController;
 use App\Http\Controllers\Employer\JobController as EmployerJobController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PublicMediaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/media/{path}', [PublicMediaController::class, 'show'])->where('path', '.*')->name('media.public');
 Route::get('/blog', [HomeController::class, 'blog'])->name('blog.index');
 Route::get('/chpp', [HomeController::class, 'faq'])->name('faq');
 Route::get('/blog/{slug}', [HomeController::class, 'showBlogPost'])->name('blog.show');
