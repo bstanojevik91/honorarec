@@ -4,6 +4,8 @@
     </div>
 @endif
 
+@php($dailyPayMode = old('daily_pay_mode', isset($job) ? ($job->daily_pay !== null ? 'amount' : 'agreement') : 'amount'))
+
 <div class="grid gap-6 lg:grid-cols-2">
     <div>
         <label for="title" class="mb-2 block text-sm font-semibold text-slate-700">Наслов</label>
@@ -12,7 +14,18 @@
 
     <div>
         <label for="daily_pay" class="mb-2 block text-sm font-semibold text-slate-700">Дневница / плата</label>
+        <div class="mb-3 flex flex-wrap items-center gap-4 text-sm text-slate-700">
+            <label class="inline-flex items-center gap-2">
+                <input type="radio" name="daily_pay_mode" value="amount" @checked($dailyPayMode === 'amount') class="border-slate-300 text-emerald-600 focus:ring-emerald-100">
+                <span>Бројка</span>
+            </label>
+            <label class="inline-flex items-center gap-2">
+                <input type="radio" name="daily_pay_mode" value="agreement" @checked($dailyPayMode === 'agreement') class="border-slate-300 text-emerald-600 focus:ring-emerald-100">
+                <span>По договор</span>
+            </label>
+        </div>
         <input id="daily_pay" name="daily_pay" type="number" min="0" step="0.01" value="{{ old('daily_pay', $job->daily_pay ?? '') }}" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
+        <p class="mt-2 text-xs text-slate-500">Ако изберете „По договор“, бројката нема да се зачува.</p>
     </div>
 
     <div>

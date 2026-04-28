@@ -30,7 +30,15 @@
                         <tr>
                             <td class="px-6 py-4">
                                 <div class="font-semibold text-slate-900">{{ $job->title }}</div>
-                                <div class="mt-1 text-slate-500">{{ $job->category }} @if($job->daily_pay) · {{ number_format((float) $job->daily_pay, 0, ',', '.') }} ден. @endif</div>
+                                <div class="mt-1 text-slate-500">
+                                    {{ $job->category }}
+                                    ·
+                                    @if($job->daily_pay !== null)
+                                        {{ number_format((float) $job->daily_pay, 0, ',', '.') }} ден.
+                                    @else
+                                        По договор
+                                    @endif
+                                </div>
                             </td>
                             <td class="px-6 py-4 text-slate-700">{{ $job->location ?: 'Не е внесено' }}</td>
                             <td class="px-6 py-4">

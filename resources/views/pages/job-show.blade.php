@@ -2,7 +2,7 @@
 
 @section('content')
     @php
-        $salaryLabel = !empty($job['daily_pay'])
+        $salaryLabel = array_key_exists('daily_pay', $job) && $job['daily_pay'] !== null && $job['daily_pay'] !== ''
             ? number_format((float) $job['daily_pay'], 0, ',', '.') . ' денари'
             : 'По договор';
 
