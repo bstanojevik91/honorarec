@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -296,9 +297,7 @@ class HomeController extends Controller
                 ->map(function (JobListing $job): array {
                     return [
                         'slug' => $job->slug,
-                        'logo' => $job->company?->logo_path
-                            ? asset('storage/'.$job->company->logo_path)
-                            : 'https://placehold.co/96x96/eff6ff/166534?text='.urlencode(mb_substr($job->company?->name ?? 'HR', 0, 2)),
+                        'logo' => $this->resolveCompanyLogoUrl($job->company),
                         'title' => $job->title,
                         'badge' => $job->featured ? 'Издвоено' : match ($job->status) {
                             'paused' => 'Паузирано',
@@ -613,5 +612,31 @@ class HomeController extends Controller
             ['value' => $jobs->count(), 'label' => 'Огласи за работа'],
             ['value' => $companiesCount, 'label' => 'Компании'],
         ];
+    }
+
+    private function resolveCompanyLogoUrl(?Company $company): string
+    {
+        $placeholder = 'https://placehold.co/96x96/eff6ff/166534?text=' . urlencode(mb_substr($company?->name ?? 'HR', 0, 2));
+
+        if ($company === null || blank($company->logo_path)) {
+            return $placeholder;
+        }
+
+        $rawPath = ltrim(trim((string) $company->logo_path), '/');
+
+        $candidates = collect([
+            $rawPath,
+            str_starts_with($rawPath, 'storage/') ? substr($rawPath, 8) : $rawPath,
+            str_starts_with($rawPath, 'companies/') ? 'companies/logos/' . basename($rawPath) : null,
+            str_starts_with($rawPath, 'companies/logos/') ? 'companies/' . basename($rawPath) : null,
+        ])->filter()->unique()->values();
+
+        foreach ($candidates as $path) {
+            if (Storage::disk('public')->exists($path)) {
+                return asset('storage/' . $path);
+            }
+        }
+
+        return $placeholder;
     }
 }

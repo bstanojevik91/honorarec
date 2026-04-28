@@ -66,7 +66,7 @@ class EmployerAuthController extends Controller
                 'email' => $validated['company_email'],
                 'description' => $validated['company_description'] ?: null,
                 'logo_path' => $request->hasFile('company_logo')
-                    ? $request->file('company_logo')->store('companies/logos', 'public')
+                    ? $request->file('company_logo')->store('companies', 'public')
                     : null,
             ]);
 
