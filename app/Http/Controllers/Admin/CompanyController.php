@@ -54,9 +54,13 @@ class CompanyController extends Controller
         if ($request->hasFile('logo')) {
             $this->deleteLogoFile($company->logo_path);
             $data['logo_path'] = $this->uploadLogo($request);
+        } elseif ($request->boolean('remove_logo')) {
+            $this->deleteLogoFile($company->logo_path);
+            $data['logo_path'] = null;
         }
 
         unset($data['logo']);
+        unset($data['remove_logo']);
 
         $company->update($data);
 

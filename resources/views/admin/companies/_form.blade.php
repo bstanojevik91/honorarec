@@ -23,6 +23,21 @@
     <div class="lg:col-span-2">
         <label for="logo" class="mb-2 block text-sm font-semibold text-slate-700">Лого</label>
         <input id="logo" name="logo" type="file" accept="image/*" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
+
+        @if (!empty($company?->logo_path))
+            <div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Тековно лого</p>
+                <div class="mt-3 flex flex-wrap items-center gap-4">
+                    <div class="flex h-20 w-20 items-center justify-center rounded-xl border border-slate-200 bg-white p-2">
+                        <img src="{{ asset($company->logo_path) }}" alt="{{ $company->name }}" class="h-full w-full object-contain">
+                    </div>
+                    <label for="remove_logo" class="inline-flex items-center gap-2 text-sm font-medium text-slate-700">
+                        <input id="remove_logo" name="remove_logo" type="checkbox" value="1" @checked(old('remove_logo')) class="h-4 w-4 rounded border-slate-300 text-rose-600 focus:ring-rose-200">
+                        Тргни го логото
+                    </label>
+                </div>
+            </div>
+        @endif
     </div>
 
     <div class="lg:col-span-2">
