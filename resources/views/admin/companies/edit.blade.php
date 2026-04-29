@@ -26,10 +26,36 @@
             @endif
 
             @if ($company->user)
-                <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4">
-                    <p class="text-sm font-semibold text-emerald-800">Employer акаунт веќе постои.</p>
-                    <p class="mt-1 text-sm text-emerald-700">Е-пошта за најава: {{ $company->user->email }}</p>
-                </div>
+                <form method="POST" action="{{ route('admin.companies.employer-account.update', $company) }}" class="grid gap-5 sm:grid-cols-2">
+                    @csrf
+                    @method('PATCH')
+
+                    <div class="sm:col-span-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4">
+                        <p class="text-sm font-semibold text-emerald-800">Employer акаунт веќе постои.</p>
+                        <p class="mt-1 text-sm text-emerald-700">Овде можете да ја смените е-поштата или лозинката.</p>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label for="employer_email" class="mb-2 block text-sm font-semibold text-slate-700">Е-пошта за најава</label>
+                        <input id="employer_email" name="email" type="email" value="{{ old('email', $company->user->email) }}" required class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
+                    </div>
+
+                    <div>
+                        <label for="employer_password" class="mb-2 block text-sm font-semibold text-slate-700">Новa лозинка (опционално)</label>
+                        <input id="employer_password" name="password" type="password" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
+                    </div>
+
+                    <div>
+                        <label for="employer_password_confirmation" class="mb-2 block text-sm font-semibold text-slate-700">Потврди нова лозинка</label>
+                        <input id="employer_password_confirmation" name="password_confirmation" type="password" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <button type="submit" class="inline-flex items-center justify-center rounded-full bg-emerald-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500">
+                            Update Employer Account
+                        </button>
+                    </div>
+                </form>
             @else
                 <form method="POST" action="{{ route('admin.companies.employer-account.store', $company) }}" class="grid gap-5 sm:grid-cols-2">
                     @csrf

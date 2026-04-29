@@ -37,6 +37,8 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
 
         Route::post('/companies/{company}/employer-account', [CompanyController::class, 'storeEmployerAccount'])
             ->name('companies.employer-account.store');
+        Route::patch('/companies/{company}/employer-account', [CompanyController::class, 'updateEmployerAccount'])
+            ->name('companies.employer-account.update');
         Route::resource('companies', CompanyController::class)->except('show');
         Route::patch('/jobs/{job}/approve', [JobListingController::class, 'approve'])->name('jobs.approve');
         Route::patch('/jobs/{job}/reject', [JobListingController::class, 'reject'])->name('jobs.reject');

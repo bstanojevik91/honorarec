@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreEmployerAccountRequest;
 use App\Http\Requests\Admin\StoreCompanyRequest;
+use App\Http\Requests\Admin\UpdateEmployerAccountRequest;
 use App\Http\Requests\Admin\UpdateCompanyRequest;
 use App\Models\Company;
 use App\Models\User;
@@ -105,6 +106,32 @@ class CompanyController extends Controller
         return redirect()
             ->route('admin.companies.edit', $company)
             ->with('status', 'Employer акаунтот е успешно креиран.');
+    }
+
+    public function updateEmployerAccount(UpdateEmployerAccountRequest $request, Company $company): RedirectResponse
+    {
+        $user = $company->user;
+
+        if ($user === null) {
+            return back()->withErrors([
+                'email' => 'За оваа компанија нема employer акаунт за ажурирање.',
+            ], 'employerAccount');
+        }
+
+        $validated = $request->validated();
+        $data = [
+            'email' => $validated['email'],
+        ];
+
+        if (! empty($validated['password'])) {
+            $data['password'] = Hash::make($validated['password']);
+        }
+
+        $user->update($data);
+
+        return redirect()
+            ->route('admin.companies.edit', $company)
+            ->with('status', 'Employer акаунтот е успешно ажуриран.');
     }
 
     private function uploadLogo(StoreCompanyRequest|UpdateCompanyRequest $request): string
