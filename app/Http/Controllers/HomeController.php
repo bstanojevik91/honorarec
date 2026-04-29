@@ -13,7 +13,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -625,15 +624,14 @@ class HomeController extends Controller
         $rawPath = ltrim(trim((string) $company->logo_path), '/');
 
         $candidates = collect([
-            $rawPath,
-            str_starts_with($rawPath, 'storage/') ? substr($rawPath, 8) : $rawPath,
-            str_starts_with($rawPath, 'companies/') ? 'companies/logos/' . basename($rawPath) : null,
-            str_starts_with($rawPath, 'companies/logos/') ? 'companies/' . basename($rawPath) : null,
+            str_starts_with($rawPath, 'storage/') ? $rawPath : 'storage/' . $rawPath,
+            str_starts_with($rawPath, 'companies/') ? 'storage/companies/logos/' . basename($rawPath) : null,
+            str_starts_with($rawPath, 'companies/logos/') ? 'storage/companies/' . basename($rawPath) : null,
         ])->filter()->unique()->values();
 
-        foreach ($candidates as $path) {
-            if (Storage::disk('public')->exists($path)) {
-                return asset('storage/' . $path);
+        foreach ($candidates as $publicPath) {
+            if (file_exists(public_path($publicPath))) {
+                return asset($publicPath);
             }
         }
 

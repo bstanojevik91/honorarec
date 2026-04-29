@@ -29,7 +29,7 @@
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Тековно лого</p>
                 <div class="mt-3 flex flex-wrap items-center gap-4">
                     <div class="flex h-20 w-20 items-center justify-center rounded-xl border border-slate-200 bg-white p-2">
-                        <img src="{{ asset($company->logo_path) }}" alt="{{ $company->name }}" class="h-full w-full object-contain">
+                        <img src="{{ asset(str_starts_with((string) $company->logo_path, 'storage/') ? (string) $company->logo_path : 'storage/' . ltrim((string) $company->logo_path, '/')) }}" alt="{{ $company->name }}" class="h-full w-full object-contain">
                     </div>
                     <label for="remove_logo" class="inline-flex items-center gap-2 text-sm font-medium text-slate-700">
                         <input id="remove_logo" name="remove_logo" type="checkbox" value="1" @checked(old('remove_logo')) class="h-4 w-4 rounded border-slate-300 text-rose-600 focus:ring-rose-200">

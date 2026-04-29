@@ -107,10 +107,16 @@ class CompanyController extends Controller
             return;
         }
 
-        $fullPath = public_path($logoPath);
+        $rawPath = ltrim(trim($logoPath), '/');
+        $candidates = [
+            public_path($rawPath),
+            public_path(str_starts_with($rawPath, 'storage/') ? $rawPath : 'storage/'.$rawPath),
+        ];
 
-        if (file_exists($fullPath)) {
-            unlink($fullPath);
+        foreach (array_unique($candidates) as $fullPath) {
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+            }
         }
     }
 }
