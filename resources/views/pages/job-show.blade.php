@@ -9,6 +9,15 @@
         $shareUrl = urlencode(request()->fullUrl());
         $facebookShareUrl = 'https://www.facebook.com/sharer/sharer.php?u=' . $shareUrl;
         $linkedinShareUrl = 'https://www.linkedin.com/sharing/share-offsite/?url=' . $shareUrl;
+        $companyName = trim((string) ($job['company'] ?? 'Компанија'));
+        $logoUrl = trim((string) ($job['logo'] ?? ''));
+
+        $companyWords = preg_split('/\s+/u', $companyName, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        $companyInitials = collect($companyWords)
+            ->take(2)
+            ->map(fn (string $word): string => mb_strtoupper(mb_substr($word, 0, 1)))
+            ->implode('');
+        $companyInitials = $companyInitials !== '' ? $companyInitials : 'HR';
 
         $jobDescription = trim((string) ($job['description'] ?? ''));
         $jobIntro = $jobDescription !== ''
@@ -105,53 +114,67 @@
 
         <section class="relative mx-auto max-w-7xl px-4 pb-14 pt-28 sm:px-6 sm:pb-16 sm:pt-32 lg:px-8 lg:pb-20 lg:pt-44">
             <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-8">
-                <div class="max-w-4xl text-center text-white lg:text-left">
-                    <div class="flex flex-wrap items-center justify-center gap-2.5 text-xs sm:gap-3 sm:text-sm lg:justify-start">
-                        <span class="rounded-full bg-orange-100 px-3 py-1 font-semibold text-orange-700">{{ $job['badge'] }}</span>
-                        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-slate-100">{{ $job['category'] ?: 'Категорија' }}</span>
-                        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-slate-100">{{ $job['company'] }}</span>
-                    </div>
-
-                    <h1 class="mt-4 max-w-4xl text-[2.1rem] font-extrabold tracking-tight sm:mt-5 sm:text-5xl lg:text-[3.7rem] lg:leading-[1.03]">{{ $job['title'] }}</h1>
-
-                    <div class="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-sm text-slate-200 sm:mt-6 sm:gap-x-6 sm:text-base lg:justify-start">
-                        <div class="inline-flex items-center gap-2">
-                            <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 text-emerald-300" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M9.69 18.933a1 1 0 01-1.38-.367C6.104 14.658 4 11.777 4 9a6 6 0 1112 0c0 2.777-2.104 5.658-4.31 9.566a1 1 0 01-1.38.367zM10 11.5A2.5 2.5 0 1010 6.5a2.5 2.5 0 000 5z" clip-rule="evenodd" />
-                            </svg>
-                            <span>{{ $job['location'] ?: 'Локација по договор' }}</span>
+                <div class="max-w-4xl text-white">
+                    <div class="flex flex-col gap-6 sm:gap-7 lg:flex-row lg:items-start lg:gap-8">
+                        <div class="shrink-0">
+                            <div class="mx-auto flex h-28 w-28 items-center justify-center rounded-[1.35rem] border border-slate-100/80 bg-white p-4 shadow-[0_16px_35px_-24px_rgba(15,23,42,0.85)] sm:mx-0 sm:h-32 sm:w-32 sm:rounded-[1.5rem] sm:p-5 lg:h-36 lg:w-36 lg:p-6">
+                                @if ($logoUrl !== '')
+                                    <img src="{{ $logoUrl }}" alt="{{ $companyName }}" class="h-full w-full object-contain" loading="eager" decoding="async">
+                                @else
+                                    <span class="text-3xl font-extrabold tracking-tight text-emerald-700 sm:text-[2rem]">{{ $companyInitials }}</span>
+                                @endif
+                            </div>
                         </div>
-                        <div class="inline-flex items-center gap-2">
-                            <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 text-emerald-300" aria-hidden="true">
-                                <path d="M10 2a1 1 0 01.993.883L11 3v1h2a2 2 0 011.995 1.85L15 6v2a1 1 0 01-1.993.117L13 8V6h-2v4h1a2 2 0 011.995 1.85L14 12v1a3 3 0 01-2.824 2.995L11 16h-.5v1a1 1 0 01-1.993.117L8.5 17v-1H7a2 2 0 01-1.995-1.85L5 14v-2a1 1 0 011.993-.117L7 12v2h4v-4H8a2 2 0 01-1.995-1.85L6 8V7a3 3 0 012.824-2.995L9 4h.5V3a1 1 0 011-1z" />
-                            </svg>
-                            <span>{{ $salaryLabel }}</span>
+
+                        <div class="min-w-0 flex-1 text-center lg:text-left">
+                            <div class="flex flex-wrap items-center justify-center gap-2.5 text-xs sm:gap-3 sm:text-sm lg:justify-start">
+                                <span class="rounded-full bg-orange-100 px-3 py-1 font-semibold text-orange-700">{{ $job['badge'] }}</span>
+                                <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-slate-100">{{ $job['category'] ?: 'Категорија' }}</span>
+                                <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-slate-100">{{ $companyName }}</span>
+                            </div>
+
+                            <h1 class="mt-4 max-w-4xl text-[2.1rem] font-extrabold tracking-tight sm:mt-5 sm:text-5xl lg:text-[3.7rem] lg:leading-[1.03]">{{ $job['title'] }}</h1>
+
+                            <div class="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-sm text-slate-200 sm:mt-6 sm:gap-x-6 sm:text-base lg:justify-start">
+                                <div class="inline-flex items-center gap-2">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 text-emerald-300" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M9.69 18.933a1 1 0 01-1.38-.367C6.104 14.658 4 11.777 4 9a6 6 0 1112 0c0 2.777-2.104 5.658-4.31 9.566a1 1 0 01-1.38.367zM10 11.5A2.5 2.5 0 1010 6.5a2.5 2.5 0 000 5z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span>{{ $job['location'] ?: 'Локација по договор' }}</span>
+                                </div>
+                                <div class="inline-flex items-center gap-2">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 text-emerald-300" aria-hidden="true">
+                                        <path d="M10 2a1 1 0 01.993.883L11 3v1h2a2 2 0 011.995 1.85L15 6v2a1 1 0 01-1.993.117L13 8V6h-2v4h1a2 2 0 011.995 1.85L14 12v1a3 3 0 01-2.824 2.995L11 16h-.5v1a1 1 0 01-1.993.117L8.5 17v-1H7a2 2 0 01-1.995-1.85L5 14v-2a1 1 0 011.993-.117L7 12v2h4v-4H8a2 2 0 01-1.995-1.85L6 8V7a3 3 0 012.824-2.995L9 4h.5V3a1 1 0 011-1z" />
+                                    </svg>
+                                    <span>{{ $salaryLabel }}</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+                                <a href="#apply-form" class="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 sm:w-auto">
+                                    Аплицирај
+                                </a>
+                                <a href="{{ route('jobs.index') }}" class="inline-flex w-full items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto">
+                                    Сите огласи
+                                </a>
+                            </div>
+
+                            <div class="mt-5 flex items-center justify-center gap-2 sm:mt-6 sm:gap-3 lg:justify-start">
+                                <span class="whitespace-nowrap text-sm font-medium text-slate-300">Сподели оглас:</span>
+                                <a href="{{ $facebookShareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:px-4">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+                                        <path d="M13.5 21v-7h2.4l.4-3h-2.8V9.3c0-.9.3-1.5 1.6-1.5H16V5.1c-.3 0-1.1-.1-2.1-.1-2.1 0-3.5 1.3-3.5 3.8V11H8v3h2.3v7h3.2z" />
+                                    </svg>
+                                    Facebook
+                                </a>
+                                <a href="{{ $linkedinShareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:px-4">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+                                        <path d="M6.94 8.5A1.56 1.56 0 105.38 6.94 1.56 1.56 0 006.94 8.5zM5.56 10h2.77v8.44H5.56zm4.5 0h2.65v1.15h.04a2.9 2.9 0 012.61-1.43c2.79 0 3.3 1.84 3.3 4.22V18.4h-2.77v-3.96c0-.94-.02-2.15-1.31-2.15s-1.51 1.02-1.51 2.08v4.03h-2.77z" />
+                                    </svg>
+                                    LinkedIn
+                                </a>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
-                        <a href="#apply-form" class="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 sm:w-auto">
-                            Аплицирај
-                        </a>
-                        <a href="{{ route('jobs.index') }}" class="inline-flex w-full items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto">
-                            Сите огласи
-                        </a>
-                    </div>
-
-                    <div class="mt-5 flex items-center justify-center gap-2 sm:mt-6 sm:gap-3 lg:justify-start">
-                        <span class="whitespace-nowrap text-sm font-medium text-slate-300">Сподели оглас:</span>
-                        <a href="{{ $facebookShareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:px-4">
-                            <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
-                                <path d="M13.5 21v-7h2.4l.4-3h-2.8V9.3c0-.9.3-1.5 1.6-1.5H16V5.1c-.3 0-1.1-.1-2.1-.1-2.1 0-3.5 1.3-3.5 3.8V11H8v3h2.3v7h3.2z" />
-                            </svg>
-                            Facebook
-                        </a>
-                        <a href="{{ $linkedinShareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:px-4">
-                            <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
-                                <path d="M6.94 8.5A1.56 1.56 0 105.38 6.94 1.56 1.56 0 006.94 8.5zM5.56 10h2.77v8.44H5.56zm4.5 0h2.65v1.15h.04a2.9 2.9 0 012.61-1.43c2.79 0 3.3 1.84 3.3 4.22V18.4h-2.77v-3.96c0-.94-.02-2.15-1.31-2.15s-1.51 1.02-1.51 2.08v4.03h-2.77z" />
-                            </svg>
-                            LinkedIn
-                        </a>
                     </div>
                 </div>
 
