@@ -35,6 +35,8 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
         Route::post('/logout', [AdminAuthController::class, 'destroy'])->name('logout');
         Route::get('/', DashboardController::class)->name('dashboard');
 
+        Route::post('/companies/{company}/employer-account', [CompanyController::class, 'storeEmployerAccount'])
+            ->name('companies.employer-account.store');
         Route::resource('companies', CompanyController::class)->except('show');
         Route::patch('/jobs/{job}/approve', [JobListingController::class, 'approve'])->name('jobs.approve');
         Route::patch('/jobs/{job}/reject', [JobListingController::class, 'reject'])->name('jobs.reject');
