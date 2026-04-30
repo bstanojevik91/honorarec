@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="mk">
 <head>
+    <script>
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-M7V2JM3Z');
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'Employer Panel | Honorarec.mk' }}</title>
@@ -19,20 +26,9 @@
             },
         };
     </script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-331CW9F4XL"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag()
-        {
-            dataLayer.push(arguments);
-        }
-
-        gtag('js', new Date());
-        gtag('config', 'G-331CW9F4XL');
-    </script>
 </head>
 <body class="bg-stone-100 font-sans text-slate-900 antialiased">
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M7V2JM3Z" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="min-h-screen lg:flex">
         <aside class="w-full bg-slate-950 text-white lg:min-h-screen lg:w-72">
             <div class="border-b border-white/10 px-6 py-6">
