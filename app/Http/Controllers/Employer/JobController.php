@@ -40,7 +40,7 @@ class JobController extends Controller
             'featured',
             'expires_at',
         ])->when(
-            ! Schema::hasColumn('job_listings', 'engagement_type'),
+            ! $this->hasEngagementTypeColumn(),
             fn ($collection) => $collection->except('engagement_type')
         )->all();
 
@@ -81,7 +81,7 @@ class JobController extends Controller
             'featured',
             'expires_at',
         ])->when(
-            ! Schema::hasColumn('job_listings', 'engagement_type'),
+            ! $this->hasEngagementTypeColumn(),
             fn ($collection) => $collection->except('engagement_type')
         )->all();
 
@@ -125,5 +125,22 @@ class JobController extends Controller
         $data['engagement_type'] = $data['engagement_type'] ?? null;
 
         return $data;
+    }
+
+    private function hasEngagementTypeColumn(): bool
+    {
+        static $hasColumn = null;
+
+        if (is_bool($hasColumn)) {
+            return $hasColumn;
+        }
+
+        try {
+            $hasColumn = Schema::hasColumn('job_listings', 'engagement_type');
+        } catch (\Throwable) {
+            $hasColumn = false;
+        }
+
+        return $hasColumn;
     }
 }
