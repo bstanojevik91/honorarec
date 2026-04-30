@@ -445,11 +445,12 @@ class HomeController extends Controller
             ->map(fn (string $candidate): string => trim($candidate))
             ->filter();
 
-        foreach ($candidates as $candidate) {
-            if (mb_strtoupper($candidate) === self::NO_PUBLIC_CALL_TOKEN) {
-                return null;
-            }
+        // If publishing is disabled, hide the call button regardless of any stored phone number.
+        if ($candidates->map(fn (string $candidate): string => mb_strtoupper($candidate))->contains(self::NO_PUBLIC_CALL_TOKEN)) {
+            return null;
+        }
 
+        foreach ($candidates as $candidate) {
             if (str_starts_with($candidate, '+')) {
                 $normalized = '+'.preg_replace('/\D+/', '', substr($candidate, 1));
             } else {
