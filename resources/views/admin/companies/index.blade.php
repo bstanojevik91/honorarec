@@ -34,7 +34,6 @@
                                 ->map(fn (string $phone): string => mb_strtoupper(trim($phone)))
                                 ->contains($noPublicCallToken);
                             $primaryPhone = $companyPhones->first() ?? '';
-                            $additionalPhones = $companyPhones->slice(1)->all();
                         @endphp
                         <tr>
                             <td class="px-6 py-4">
@@ -43,9 +42,6 @@
                             </td>
                             <td class="px-6 py-4 text-slate-700">
                                 <div class="font-medium">{{ $primaryPhone }}</div>
-                                @if ($additionalPhones !== [])
-                                    <div class="mt-1 text-xs text-slate-500">{{ implode(', ', $additionalPhones) }}</div>
-                                @endif
                                 <div class="mt-2">
                                     <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $isCallPublic ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-700' }}">
                                         {{ $isCallPublic ? 'Повикај: вклучено' : 'Повикај: исклучено' }}

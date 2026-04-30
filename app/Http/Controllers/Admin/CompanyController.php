@@ -28,7 +28,6 @@ class CompanyController extends Controller
     {
         return view('admin.companies.create', [
             'companyPhonePrimary' => '',
-            'companyPhoneList' => '',
             'companyPublishCallPhone' => true,
         ]);
     }
@@ -38,7 +37,6 @@ class CompanyController extends Controller
         $data = $request->validated();
         $data['phone'] = $this->mergeCompanyPhones(
             (string) ($data['phone'] ?? ''),
-            isset($data['phone_list']) ? (string) $data['phone_list'] : null,
             isset($data['publish_call_phone']) ? (bool) $data['publish_call_phone'] : false
         );
 
@@ -47,7 +45,6 @@ class CompanyController extends Controller
         }
 
         unset($data['logo']);
-        unset($data['phone_list']);
         unset($data['publish_call_phone']);
 
         Company::create($data);
@@ -64,7 +61,6 @@ class CompanyController extends Controller
         return view('admin.companies.edit', [
             'company' => $company,
             'companyPhonePrimary' => $phoneData['primary'],
-            'companyPhoneList' => $phoneData['list'],
             'companyPublishCallPhone' => $phoneData['publish'],
         ]);
     }
@@ -74,7 +70,6 @@ class CompanyController extends Controller
         $data = $request->validated();
         $data['phone'] = $this->mergeCompanyPhones(
             (string) ($data['phone'] ?? ''),
-            isset($data['phone_list']) ? (string) $data['phone_list'] : null,
             isset($data['publish_call_phone']) ? (bool) $data['publish_call_phone'] : false
         );
 
@@ -88,7 +83,6 @@ class CompanyController extends Controller
 
         unset($data['logo']);
         unset($data['remove_logo']);
-        unset($data['phone_list']);
         unset($data['publish_call_phone']);
 
         $company->update($data);
@@ -200,7 +194,7 @@ class CompanyController extends Controller
     }
 
     /**
-     * @return array{primary:string,list:string,publish:bool}
+     * @return array{primary:string,publish:bool}
      */
     private function splitCompanyPhones(?string $storedPhone): array
     {
@@ -210,25 +204,21 @@ class CompanyController extends Controller
         if ($phones === []) {
             return [
                 'primary' => '',
-                'list' => '',
                 'publish' => $parsed['publish'],
             ];
         }
 
         return [
             'primary' => $phones[0],
-            'list' => implode(PHP_EOL, array_slice($phones, 1)),
             'publish' => $parsed['publish'],
         ];
     }
 
-    private function mergeCompanyPhones(string $primaryPhone, ?string $extraPhones, bool $publishCallPhone): string
+    private function mergeCompanyPhones(string $primaryPhone, bool $publishCallPhone): string
     {
         $primaryCandidates = $this->tokenizePhones($primaryPhone);
         $primary = $primaryCandidates[0] ?? '';
-        $extra = $this->tokenizePhones($extraPhones);
-        $all = $primary !== '' ? array_merge([$primary], $extra) : $extra;
-        $all = array_values(array_unique($all));
+        $all = $primary !== '' ? [$primary] : [];
 
         if (! $publishCallPhone) {
             $all[] = self::NO_PUBLIC_CALL_TOKEN;
