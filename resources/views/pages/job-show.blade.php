@@ -11,6 +11,7 @@
         $linkedinShareUrl = 'https://www.linkedin.com/sharing/share-offsite/?url=' . $shareUrl;
         $companyName = trim((string) ($job['company'] ?? 'Компанија'));
         $logoUrl = trim((string) ($job['logo'] ?? ''));
+        $callPhone = $callPhone ?? null;
 
         $companyWords = preg_split('/\s+/u', $companyName, -1, PREG_SPLIT_NO_EMPTY) ?: [];
         $companyInitials = collect($companyWords)
@@ -154,6 +155,11 @@
                                 <a href="#apply-form" class="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 sm:w-auto">
                                     Аплицирај
                                 </a>
+                                @if ($callPhone)
+                                    <a href="tel:{{ $callPhone }}" class="inline-flex w-full items-center justify-center rounded-full bg-sky-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-950/20 transition hover:bg-sky-500 sm:w-auto">
+                                        Повикај
+                                    </a>
+                                @endif
                                 <a href="{{ route('jobs.index') }}" class="inline-flex w-full items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto">
                                     Сите огласи
                                 </a>
@@ -384,6 +390,11 @@
                         <a href="#apply-form" class="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 sm:mt-7">
                             Аплицирај
                         </a>
+                        @if ($callPhone)
+                            <a href="tel:{{ $callPhone }}" class="mt-3 inline-flex w-full items-center justify-center rounded-2xl bg-sky-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-950/20 transition hover:bg-sky-500">
+                                Повикај
+                            </a>
+                        @endif
 
                         <p class="mt-4 text-center text-xs font-medium text-slate-500">Вашите податоци се безбедни</p>
                     </div>

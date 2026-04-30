@@ -214,6 +214,7 @@ class HomeController extends Controller
         return view('pages.job-show', [
             'job' => $job,
             'applicationEnabled' => $jobListing !== null,
+            'callPhone' => $jobListing?->effectiveCallPhone(),
             'footerStats' => $this->footerStats($this->frontendJobs()),
         ]);
     }

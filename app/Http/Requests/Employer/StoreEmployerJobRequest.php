@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Employer;
 
+use App\Support\MacedonianPhone;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -33,6 +34,8 @@ class StoreEmployerJobRequest extends FormRequest
 
         $this->merge([
             'slug' => $slug,
+            'contact_phone' => MacedonianPhone::sanitize($this->input('contact_phone')),
+            'call_enabled' => $this->boolean('call_enabled'),
             'featured' => $this->boolean('featured'),
             'daily_pay_mode' => $dailyPayMode,
             'daily_pay' => $dailyPay,
@@ -52,6 +55,8 @@ class StoreEmployerJobRequest extends FormRequest
             'daily_pay' => ['nullable', 'numeric', 'min:0'],
             'location' => ['nullable', 'string', 'max:255'],
             'category' => ['nullable', 'string', 'max:255'],
+            'contact_phone' => ['nullable', 'regex:'.MacedonianPhone::VALIDATION_REGEX],
+            'call_enabled' => ['nullable', 'boolean'],
             'featured' => ['nullable', 'boolean'],
             'expires_at' => ['nullable', 'date'],
         ];
@@ -67,8 +72,20 @@ class StoreEmployerJobRequest extends FormRequest
             'daily_pay' => 'дневница / плата',
             'location' => 'локација',
             'category' => 'категорија',
+            'contact_phone' => 'број за повикување',
+            'call_enabled' => 'копче за повикување',
             'expires_at' => 'датум на истекување',
             'description' => 'опис',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'contact_phone.regex' => 'Внесете валиден македонски број за повикување, на пример 070123456, +38970123456 или 021234567.',
         ];
     }
 }
