@@ -149,7 +149,7 @@ class JobListingController extends Controller
             'status',
             'expires_at',
         ])->when(
-            ! $this->hasEngagementTypeColumn(),
+            ! Schema::hasColumn('job_listings', 'engagement_type'),
             fn ($collection) => $collection->except('engagement_type')
         )->all();
     }
@@ -166,22 +166,5 @@ class JobListingController extends Controller
         $data['engagement_type'] = $data['engagement_type'] ?? null;
 
         return $data;
-    }
-
-    private function hasEngagementTypeColumn(): bool
-    {
-        static $hasColumn = null;
-
-        if (is_bool($hasColumn)) {
-            return $hasColumn;
-        }
-
-        try {
-            $hasColumn = Schema::hasColumn('job_listings', 'engagement_type');
-        } catch (\Throwable) {
-            $hasColumn = false;
-        }
-
-        return $hasColumn;
     }
 }
