@@ -20,6 +20,18 @@
             },
         };
     </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-331CW9F4XL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag()
+        {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'G-331CW9F4XL');
+    </script>
 </head>
 <body class="overflow-x-hidden bg-stone-50 font-sans text-slate-900 antialiased">
     @yield('content')

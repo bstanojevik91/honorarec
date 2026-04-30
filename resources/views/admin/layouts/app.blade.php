@@ -19,6 +19,18 @@
             },
         };
     </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-331CW9F4XL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag()
+        {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'G-331CW9F4XL');
+    </script>
 </head>
 <body class="bg-slate-100 font-sans text-slate-900 antialiased">
     <div class="min-h-screen lg:flex">
