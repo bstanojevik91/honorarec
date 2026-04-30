@@ -13,6 +13,7 @@
     <div>
         <label for="phone" class="mb-2 block text-sm font-semibold text-slate-700">Телефон</label>
         <input id="phone" name="phone" type="text" value="{{ old('phone', $company->phone ?? '') }}" required class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
+        <p class="mt-2 text-xs text-slate-500">Овој број автоматски се користи за копчето „Повикај“ на јавната страна на огласот.</p>
     </div>
 
     <div>

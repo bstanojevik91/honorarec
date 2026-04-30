@@ -214,7 +214,7 @@ class HomeController extends Controller
         return view('pages.job-show', [
             'job' => $job,
             'applicationEnabled' => $jobListing !== null,
-            'callPhone' => $jobListing?->effectiveCallPhone(),
+            'callPhone' => $this->normalizeCallPhone($jobListing?->company?->phone),
             'footerStats' => $this->footerStats($this->frontendJobs()),
         ]);
     }
@@ -431,6 +431,31 @@ class HomeController extends Controller
         }
 
         return 'На дневница';
+    }
+
+    private function normalizeCallPhone(null|string $phone): ?string
+    {
+        if ($phone === null) {
+            return null;
+        }
+
+        $phone = trim($phone);
+
+        if ($phone === '') {
+            return null;
+        }
+
+        if (str_starts_with($phone, '+')) {
+            $normalized = '+'.preg_replace('/\D+/', '', substr($phone, 1));
+        } else {
+            $normalized = preg_replace('/\D+/', '', $phone);
+        }
+
+        if (! is_string($normalized) || $normalized === '') {
+            return null;
+        }
+
+        return preg_match('/^(?:\+389\d{8}|0\d{8})$/', $normalized) === 1 ? $normalized : null;
     }
 
     /**

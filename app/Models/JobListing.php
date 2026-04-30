@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Models;
-
-use App\Support\MacedonianPhone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,8 +24,6 @@ class JobListing extends Model
         'daily_pay',
         'location',
         'category',
-        'contact_phone',
-        'call_enabled',
         'featured',
         'status',
         'expires_at',
@@ -37,7 +33,6 @@ class JobListing extends Model
     {
         return [
             'featured' => 'boolean',
-            'call_enabled' => 'boolean',
             'expires_at' => 'date',
             'daily_pay' => 'decimal:2',
         ];
@@ -67,23 +62,5 @@ class JobListing extends Model
     public function applications(): HasMany
     {
         return $this->hasMany(JobApplication::class);
-    }
-
-    public function effectiveCallPhone(): ?string
-    {
-        if (! $this->call_enabled) {
-            return null;
-        }
-
-        $jobPhone = MacedonianPhone::sanitize($this->contact_phone);
-        $companyPhone = MacedonianPhone::sanitize($this->company?->phone);
-
-        foreach ([$jobPhone, $companyPhone] as $phone) {
-            if ($phone !== null && preg_match(MacedonianPhone::VALIDATION_REGEX, $phone) === 1) {
-                return $phone;
-            }
-        }
-
-        return null;
     }
 }

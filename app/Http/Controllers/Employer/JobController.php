@@ -35,8 +35,6 @@ class JobController extends Controller
             'daily_pay',
             'location',
             'category',
-            'contact_phone',
-            'call_enabled',
             'featured',
             'expires_at',
         ])->all();
@@ -74,8 +72,6 @@ class JobController extends Controller
             'daily_pay',
             'location',
             'category',
-            'contact_phone',
-            'call_enabled',
             'featured',
             'expires_at',
         ])->all();
@@ -117,8 +113,6 @@ class JobController extends Controller
         $data['description'] = $data['description'] ?? '';
         $data['location'] = $data['location'] ?? '';
         $data['category'] = $data['category'] ?? '';
-        $data['contact_phone'] = $data['contact_phone'] ?? null;
-        $data['call_enabled'] = (bool) ($data['call_enabled'] ?? false);
 
         return $data;
     }

@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Admin;
 
 use App\Models\JobListing;
-use App\Support\MacedonianPhone;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -39,9 +38,6 @@ class StoreJobListingRequest extends FormRequest
             'slug' => $slug,
             'company_id' => blank($companyId) ? null : $companyId,
             'new_company_name' => $newCompanyName === '' ? null : $newCompanyName,
-            'contact_phone' => MacedonianPhone::sanitize($this->input('contact_phone')),
-            'new_company_phone' => MacedonianPhone::sanitize($this->input('new_company_phone')) ?? $this->input('new_company_phone'),
-            'call_enabled' => $this->boolean('call_enabled'),
             'featured' => $this->boolean('featured'),
             'daily_pay_mode' => $dailyPayMode,
             'daily_pay' => $dailyPay,
@@ -62,8 +58,6 @@ class StoreJobListingRequest extends FormRequest
             'daily_pay' => ['nullable', 'numeric', 'min:0'],
             'location' => ['nullable', 'string', 'max:255'],
             'category' => ['nullable', 'string', 'max:255'],
-            'contact_phone' => ['nullable', 'regex:'.MacedonianPhone::VALIDATION_REGEX],
-            'call_enabled' => ['nullable', 'boolean'],
             'featured' => ['nullable', 'boolean'],
             'status' => ['nullable', Rule::in(array_keys(JobListing::statusOptions()))],
             'expires_at' => ['nullable', 'date'],
@@ -86,7 +80,6 @@ class StoreJobListingRequest extends FormRequest
             'new_company_name.required_without' => 'Внесете нова компанија или изберете постоечка од листата.',
             'new_company_email.email' => 'Внесете валидна е-пошта за новата компанија.',
             'new_company_logo.image' => 'Логото на новата компанија мора да биде слика.',
-            'contact_phone.regex' => 'Внесете валиден македонски број за повикување, на пример 070123456, +38970123456 или 021234567.',
         ];
     }
 
@@ -97,8 +90,6 @@ class StoreJobListingRequest extends FormRequest
     {
         return [
             'company_id' => 'компанија',
-            'contact_phone' => 'број за повикување',
-            'call_enabled' => 'копче за повикување',
             'new_company_name' => 'име на нова компанија',
             'new_company_email' => 'е-пошта на нова компанија',
             'new_company_logo' => 'лого на нова компанија',
