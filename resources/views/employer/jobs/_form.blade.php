@@ -4,7 +4,6 @@
     </div>
 @endif
 
-@php($statusOptions = \App\Models\JobListing::statusOptions())
 @php($dailyPayMode = old('daily_pay_mode', isset($job) ? ($job->daily_pay !== null ? 'amount' : 'agreement') : 'amount'))
 
 <div class="grid gap-6 lg:grid-cols-2">
@@ -40,31 +39,8 @@
     </div>
 
     <div>
-        <label for="contact_phone" class="mb-2 block text-sm font-semibold text-slate-700">Број за повикување</label>
-        <input id="contact_phone" name="contact_phone" type="text" value="{{ old('contact_phone', $job->contact_phone ?? '') }}" placeholder="070123456 или +38970123456" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
-        <p class="mt-2 text-xs text-slate-500">Оставете празно ако сакате да се користи бројот од employer профилот или главниот број на компанијата.</p>
-    </div>
-
-    <div>
-        <label for="status" class="mb-2 block text-sm font-semibold text-slate-700">Статус</label>
-        <select id="status" name="status" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
-            @foreach ($statusOptions as $value => $label)
-                <option value="{{ $value }}" @selected(old('status', $job->status ?? 'active') === $value)>{{ $label }}</option>
-            @endforeach
-        </select>
-    </div>
-
-    <div>
         <label for="expires_at" class="mb-2 block text-sm font-semibold text-slate-700">Датум на истекување</label>
         <input id="expires_at" name="expires_at" type="date" value="{{ old('expires_at', isset($job) && $job->expires_at ? $job->expires_at->format('Y-m-d') : '') }}" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
-    </div>
-
-    <div class="lg:col-span-2">
-        <label class="flex items-center gap-3 text-sm font-semibold text-slate-700">
-            <input type="checkbox" name="call_enabled" value="1" @checked(old('call_enabled', $job->call_enabled ?? false)) class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-100">
-            Прикажи копче „Повикај“ на огласот
-        </label>
-        <p class="mt-2 text-xs text-slate-500">Кога е вклучено, ќе се користи бројот од овој оглас или, ако е празен, бројот од employer профилот или главниот број на компанијата.</p>
     </div>
 
     <div class="lg:col-span-2">
@@ -77,7 +53,7 @@
             <input type="checkbox" name="featured" value="1" @checked(old('featured', $job->featured ?? false)) class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-100">
             Издвоен оглас
         </label>
-        <p class="mt-2 text-xs text-slate-500">Насловот автоматски ќе добие интернет адреса, па нема потреба рачно да внесувате дополнителни технички полиња.</p>
+        <p class="mt-2 text-xs text-slate-500">По зачувување, огласот оди на одобрување од администратор. Насловот автоматски ќе добие интернет адреса, па нема потреба рачно да внесувате дополнителни технички полиња.</p>
     </div>
 </div>
 

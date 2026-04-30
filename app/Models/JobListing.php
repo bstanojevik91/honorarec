@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Support\MacedonianPhone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,9 +11,11 @@ class JobListing extends Model
 {
     use HasFactory;
 
+    public const STATUS_PENDING = 'pending';
     public const STATUS_ACTIVE = 'active';
     public const STATUS_PAUSED = 'paused';
     public const STATUS_FILLED = 'filled';
+    public const STATUS_REJECTED = 'rejected';
 
     protected $fillable = [
         'company_id',
@@ -24,8 +25,6 @@ class JobListing extends Model
         'daily_pay',
         'location',
         'category',
-        'contact_phone',
-        'call_enabled',
         'featured',
         'status',
         'expires_at',
@@ -35,7 +34,6 @@ class JobListing extends Model
     {
         return [
             'featured' => 'boolean',
-            'call_enabled' => 'boolean',
             'expires_at' => 'date',
             'daily_pay' => 'decimal:2',
         ];
@@ -44,9 +42,11 @@ class JobListing extends Model
     public static function statusOptions(): array
     {
         return [
+            self::STATUS_PENDING => 'Чека одобрување',
             self::STATUS_ACTIVE => 'Активен',
             self::STATUS_PAUSED => 'Паузиран',
             self::STATUS_FILLED => 'Пополнет',
+            self::STATUS_REJECTED => 'Одбиен',
         ];
     }
 
@@ -63,31 +63,5 @@ class JobListing extends Model
     public function applications(): HasMany
     {
         return $this->hasMany(JobApplication::class);
-    }
-
-    public function callClicks(): HasMany
-    {
-        return $this->hasMany(JobCallClick::class);
-    }
-
-    public function effectiveCallPhone(): ?string
-    {
-        if (! $this->call_enabled) {
-            return null;
-        }
-
-        $candidates = [
-            $this->contact_phone,
-            $this->company?->call_phone,
-            MacedonianPhone::sanitize($this->company?->phone),
-        ];
-
-        foreach ($candidates as $phone) {
-            if (filled($phone) && preg_match(MacedonianPhone::VALIDATION_REGEX, $phone) === 1) {
-                return $phone;
-            }
-        }
-
-        return null;
     }
 }

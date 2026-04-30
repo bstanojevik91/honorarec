@@ -1,10 +1,11 @@
+@php($statusOptions = \App\Models\JobListing::statusOptions())
+@php($dailyPayMode = old('daily_pay_mode', isset($job) ? ($job->daily_pay !== null ? 'amount' : 'agreement') : 'amount'))
+
 @if ($errors->any())
     <div class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-700">
         {{ $errors->first() }}
     </div>
 @endif
-
-@php($dailyPayMode = old('daily_pay_mode', isset($job) ? ($job->daily_pay !== null ? 'amount' : 'agreement') : 'amount'))
 
 <div class="grid gap-6 lg:grid-cols-2">
     <div>
@@ -56,16 +57,10 @@
     </div>
 
     <div>
-        <label for="contact_phone" class="mb-2 block text-sm font-semibold text-slate-700">Број за повикување</label>
-        <input id="contact_phone" name="contact_phone" type="text" value="{{ old('contact_phone', $job->contact_phone ?? '') }}" placeholder="070123456 или +38970123456" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
-        <p class="mt-2 text-xs text-slate-500">Ако е празно, а копчето е вклучено, ќе се користи бројот за повикување на компанијата или нејзиниот главен телефон.</p>
-    </div>
-
-    <div>
         <label for="status" class="mb-2 block text-sm font-semibold text-slate-700">Статус</label>
         <select id="status" name="status" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
-            @foreach (['active' => 'active', 'paused' => 'paused', 'filled' => 'filled'] as $value => $label)
-                <option value="{{ $value }}" @selected(old('status', $job->status ?? 'active') === $value)>{{ $label }}</option>
+            @foreach ($statusOptions as $value => $label)
+                <option value="{{ $value }}" @selected(old('status', $job->status ?? \App\Models\JobListing::STATUS_ACTIVE) === $value)>{{ $label }}</option>
             @endforeach
         </select>
     </div>
@@ -73,14 +68,6 @@
     <div>
         <label for="expires_at" class="mb-2 block text-sm font-semibold text-slate-700">Датум на истекување</label>
         <input id="expires_at" name="expires_at" type="date" value="{{ old('expires_at', isset($job) && $job->expires_at ? $job->expires_at->format('Y-m-d') : '') }}" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
-    </div>
-
-    <div class="lg:col-span-2">
-        <label class="flex items-center gap-3 text-sm font-semibold text-slate-700">
-            <input type="checkbox" name="call_enabled" value="1" @checked(old('call_enabled', $job->call_enabled ?? false)) class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-100">
-            Прикажи копче „Повикај“ на огласот
-        </label>
-        <p class="mt-2 text-xs text-slate-500">Кога е вклучено, бројот ќе се земе од овој оглас, од профилот на компанијата или од нејзиниот главен телефон.</p>
     </div>
 
     <div class="lg:col-span-2">
@@ -109,11 +96,6 @@
                 <div>
                     <label for="new_company_phone" class="mb-2 block text-sm font-semibold text-slate-700">Телефон</label>
                     <input id="new_company_phone" name="new_company_phone" type="text" value="{{ old('new_company_phone') }}" class="block w-full rounded-2xl border-slate-200 bg-white px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
-                </div>
-
-                <div>
-                    <label for="new_company_call_phone" class="mb-2 block text-sm font-semibold text-slate-700">Број за повикување</label>
-                    <input id="new_company_call_phone" name="new_company_call_phone" type="text" value="{{ old('new_company_call_phone') }}" placeholder="070123456 или +38970123456" class="block w-full rounded-2xl border-slate-200 bg-white px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
                 </div>
 
                 <div>

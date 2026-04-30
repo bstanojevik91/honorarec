@@ -6,11 +6,10 @@ use App\Http\Requests\StoreJobApplicationRequest;
 use App\Models\BlogPost;
 use App\Models\Company;
 use App\Models\JobApplication;
-use App\Models\JobCallClick;
 use App\Models\JobListing;
+use App\Support\DefaultBlogPosts;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
@@ -43,14 +42,24 @@ class HomeController extends Controller
                 'name' => 'Сезонски ангажмани',
                 'count' => '8 огласи',
             ],
+            [
+                'icon' => 'briefcase',
+                'name' => 'Угостителство',
+                'count' => '9 огласи',
+            ],
+            [
+                'icon' => 'building-storefront',
+                'name' => 'Магацин и логистика',
+                'count' => '7 огласи',
+            ],
         ];
 
         $promo = [
-            'title' => 'Пронајди ја твојата работа од соништата',
+            'title' => 'Зошто пребарувањето е полесно со Honorarec.mk',
             'points' => [
-                'Дополнителен приход',
-                'Сезонска работа',
-                'Втора работа',
+                'Брзо филтрирање по клучен збор, локација и категорија',
+                'Проверени огласи што лесно се скенираат и споредуваат',
+                'Јасен пат од пребарување до аплицирање без непотребни чекори',
             ],
             'primary_image' => 'https://images.pexels.com/photos/30411827/pexels-photo-30411827.jpeg?auto=compress&cs=tinysrgb&w=1200',
             'secondary_image' => 'https://images.pexels.com/photos/16647493/pexels-photo-16647493.jpeg?auto=compress&cs=tinysrgb&w=900',
@@ -91,11 +100,11 @@ class HomeController extends Controller
         return view('pages.home', [
             'hero' => $hero,
             'jobs' => $jobs->take(3)->all(),
-            'categories' => $categories,
+            'categories' => collect($categories)->take(4)->all(),
             'searchCategories' => $searchCategories,
             'promo' => $promo,
             'testimonials' => $testimonials,
-            'posts' => $posts,
+            'posts' => collect($posts)->take(2)->all(),
             'footerStats' => $this->footerStats($jobs),
         ]);
     }
@@ -126,7 +135,7 @@ class HomeController extends Controller
             [
                 'question' => 'Какви категории на работа можам да најдам?',
                 'answer' => 'Може да најдете промоции, теренска работа, администрација, магацин, угостителство, сезонски ангажмани и многу други категории.',
-            ],
+            ]
         ];
 
         return view('pages.faq', [
@@ -205,7 +214,6 @@ class HomeController extends Controller
         return view('pages.job-show', [
             'job' => $job,
             'applicationEnabled' => $jobListing !== null,
-            'callPhone' => $jobListing?->effectiveCallPhone(),
             'footerStats' => $this->footerStats($this->frontendJobs()),
         ]);
     }
@@ -270,36 +278,6 @@ class HomeController extends Controller
             ->withFragment('apply-form');
     }
 
-    public function trackCallClick(string $slug): Response
-    {
-        abort_unless(
-            Schema::hasTable('job_listings') &&
-            Schema::hasTable('companies') &&
-            Schema::hasTable('job_call_clicks'),
-            404
-        );
-
-        $jobListing = JobListing::query()
-            ->with('company')
-            ->where('slug', $slug)
-            ->firstOrFail();
-
-        $phone = $jobListing->effectiveCallPhone();
-
-        if ($phone === null) {
-            return response()->noContent();
-        }
-
-        $jobListing->callClicks()->create([
-            'phone_dialed' => $phone,
-            'ip_address' => request()->ip(),
-            'user_agent' => (string) request()->userAgent(),
-            'referer_url' => request()->headers->get('referer'),
-        ]);
-
-        return response()->noContent();
-    }
-
     /**
      * @return \Illuminate\Support\Collection<int, array<string, mixed>>
      */
@@ -318,9 +296,7 @@ class HomeController extends Controller
                 ->map(function (JobListing $job): array {
                     return [
                         'slug' => $job->slug,
-                        'logo' => $job->company?->logo_path
-                            ? asset('storage/'.$job->company->logo_path)
-                            : 'https://placehold.co/96x96/eff6ff/166534?text='.urlencode(mb_substr($job->company?->name ?? 'HR', 0, 2)),
+                        'logo' => $this->resolveCompanyLogoUrl($job->company),
                         'title' => $job->title,
                         'badge' => $job->featured ? 'Издвоено' : match ($job->status) {
                             'paused' => 'Паузирано',
@@ -332,7 +308,6 @@ class HomeController extends Controller
                         'location' => $job->location,
                         'description' => $job->description,
                         'daily_pay' => $job->daily_pay,
-                        'call_phone' => $job->effectiveCallPhone(),
                         'engagement_type' => $this->inferEngagementType($job),
                         'tags' => $this->inferTags($job),
                     ];
@@ -373,9 +348,8 @@ class HomeController extends Controller
             'category' => $post->category ?: 'Блог',
             'reading_time' => $this->estimateReadingTime($post->content),
             'published_at' => ($post->published_at ?? $post->created_at)?->format('d.m.Y'),
-            'image' => $post->featured_image
-                ? asset('storage/' . $post->featured_image)
-                : 'https://images.pexels.com/photos/4481260/pexels-photo-4481260.jpeg?auto=compress&cs=tinysrgb&w=1400',
+            'image' => $post->featuredImageUrl()
+                ?: 'https://images.pexels.com/photos/4481260/pexels-photo-4481260.jpeg?auto=compress&cs=tinysrgb&w=1400',
             'intro' => $post->excerpt,
             'content' => $post->content,
             'author' => 'Тимот на Honorarec.mk',
@@ -388,98 +362,7 @@ class HomeController extends Controller
      */
     private function fallbackBlogPosts(): array
     {
-        return [
-            [
-                'slug' => 'kako-pobrzo-da-najdes-rabota-na-dnevnica',
-                'title' => 'Како побрзо да најдеш работа на дневница',
-                'excerpt' => 'Неколку практични совети како да го средиш профилот и да аплицираш попаметно за краткорочни ангажмани.',
-                'meta_description' => 'Практични совети како побрзо да најдеш работа на дневница, како да аплицираш и што работодавачите најмногу забележуваат.',
-                'category' => 'Совети за кандидати',
-                'reading_time' => '4 минути читање',
-                'published_at' => '01 април 2026',
-                'image' => 'https://images.pexels.com/photos/16647493/pexels-photo-16647493.jpeg?auto=compress&cs=tinysrgb&w=1400',
-                'intro' => 'Брзата работа на дневница најчесто ја добиваат оние што имаат јасна порака, точен телефон и кратка, но уверлива апликација.',
-                'sections' => [
-                    [
-                        'heading' => 'Подготви кратко, но јасно претставување',
-                        'content' => 'Кога аплицираш за краткорочен ангажман, работодавачот сака веднаш да разбере кој си, дали си достапен и дали можеш брзо да започнеш. Наместо долги објаснувања, користи неколку директни реченици.',
-                        'points' => [
-                            'Наведи кога можеш да започнеш.',
-                            'Остави точен и активен телефонски број.',
-                            'Нагласи ако веќе имаш слично искуство.',
-                        ],
-                    ],
-                    [
-                        'heading' => 'Следи огласи редовно',
-                        'content' => 'Огласите за дневница често се затвораат брзо. Затоа е важно да ја проверуваш платформата редовно и да аплицираш веднаш штом ќе видиш оглас што ти одговара.',
-                    ],
-                    [
-                        'heading' => 'Телефонот нека ти биде достапен',
-                        'content' => 'Голем дел од компаниите прво контактираат по телефон. Ако бројот не е точен или не одговараш навреме, шансата лесно оди кај друг кандидат.',
-                    ],
-                ],
-            ],
-            [
-                'slug' => 'koi-sezonski-raboti-se-najbarani-vo-momentov',
-                'title' => 'Кои сезонски работи се најбарани во моментов',
-                'excerpt' => 'Погледни ги најчестите категории на работа и што работодавците најмногу бараат од кандидатите.',
-                'meta_description' => 'Преглед на најбараните сезонски работи во Македонија и категориите во кои компаниите најчесто бараат кандидати.',
-                'category' => 'Пазар на труд',
-                'reading_time' => '3 минути читање',
-                'published_at' => '30 март 2026',
-                'image' => 'https://images.pexels.com/photos/4481260/pexels-photo-4481260.jpeg?auto=compress&cs=tinysrgb&w=1400',
-                'intro' => 'Сезонските ангажмани се меѓу најбараните огласи, особено во логистика, продажба, угостителство и промоции.',
-                'sections' => [
-                    [
-                        'heading' => 'Магацин и логистика',
-                        'content' => 'Во периоди на зголемена испорака и сезонски набавки, компаниите најчесто бараат магационери, сортирачи и помошни работници за товар и истовар.',
-                    ],
-                    [
-                        'heading' => 'Угостителство и туризам',
-                        'content' => 'Во туристичките места најчесто се отвораат позиции за помошен персонал, келнери, шанкери и сезонски работници во хотели и ресторани.',
-                    ],
-                    [
-                        'heading' => 'Промоции и продажба',
-                        'content' => 'Промотери, демонстратори и лица за теренска продажба се бараат кога брендови имаат активни кампањи и настани.',
-                        'points' => [
-                            'Комуникативност и директен контакт со луѓе.',
-                            'Подготвеност за работа на терен или настани.',
-                            'Флексибилност за викенд или попладневни смени.',
-                        ],
-                    ],
-                ],
-            ],
-            [
-                'slug' => 'kako-da-odberes-vtora-rabota-sto-ti-odgovara',
-                'title' => 'Како да одбереш втора работа што ти одговара',
-                'excerpt' => 'Втората работа треба да биде флексибилна и одржлива. Овој водич ќе ти помогне да процениш што ти одговара.',
-                'meta_description' => 'Совети како да избереш втора работа што навистина одговара на твоето време, распоред и финансиски цели.',
-                'category' => 'Кариера',
-                'reading_time' => '5 минути читање',
-                'published_at' => '28 март 2026',
-                'image' => 'https://images.pexels.com/photos/34029802/pexels-photo-34029802.jpeg?auto=compress&cs=tinysrgb&w=1400',
-                'intro' => 'Добрата втора работа не е само дополнителен приход, туку и ангажман што можеш реално да го вклопиш во секојдневието без да се преоптовариш.',
-                'sections' => [
-                    [
-                        'heading' => 'Провери колку време навистина имаш',
-                        'content' => 'Најчестата грешка е да се прифати ангажман што изгледа добро на хартија, но не е реален во однос на распоредот. Прво процени ги деновите, часовите и патувањето.',
-                    ],
-                    [
-                        'heading' => 'Избери тип на ангажман што ти одговара',
-                        'content' => 'Ако ти треба флексибилност, разгледај викенд или дневни ангажмани. Ако бараш постабилен дополнителен приход, барај подолгорочни и повторливи позиции.',
-                        'points' => [
-                            'За повеќе слобода избери викенд или дневни задачи.',
-                            'За стабилност барај повторливи ангажмани.',
-                            'Секогаш спореди ја заработката со времето што го вложуваш.',
-                        ],
-                    ],
-                    [
-                        'heading' => 'Гледај ја комуникацијата со работодавачот',
-                        'content' => 'Јасна комуникација, точни услови и навремен одговор често кажуваат многу за тоа како ќе изгледа целата соработка.',
-                    ],
-                ],
-            ],
-        ];
+        return DefaultBlogPosts::frontend();
     }
 
     private function estimateReadingTime(string $content): string
@@ -728,5 +611,30 @@ class HomeController extends Controller
             ['value' => $jobs->count(), 'label' => 'Огласи за работа'],
             ['value' => $companiesCount, 'label' => 'Компании'],
         ];
+    }
+
+    private function resolveCompanyLogoUrl(?Company $company): string
+    {
+        $placeholder = 'https://placehold.co/96x96/eff6ff/166534?text=' . urlencode(mb_substr($company?->name ?? 'HR', 0, 2));
+
+        if ($company === null || blank($company->logo_path)) {
+            return $placeholder;
+        }
+
+        $rawPath = ltrim(trim((string) $company->logo_path), '/');
+
+        $candidates = collect([
+            str_starts_with($rawPath, 'storage/') ? $rawPath : 'storage/' . $rawPath,
+            str_starts_with($rawPath, 'companies/') ? 'storage/companies/logos/' . basename($rawPath) : null,
+            str_starts_with($rawPath, 'companies/logos/') ? 'storage/companies/' . basename($rawPath) : null,
+        ])->filter()->unique()->values();
+
+        foreach ($candidates as $publicPath) {
+            if (file_exists(public_path($publicPath))) {
+                return asset($publicPath);
+            }
+        }
+
+        return $placeholder;
     }
 }
