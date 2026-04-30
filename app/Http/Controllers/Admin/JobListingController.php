@@ -9,7 +9,6 @@ use App\Models\Company;
 use App\Models\JobListing;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class JobListingController extends Controller
@@ -148,10 +147,7 @@ class JobListingController extends Controller
             'featured',
             'status',
             'expires_at',
-        ])->when(
-            ! Schema::hasColumn('job_listings', 'engagement_type'),
-            fn ($collection) => $collection->except('engagement_type')
-        )->all();
+        ])->all();
     }
 
     /**
