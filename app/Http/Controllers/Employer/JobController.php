@@ -8,6 +8,7 @@ use App\Http\Requests\Employer\UpdateEmployerJobRequest;
 use App\Models\JobListing;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class JobController extends Controller
@@ -35,9 +36,13 @@ class JobController extends Controller
             'daily_pay',
             'location',
             'category',
+            'engagement_type',
             'featured',
             'expires_at',
-        ])->all();
+        ])->when(
+            ! Schema::hasColumn('job_listings', 'engagement_type'),
+            fn ($collection) => $collection->except('engagement_type')
+        )->all();
 
         $data['company_id'] = request()->user()->company_id;
         $data['featured'] = $request->boolean('featured');
@@ -72,9 +77,13 @@ class JobController extends Controller
             'daily_pay',
             'location',
             'category',
+            'engagement_type',
             'featured',
             'expires_at',
-        ])->all();
+        ])->when(
+            ! Schema::hasColumn('job_listings', 'engagement_type'),
+            fn ($collection) => $collection->except('engagement_type')
+        )->all();
 
         $data['featured'] = $request->boolean('featured');
         $data['status'] = JobListing::STATUS_PENDING;
@@ -113,6 +122,7 @@ class JobController extends Controller
         $data['description'] = $data['description'] ?? '';
         $data['location'] = $data['location'] ?? '';
         $data['category'] = $data['category'] ?? '';
+        $data['engagement_type'] = $data['engagement_type'] ?? null;
 
         return $data;
     }

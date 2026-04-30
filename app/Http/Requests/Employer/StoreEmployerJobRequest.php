@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Requests\Employer;
+
+use App\Models\JobListing;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -51,6 +53,7 @@ class StoreEmployerJobRequest extends FormRequest
             'daily_pay' => ['nullable', 'numeric', 'min:0'],
             'location' => ['nullable', 'string', 'max:255'],
             'category' => ['nullable', 'string', 'max:255'],
+            'engagement_type' => ['nullable', Rule::in(JobListing::engagementTypeOptions())],
             'featured' => ['nullable', 'boolean'],
             'expires_at' => ['nullable', 'date'],
         ];
@@ -66,6 +69,7 @@ class StoreEmployerJobRequest extends FormRequest
             'daily_pay' => 'дневница / плата',
             'location' => 'локација',
             'category' => 'категорија',
+            'engagement_type' => 'вид на работен ангажман',
             'expires_at' => 'датум на истекување',
             'description' => 'опис',
         ];

@@ -1,4 +1,5 @@
 @php($statusOptions = \App\Models\JobListing::statusOptions())
+@php($engagementTypeOptions = \App\Models\JobListing::engagementTypeOptions())
 @php($dailyPayMode = old('daily_pay_mode', isset($job) ? ($job->daily_pay !== null ? 'amount' : 'agreement') : 'amount'))
 
 @if ($errors->any())
@@ -54,6 +55,16 @@
     <div>
         <label for="category" class="mb-2 block text-sm font-semibold text-slate-700">Категорија</label>
         <input id="category" name="category" type="text" value="{{ old('category', $job->category ?? '') }}" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
+    </div>
+
+    <div>
+        <label for="engagement_type" class="mb-2 block text-sm font-semibold text-slate-700">Вид на работен ангажман</label>
+        <select id="engagement_type" name="engagement_type" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
+            <option value="">Избери ангажман</option>
+            @foreach ($engagementTypeOptions as $engagementType)
+                <option value="{{ $engagementType }}" @selected(old('engagement_type', $job->engagement_type ?? '') === $engagementType)>{{ $engagementType }}</option>
+            @endforeach
+        </select>
     </div>
 
     <div>

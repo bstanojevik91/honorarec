@@ -58,6 +58,7 @@ class StoreJobListingRequest extends FormRequest
             'daily_pay' => ['nullable', 'numeric', 'min:0'],
             'location' => ['nullable', 'string', 'max:255'],
             'category' => ['nullable', 'string', 'max:255'],
+            'engagement_type' => ['nullable', Rule::in(JobListing::engagementTypeOptions())],
             'featured' => ['nullable', 'boolean'],
             'status' => ['nullable', Rule::in(array_keys(JobListing::statusOptions()))],
             'expires_at' => ['nullable', 'date'],
@@ -93,6 +94,7 @@ class StoreJobListingRequest extends FormRequest
             'new_company_name' => 'име на нова компанија',
             'new_company_email' => 'е-пошта на нова компанија',
             'new_company_logo' => 'лого на нова компанија',
+            'engagement_type' => 'вид на работен ангажман',
         ];
     }
 }

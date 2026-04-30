@@ -23,6 +23,7 @@ class HomeController extends Controller
         'За викенди',
         'Полно работно време',
         'Сезонска работа',
+        'Скратено работно време',
     ];
 
     public function index(): View
@@ -311,7 +312,7 @@ class HomeController extends Controller
                         'location' => $job->location,
                         'description' => $job->description,
                         'daily_pay' => $job->daily_pay,
-                        'engagement_type' => $this->inferEngagementType($job),
+                        'engagement_type' => $this->resolveEngagementType($job),
                         'tags' => $this->inferTags($job),
                     ];
                 });
@@ -425,6 +426,13 @@ class HomeController extends Controller
         }
 
         if (
+            str_contains($haystack, 'скратено работно време') ||
+            str_contains($haystack, 'part time')
+        ) {
+            return 'Скратено работно време';
+        }
+
+        if (
             str_contains($haystack, 'полно работно време') ||
             str_contains($haystack, 'full time') ||
             in_array(mb_strtolower((string) $job->category), ['администрација', 'продажба'], true)
@@ -433,6 +441,17 @@ class HomeController extends Controller
         }
 
         return 'На дневница';
+    }
+
+    private function resolveEngagementType(JobListing $job): string
+    {
+        $storedValue = trim((string) ($job->engagement_type ?? ''));
+
+        if (in_array($storedValue, self::ENGAGEMENT_TYPES, true)) {
+            return $storedValue;
+        }
+
+        return $this->inferEngagementType($job);
     }
 
     private function normalizeCallPhone(null|string $phone): ?string
