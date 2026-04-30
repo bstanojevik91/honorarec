@@ -12,13 +12,27 @@
 
     <div>
         <label for="phone" class="mb-2 block text-sm font-semibold text-slate-700">Телефон</label>
-        <input id="phone" name="phone" type="text" value="{{ old('phone', $company->phone ?? '') }}" required class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
+        <input id="phone" name="phone" type="text" value="{{ old('phone', $companyPhonePrimary ?? $company->phone ?? '') }}" required class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
         <p class="mt-2 text-xs text-slate-500">Овој број автоматски се користи за копчето „Повикај“ на јавната страна на огласот.</p>
     </div>
 
     <div>
         <label for="email" class="mb-2 block text-sm font-semibold text-slate-700">Е-пошта</label>
         <input id="email" name="email" type="email" value="{{ old('email', $company->email ?? '') }}" required class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
+    </div>
+
+    <div class="lg:col-span-2">
+        <label for="phone_list" class="mb-2 block text-sm font-semibold text-slate-700">Листа од сите броеви (опционално)</label>
+        <textarea id="phone_list" name="phone_list" rows="4" placeholder="070123456&#10;+38970111222&#10;075333444" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">{{ old('phone_list', $companyPhoneList ?? '') }}</textarea>
+        <p class="mt-2 text-xs text-slate-500">Внесете по еден број во нов ред или одделете со запирка. Првиот број од „Телефон“ ќе се користи за копчето „Повикај“.</p>
+    </div>
+
+    <div class="lg:col-span-2">
+        <label class="inline-flex items-center gap-3 text-sm font-semibold text-slate-700">
+            <input type="checkbox" name="publish_call_phone" value="1" @checked(old('publish_call_phone', $companyPublishCallPhone ?? true)) class="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-100">
+            Објави го бројот за копчето „Повикај“
+        </label>
+        <p class="mt-2 text-xs text-slate-500">Ако е исклучено, копчето „Повикај“ нема да се прикажува на јавниот оглас.</p>
     </div>
 
     <div class="lg:col-span-2">

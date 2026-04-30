@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Schema;
 
 class HomeController extends Controller
 {
+    private const NO_PUBLIC_CALL_TOKEN = '__NO_PUBLIC_CALL__';
+
     private const ENGAGEMENT_TYPES = [
         'На дневница',
         'За викенди',
@@ -439,23 +441,31 @@ class HomeController extends Controller
             return null;
         }
 
-        $phone = trim($phone);
+        $candidates = collect(preg_split('/(?:\r\n|\r|\n|,|;|\|)+/', $phone) ?: [])
+            ->map(fn (string $candidate): string => trim($candidate))
+            ->filter();
 
-        if ($phone === '') {
-            return null;
+        foreach ($candidates as $candidate) {
+            if (mb_strtoupper($candidate) === self::NO_PUBLIC_CALL_TOKEN) {
+                return null;
+            }
+
+            if (str_starts_with($candidate, '+')) {
+                $normalized = '+'.preg_replace('/\D+/', '', substr($candidate, 1));
+            } else {
+                $normalized = preg_replace('/\D+/', '', $candidate);
+            }
+
+            if (! is_string($normalized) || $normalized === '') {
+                continue;
+            }
+
+            if (preg_match('/^(?:\+389\d{8}|0\d{8})$/', $normalized) === 1) {
+                return $normalized;
+            }
         }
 
-        if (str_starts_with($phone, '+')) {
-            $normalized = '+'.preg_replace('/\D+/', '', substr($phone, 1));
-        } else {
-            $normalized = preg_replace('/\D+/', '', $phone);
-        }
-
-        if (! is_string($normalized) || $normalized === '') {
-            return null;
-        }
-
-        return preg_match('/^(?:\+389\d{8}|0\d{8})$/', $normalized) === 1 ? $normalized : null;
+        return null;
     }
 
     /**

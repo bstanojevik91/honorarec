@@ -23,12 +23,35 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse ($companies as $company)
+                        @php
+                            $noPublicCallToken = '__NO_PUBLIC_CALL__';
+                            $companyPhones = collect(preg_split('/(?:\r\n|\r|\n|,|;|\|)+/', (string) $company->phone) ?: [])
+                                ->map(fn (string $phone): string => trim($phone))
+                                ->filter()
+                                ->reject(fn (string $phone): bool => mb_strtoupper($phone) === $noPublicCallToken)
+                                ->values();
+                            $isCallPublic = ! collect(preg_split('/(?:\r\n|\r|\n|,|;|\|)+/', (string) $company->phone) ?: [])
+                                ->map(fn (string $phone): string => mb_strtoupper(trim($phone)))
+                                ->contains($noPublicCallToken);
+                            $primaryPhone = $companyPhones->first() ?? '';
+                            $additionalPhones = $companyPhones->slice(1)->all();
+                        @endphp
                         <tr>
                             <td class="px-6 py-4">
                                 <div class="font-semibold text-slate-900">{{ $company->name }}</div>
                                 <div class="mt-1 max-w-md text-slate-500">{{ \Illuminate\Support\Str::limit($company->description, 90) }}</div>
                             </td>
-                            <td class="px-6 py-4 text-slate-700">{{ $company->phone }}</td>
+                            <td class="px-6 py-4 text-slate-700">
+                                <div class="font-medium">{{ $primaryPhone }}</div>
+                                @if ($additionalPhones !== [])
+                                    <div class="mt-1 text-xs text-slate-500">{{ implode(', ', $additionalPhones) }}</div>
+                                @endif
+                                <div class="mt-2">
+                                    <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $isCallPublic ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-700' }}">
+                                        {{ $isCallPublic ? 'Повикај: вклучено' : 'Повикај: исклучено' }}
+                                    </span>
+                                </div>
+                            </td>
                             <td class="px-6 py-4 text-slate-700">{{ $company->email }}</td>
                             <td class="px-6 py-4">
                                 <div class="flex justify-end gap-3">

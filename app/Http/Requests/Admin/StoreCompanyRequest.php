@@ -19,6 +19,8 @@ class StoreCompanyRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:255'],
+            'phone_list' => ['nullable', 'string', 'max:500'],
+            'publish_call_phone' => ['nullable', 'boolean'],
             'email' => ['required', 'email', 'max:255'],
             'logo' => ['nullable', 'image', 'max:2048'],
             'description' => ['nullable', 'string'],

@@ -15,6 +15,8 @@ use Illuminate\View\View;
 
 class CompanyController extends Controller
 {
+    private const NO_PUBLIC_CALL_TOKEN = '__NO_PUBLIC_CALL__';
+
     public function index(): View
     {
         return view('admin.companies.index', [
@@ -24,18 +26,29 @@ class CompanyController extends Controller
 
     public function create(): View
     {
-        return view('admin.companies.create');
+        return view('admin.companies.create', [
+            'companyPhonePrimary' => '',
+            'companyPhoneList' => '',
+            'companyPublishCallPhone' => true,
+        ]);
     }
 
     public function store(StoreCompanyRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        $data['phone'] = $this->mergeCompanyPhones(
+            (string) ($data['phone'] ?? ''),
+            isset($data['phone_list']) ? (string) $data['phone_list'] : null,
+            isset($data['publish_call_phone']) ? (bool) $data['publish_call_phone'] : false
+        );
 
         if ($request->hasFile('logo')) {
             $data['logo_path'] = $this->uploadLogo($request);
         }
 
         unset($data['logo']);
+        unset($data['phone_list']);
+        unset($data['publish_call_phone']);
 
         Company::create($data);
 
@@ -46,14 +59,24 @@ class CompanyController extends Controller
 
     public function edit(Company $company): View
     {
+        $phoneData = $this->splitCompanyPhones($company->phone);
+
         return view('admin.companies.edit', [
             'company' => $company,
+            'companyPhonePrimary' => $phoneData['primary'],
+            'companyPhoneList' => $phoneData['list'],
+            'companyPublishCallPhone' => $phoneData['publish'],
         ]);
     }
 
     public function update(UpdateCompanyRequest $request, Company $company): RedirectResponse
     {
         $data = $request->validated();
+        $data['phone'] = $this->mergeCompanyPhones(
+            (string) ($data['phone'] ?? ''),
+            isset($data['phone_list']) ? (string) $data['phone_list'] : null,
+            isset($data['publish_call_phone']) ? (bool) $data['publish_call_phone'] : false
+        );
 
         if ($request->hasFile('logo')) {
             $this->deleteLogoFile($company->logo_path);
@@ -65,6 +88,8 @@ class CompanyController extends Controller
 
         unset($data['logo']);
         unset($data['remove_logo']);
+        unset($data['phone_list']);
+        unset($data['publish_call_phone']);
 
         $company->update($data);
 
@@ -172,5 +197,89 @@ class CompanyController extends Controller
                 unlink($fullPath);
             }
         }
+    }
+
+    /**
+     * @return array{primary:string,list:string,publish:bool}
+     */
+    private function splitCompanyPhones(?string $storedPhone): array
+    {
+        $parsed = $this->parseStoredCompanyPhones($storedPhone);
+        $phones = $parsed['phones'];
+
+        if ($phones === []) {
+            return [
+                'primary' => '',
+                'list' => '',
+                'publish' => $parsed['publish'],
+            ];
+        }
+
+        return [
+            'primary' => $phones[0],
+            'list' => implode(PHP_EOL, array_slice($phones, 1)),
+            'publish' => $parsed['publish'],
+        ];
+    }
+
+    private function mergeCompanyPhones(string $primaryPhone, ?string $extraPhones, bool $publishCallPhone): string
+    {
+        $primaryCandidates = $this->tokenizePhones($primaryPhone);
+        $primary = $primaryCandidates[0] ?? '';
+        $extra = $this->tokenizePhones($extraPhones);
+        $all = $primary !== '' ? array_merge([$primary], $extra) : $extra;
+        $all = array_values(array_unique($all));
+
+        if (! $publishCallPhone) {
+            $all[] = self::NO_PUBLIC_CALL_TOKEN;
+        }
+
+        return implode(' | ', $all);
+    }
+
+    /**
+     * @return array{phones: array<int, string>, publish: bool}
+     */
+    private function parseStoredCompanyPhones(?string $storedPhone): array
+    {
+        $publish = true;
+        $phones = [];
+
+        foreach ($this->tokenizePhones($storedPhone) as $token) {
+            if ($this->isNoPublicCallToken($token)) {
+                $publish = false;
+                continue;
+            }
+
+            $phones[] = $token;
+        }
+
+        return [
+            'phones' => array_values(array_unique($phones)),
+            'publish' => $publish,
+        ];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function tokenizePhones(?string $raw): array
+    {
+        if ($raw === null) {
+            return [];
+        }
+
+        $parts = preg_split('/(?:\r\n|\r|\n|,|;|\|)+/', $raw) ?: [];
+
+        return collect($parts)
+            ->map(fn (string $phone): string => trim($phone))
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    private function isNoPublicCallToken(string $token): bool
+    {
+        return mb_strtoupper(trim($token)) === self::NO_PUBLIC_CALL_TOKEN;
     }
 }
