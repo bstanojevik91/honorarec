@@ -20,10 +20,20 @@ class HomeController extends Controller
 
     private const ENGAGEMENT_TYPES = [
         'На дневница',
-        'За викенди',
-        'Полно работно време',
+        'Part-time',
+        'Викенд работа',
         'Сезонска работа',
-        'Скратено работно време',
+        'Полно работно време',
+    ];
+
+    private const LEGACY_ENGAGEMENT_TYPE_MAP = [
+        'за викенди' => 'Викенд работа',
+        'викенд' => 'Викенд работа',
+        'скратено работно време' => 'Part-time',
+        'part time' => 'Part-time',
+        'part-time' => 'Part-time',
+        'full time' => 'Полно работно време',
+        'full-time' => 'Полно работно време',
     ];
 
     public function index(): View
@@ -422,14 +432,15 @@ class HomeController extends Controller
         }
 
         if (str_contains($haystack, 'викенд')) {
-            return 'За викенди';
+            return 'Викенд работа';
         }
 
         if (
             str_contains($haystack, 'скратено работно време') ||
-            str_contains($haystack, 'part time')
+            str_contains($haystack, 'part time') ||
+            str_contains($haystack, 'part-time')
         ) {
-            return 'Скратено работно време';
+            return 'Part-time';
         }
 
         if (
@@ -449,6 +460,12 @@ class HomeController extends Controller
 
         if (in_array($storedValue, self::ENGAGEMENT_TYPES, true)) {
             return $storedValue;
+        }
+
+        $normalizedStoredValue = mb_strtolower($storedValue);
+
+        if (array_key_exists($normalizedStoredValue, self::LEGACY_ENGAGEMENT_TYPE_MAP)) {
+            return self::LEGACY_ENGAGEMENT_TYPE_MAP[$normalizedStoredValue];
         }
 
         return $this->inferEngagementType($job);
@@ -561,7 +578,7 @@ class HomeController extends Controller
                 'company' => 'Маркет Плус',
                 'category' => 'Промоции',
                 'location' => 'Скопје',
-                'engagement_type' => 'За викенди',
+                'engagement_type' => 'Викенд работа',
                 'tags' => ['Истакнато', 'Итно', 'Студенти', 'Флексибилно'],
             ],
             [
@@ -594,7 +611,7 @@ class HomeController extends Controller
                 'company' => 'Гастро Лајн',
                 'category' => 'Угостителство',
                 'location' => 'Охрид',
-                'engagement_type' => 'За викенди',
+                'engagement_type' => 'Викенд работа',
                 'tags' => ['Викенд', 'Без искуство', 'Брз почеток'],
             ],
             [

@@ -16,10 +16,10 @@ class JobListing extends Model
     public const STATUS_FILLED = 'filled';
     public const STATUS_REJECTED = 'rejected';
     public const ENGAGEMENT_DAILY = 'На дневница';
-    public const ENGAGEMENT_WEEKENDS = 'За викенди';
-    public const ENGAGEMENT_FULL_TIME = 'Полно работно време';
+    public const ENGAGEMENT_PART_TIME = 'Part-time';
+    public const ENGAGEMENT_WEEKENDS = 'Викенд работа';
     public const ENGAGEMENT_SEASONAL = 'Сезонска работа';
-    public const ENGAGEMENT_PART_TIME = 'Скратено работно време';
+    public const ENGAGEMENT_FULL_TIME = 'Полно работно време';
 
     protected $fillable = [
         'company_id',
@@ -59,10 +59,10 @@ class JobListing extends Model
     {
         return [
             self::ENGAGEMENT_DAILY,
-            self::ENGAGEMENT_WEEKENDS,
-            self::ENGAGEMENT_FULL_TIME,
             self::ENGAGEMENT_PART_TIME,
+            self::ENGAGEMENT_WEEKENDS,
             self::ENGAGEMENT_SEASONAL,
+            self::ENGAGEMENT_FULL_TIME,
         ];
     }
 

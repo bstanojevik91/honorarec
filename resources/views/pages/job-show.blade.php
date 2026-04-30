@@ -67,7 +67,7 @@
                 'company' => 'Маркет Плус',
                 'category' => 'Промоции',
                 'location' => 'Скопје',
-                'engagement_type' => 'За викенди',
+                'engagement_type' => 'Викенд работа',
                 'tags' => ['Истакнато', 'Викенд', 'Флексибилно'],
             ],
             [
@@ -100,7 +100,7 @@
                 'company' => 'Гастро Лајн',
                 'category' => 'Угостителство',
                 'location' => 'Охрид',
-                'engagement_type' => 'За викенди',
+                'engagement_type' => 'Викенд работа',
                 'tags' => ['Викенд', 'Без искуство', 'Брз почеток'],
             ],
         ])->reject(fn (array $relatedJob): bool => $relatedJob['slug'] === $job['slug'])->take(3)->values();
