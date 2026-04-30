@@ -78,28 +78,6 @@ class JobListingController extends Controller
             ->with('status', 'Огласот е избришан.');
     }
 
-    public function approve(JobListing $job): RedirectResponse
-    {
-        $job->update([
-            'status' => JobListing::STATUS_ACTIVE,
-        ]);
-
-        return redirect()
-            ->route('admin.jobs.index')
-            ->with('status', 'Огласот е одобрен и објавен.');
-    }
-
-    public function reject(JobListing $job): RedirectResponse
-    {
-        $job->update([
-            'status' => JobListing::STATUS_REJECTED,
-        ]);
-
-        return redirect()
-            ->route('admin.jobs.index')
-            ->with('status', 'Огласот е одбиен.');
-    }
-
     /**
      * @param array<string, mixed> $data
      */
@@ -112,6 +90,7 @@ class JobListingController extends Controller
         $companyData = [
             'name' => $data['new_company_name'],
             'phone' => $data['new_company_phone'] ?? '',
+            'call_phone' => $data['new_company_call_phone'] ?? null,
             'email' => $data['new_company_email'] ?? null,
             'description' => $data['new_company_description'] ?? null,
         ];
@@ -143,6 +122,8 @@ class JobListingController extends Controller
             'daily_pay',
             'location',
             'category',
+            'contact_phone',
+            'call_enabled',
             'featured',
             'status',
             'expires_at',
@@ -158,6 +139,8 @@ class JobListingController extends Controller
         $data['description'] = $data['description'] ?? '';
         $data['location'] = $data['location'] ?? '';
         $data['category'] = $data['category'] ?? '';
+        $data['contact_phone'] = $data['contact_phone'] ?? null;
+        $data['call_enabled'] = (bool) ($data['call_enabled'] ?? false);
 
         return $data;
     }

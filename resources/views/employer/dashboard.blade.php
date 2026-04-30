@@ -4,24 +4,6 @@
 ])
 
 @section('content')
-    <div class="mb-6 rounded-[1.6rem] bg-white p-6 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.2)]">
-        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Company Info</p>
-        <div class="mt-4 grid gap-4 sm:grid-cols-3">
-            <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Име</p>
-                <p class="mt-2 text-sm font-semibold text-slate-900">{{ $company?->name ?? auth()->user()?->name }}</p>
-            </div>
-            <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Е-пошта</p>
-                <p class="mt-2 text-sm font-semibold text-slate-900">{{ $company?->email ?? 'Нема внесено' }}</p>
-            </div>
-            <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Телефон</p>
-                <p class="mt-2 text-sm font-semibold text-slate-900">{{ $company?->phone ?? 'Нема внесено' }}</p>
-            </div>
-        </div>
-    </div>
-
     <div class="grid gap-6 md:grid-cols-2">
         <div class="rounded-[1.6rem] bg-white p-6 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.2)]">
             <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Мои огласи</p>
@@ -33,40 +15,15 @@
         </div>
     </div>
 
-    <div class="mt-8 rounded-[1.6rem] bg-white p-6 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.2)]">
-        <div class="flex items-center justify-between gap-4">
+    <div class="mt-8 rounded-[1.6rem] border border-emerald-100 bg-emerald-50/70 p-6 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.16)]">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <h2 class="text-xl font-bold text-slate-900">Мои огласи</h2>
-                <p class="mt-1 text-sm text-slate-500">Преглед на најновите огласи за вашата компанија.</p>
+                <h2 class="text-lg font-bold text-slate-900">Број за копче „Повикај“</h2>
+                <p class="mt-1 text-sm text-slate-600">Поставете company default број што ќе се користи кај огласите кога нема посебен број по оглас. Ако не внесете, ќе важи главниот телефон на компанијата.</p>
             </div>
-            <a href="{{ route('employer.jobs.index') }}" class="text-sm font-semibold text-emerald-700 transition hover:text-emerald-600">Види ги сите</a>
-        </div>
-
-        <div class="mt-6 overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200 text-sm">
-                <thead>
-                    <tr class="text-left text-slate-500">
-                        <th class="pb-3 font-semibold">Наслов</th>
-                        <th class="pb-3 font-semibold">Категорија</th>
-                        <th class="pb-3 font-semibold">Локација</th>
-                        <th class="pb-3 font-semibold">Статус</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    @forelse ($recentJobs as $job)
-                        <tr>
-                            <td class="py-4 font-semibold text-slate-900">{{ $job->title }}</td>
-                            <td class="py-4 text-slate-700">{{ $job->category ?: 'Нема категорија' }}</td>
-                            <td class="py-4 text-slate-700">{{ $job->location ?: 'Нема локација' }}</td>
-                            <td class="py-4 text-slate-500">{{ $job->status }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="py-8 text-center text-slate-500">Сè уште немате објавено огласи.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+            <a href="{{ route('employer.company.edit') }}" class="inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500">
+                Намести број
+            </a>
         </div>
     </div>
 

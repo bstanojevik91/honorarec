@@ -35,13 +35,16 @@ class JobController extends Controller
             'daily_pay',
             'location',
             'category',
+            'contact_phone',
+            'call_enabled',
             'featured',
+            'status',
             'expires_at',
         ])->all();
 
         $data['company_id'] = request()->user()->company_id;
         $data['featured'] = $request->boolean('featured');
-        $data['status'] = JobListing::STATUS_PENDING;
+        $data['status'] = $data['status'] ?? 'active';
         $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
         $data = $this->normalizeJobFields($data);
 
@@ -49,7 +52,7 @@ class JobController extends Controller
 
         return redirect()
             ->route('employer.jobs.index')
-            ->with('status', 'Огласот е испратен на одобрување од администратор.');
+            ->with('status', 'Огласот е успешно додаден.');
     }
 
     public function edit(JobListing $job): View
@@ -72,12 +75,15 @@ class JobController extends Controller
             'daily_pay',
             'location',
             'category',
+            'contact_phone',
+            'call_enabled',
             'featured',
+            'status',
             'expires_at',
         ])->all();
 
         $data['featured'] = $request->boolean('featured');
-        $data['status'] = JobListing::STATUS_PENDING;
+        $data['status'] = $data['status'] ?? 'active';
         $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
         $data = $this->normalizeJobFields($data);
 
@@ -85,7 +91,7 @@ class JobController extends Controller
 
         return redirect()
             ->route('employer.jobs.index')
-            ->with('status', 'Промените на огласот се испратени на повторно одобрување.');
+            ->with('status', 'Огласот е успешно ажуриран.');
     }
 
     public function destroy(JobListing $job): RedirectResponse
@@ -113,6 +119,8 @@ class JobController extends Controller
         $data['description'] = $data['description'] ?? '';
         $data['location'] = $data['location'] ?? '';
         $data['category'] = $data['category'] ?? '';
+        $data['contact_phone'] = $data['contact_phone'] ?? null;
+        $data['call_enabled'] = (bool) ($data['call_enabled'] ?? false);
 
         return $data;
     }

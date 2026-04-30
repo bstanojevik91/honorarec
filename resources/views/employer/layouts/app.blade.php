@@ -40,6 +40,9 @@
                 <a href="{{ route('employer.jobs.index') }}" class="{{ request()->routeIs('employer.jobs.*') ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white' }} rounded-xl px-4 py-3 font-medium transition">
                     Мои огласи
                 </a>
+                <a href="{{ route('employer.company.edit') }}" class="{{ request()->routeIs('employer.company.*') ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white' }} rounded-xl px-4 py-3 font-medium transition">
+                    Employer профил
+                </a>
                 <a href="{{ route('employer.applications.index') }}" class="{{ request()->routeIs('employer.applications.*') ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white' }} rounded-xl px-4 py-3 font-medium transition">
                     Апликанти
                 </a>
