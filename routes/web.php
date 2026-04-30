@@ -40,6 +40,8 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
         Route::patch('/companies/{company}/employer-account', [CompanyController::class, 'updateEmployerAccount'])
             ->name('companies.employer-account.update');
         Route::resource('companies', CompanyController::class)->except('show');
+        Route::patch('/jobs/{job}/engagement-type', [JobListingController::class, 'updateEngagementType'])
+            ->name('jobs.engagement-type.update');
         Route::patch('/jobs/{job}/approve', [JobListingController::class, 'approve'])->name('jobs.approve');
         Route::patch('/jobs/{job}/reject', [JobListingController::class, 'reject'])->name('jobs.reject');
         Route::resource('jobs', JobListingController::class)->except('show');
@@ -76,6 +78,8 @@ Route::prefix('employer')->name('employer.')->group(function (): void {
     Route::middleware(['auth', 'employer', 'employer.verified'])->group(function (): void {
         Route::get('/', EmployerDashboardController::class)->name('dashboard');
 
+        Route::patch('/jobs/{job}/engagement-type', [EmployerJobController::class, 'updateEngagementType'])
+            ->name('jobs.engagement-type.update');
         Route::resource('jobs', EmployerJobController::class)->except('show');
         Route::get('/applications', [EmployerApplicationController::class, 'index'])->name('applications.index');
         Route::get('/applications/{application}', [EmployerApplicationController::class, 'show'])->name('applications.show');

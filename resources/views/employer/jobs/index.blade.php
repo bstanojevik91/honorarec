@@ -4,6 +4,8 @@
 ])
 
 @section('content')
+    @php($engagementTypeOptions = \App\Models\JobListing::engagementTypeOptions())
+
     <div class="mb-6 rounded-[1.35rem] border border-emerald-100 bg-emerald-50 px-5 py-4 text-sm text-emerald-900">
         Новите огласи и измените на постоечките огласи прво одат на одобрување од администратор пред да станат јавно видливи.
     </div>
@@ -20,6 +22,7 @@
                 <thead class="bg-slate-50">
                     <tr class="text-left text-slate-500">
                         <th class="px-6 py-4 font-semibold">Оглас</th>
+                        <th class="px-6 py-4 font-semibold">Работен ангажман</th>
                         <th class="px-6 py-4 font-semibold">Локација</th>
                         <th class="px-6 py-4 font-semibold">Статус</th>
                         <th class="px-6 py-4 font-semibold text-right">Акции</th>
@@ -40,6 +43,21 @@
                                     @endif
                                 </div>
                             </td>
+                            <td class="px-6 py-4">
+                                <form method="POST" action="{{ route('employer.jobs.engagement-type.update', $job) }}" class="flex min-w-[15rem] items-center gap-2">
+                                    @csrf
+                                    @method('PATCH')
+                                    <select name="engagement_type" class="block w-full rounded-xl border-slate-200 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-emerald-100">
+                                        <option value="">Избери ангажман</option>
+                                        @foreach ($engagementTypeOptions as $engagementType)
+                                            <option value="{{ $engagementType }}" @selected($job->engagement_type === $engagementType)>{{ $engagementType }}</option>
+                                        @endforeach
+                                    </select>
+                                    <button type="submit" class="rounded-full border border-emerald-200 px-4 py-2 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-50">
+                                        Сними
+                                    </button>
+                                </form>
+                            </td>
                             <td class="px-6 py-4 text-slate-700">{{ $job->location ?: 'Не е внесено' }}</td>
                             <td class="px-6 py-4">
                                 <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $job->status === 'active' ? 'bg-emerald-100 text-emerald-700' : ($job->status === 'pending' ? 'bg-sky-100 text-sky-700' : ($job->status === 'paused' ? 'bg-amber-100 text-amber-700' : ($job->status === 'rejected' ? 'bg-rose-100 text-rose-700' : 'bg-slate-200 text-slate-700'))) }}">
@@ -59,7 +77,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-10 text-center text-slate-500">Сè уште немате објавено огласи.</td>
+                            <td colspan="5" class="px-6 py-10 text-center text-slate-500">Сè уште немате објавено огласи.</td>
                         </tr>
                     @endforelse
                 </tbody>

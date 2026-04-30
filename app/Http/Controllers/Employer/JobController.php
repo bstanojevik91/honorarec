@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Employer\StoreEmployerJobRequest;
 use App\Http\Requests\Employer\UpdateEmployerJobRequest;
 use App\Models\JobListing;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class JobController extends Controller
@@ -106,6 +108,24 @@ class JobController extends Controller
         return redirect()
             ->route('employer.jobs.index')
             ->with('status', 'Огласот е избришан.');
+    }
+
+    public function updateEngagementType(Request $request, JobListing $job): RedirectResponse
+    {
+        $this->authorizeCompanyJob($job);
+
+        $data = $request->validate([
+            'engagement_type' => ['nullable', Rule::in(JobListing::engagementTypeOptions())],
+        ], [], [
+            'engagement_type' => 'вид на работен ангажман',
+        ]);
+
+        $job->update([
+            'engagement_type' => $data['engagement_type'] ?? null,
+            'status' => JobListing::STATUS_PENDING,
+        ]);
+
+        return back()->with('status', 'Работниот ангажман е ажуриран и огласот е испратен на повторно одобрување.');
     }
 
     private function authorizeCompanyJob(JobListing $job): void

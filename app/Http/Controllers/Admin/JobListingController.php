@@ -7,9 +7,11 @@ use App\Http\Requests\Admin\StoreJobListingRequest;
 use App\Http\Requests\Admin\UpdateJobListingRequest;
 use App\Models\Company;
 use App\Models\JobListing;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class JobListingController extends Controller
@@ -77,6 +79,21 @@ class JobListingController extends Controller
         return redirect()
             ->route('admin.jobs.index')
             ->with('status', 'Огласот е избришан.');
+    }
+
+    public function updateEngagementType(Request $request, JobListing $job): RedirectResponse
+    {
+        $data = $request->validate([
+            'engagement_type' => ['nullable', Rule::in(JobListing::engagementTypeOptions())],
+        ], [], [
+            'engagement_type' => 'вид на работен ангажман',
+        ]);
+
+        $job->update([
+            'engagement_type' => $data['engagement_type'] ?? null,
+        ]);
+
+        return back()->with('status', 'Работниот ангажман е успешно ажуриран.');
     }
 
     public function approve(JobListing $job): RedirectResponse
