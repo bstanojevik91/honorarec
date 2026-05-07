@@ -146,4 +146,63 @@ class PublicJobsTest extends TestCase
             ->assertDontSee('pomosen-rabotnik-vo-ugostitelstvo')
             ->assertDontSee('pauziran-test-oglas');
     }
+
+    public function test_honorarna_rabota_landing_page_shows_seo_content_and_latest_jobs(): void
+    {
+        $company = Company::create([
+            'name' => 'SEO Company',
+            'email' => 'seo@test-company.mk',
+            'phone' => '070123456',
+            'description' => 'SEO company description',
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Хонорарна промоција',
+            'slug' => 'honorarna-promocija',
+            'description' => 'Опис за хонорарна промоција.',
+            'daily_pay' => 1800,
+            'location' => 'Скопје',
+            'category' => 'Промоции',
+            'featured' => true,
+            'status' => JobListing::STATUS_ACTIVE,
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Сезонска работа во продажба',
+            'slug' => 'sezonska-rabota-vo-prodazba',
+            'description' => 'Опис за сезонска работа.',
+            'daily_pay' => 1600,
+            'location' => 'Охрид',
+            'category' => 'Продажба',
+            'featured' => false,
+            'status' => JobListing::STATUS_ACTIVE,
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Скриен оглас',
+            'slug' => 'skrien-oglas',
+            'description' => 'Опис за скриен оглас.',
+            'daily_pay' => 1000,
+            'location' => 'Битола',
+            'category' => 'Администрација',
+            'featured' => false,
+            'status' => JobListing::STATUS_PAUSED,
+        ]);
+
+        $response = $this->get(route('seo.honorarna-rabota'));
+
+        $response->assertOk()
+            ->assertSee('Хонорарна работа во Македонија')
+            ->assertSee('https://honorarec.mk/honorarna-rabota', false)
+            ->assertSee('Бараш хонорарна работа или работа на дневница? Пребарај part-time, сезонски и флексибилни огласи на Honorarec.mk.')
+            ->assertSee('Хонорарна промоција')
+            ->assertSee('Сезонска работа во продажба')
+            ->assertDontSee('Скриен оглас')
+            ->assertSee(route('home'), false)
+            ->assertSee(route('jobs.index'), false)
+            ->assertSee(route('post-a-job'), false);
+    }
 }

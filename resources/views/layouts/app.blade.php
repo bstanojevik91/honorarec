@@ -12,6 +12,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'Honorarec.mk' }}</title>
     <meta name="description" content="{{ $description ?? 'Хонорарец.мк - најди работа на дневница.' }}">
+    @if (!empty($canonical))
+        <link rel="canonical" href="{{ $canonical }}">
+    @endif
+    <meta property="og:type" content="{{ $ogType ?? 'website' }}">
+    <meta property="og:title" content="{{ $ogTitle ?? ($title ?? 'Honorarec.mk') }}">
+    <meta property="og:description" content="{{ $ogDescription ?? ($description ?? 'Хонорарец.мк - најди работа на дневница.') }}">
+    <meta property="og:url" content="{{ $ogUrl ?? ($canonical ?? request()->url()) }}">
+    @if (!empty($ogImage))
+        <meta property="og:image" content="{{ $ogImage }}">
+    @endif
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">

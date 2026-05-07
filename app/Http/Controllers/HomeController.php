@@ -187,6 +187,46 @@ class HomeController extends Controller
         ]);
     }
 
+    public function honorarnaRabota(): View
+    {
+        $jobs = $this->frontendJobs();
+        $canonical = 'https://honorarec.mk/honorarna-rabota';
+
+        return view('pages.honorarna-rabota', [
+            'title' => 'Хонорарна работа во Македонија | Honorarec.mk',
+            'description' => 'Бараш хонорарна работа или работа на дневница? Пребарај part-time, сезонски и флексибилни огласи на Honorarec.mk.',
+            'canonical' => $canonical,
+            'ogTitle' => 'Хонорарна работа во Македонија | Honorarec.mk',
+            'ogDescription' => 'Бараш хонорарна работа или работа на дневница? Пребарај part-time, сезонски и флексибилни огласи на Honorarec.mk.',
+            'ogUrl' => $canonical,
+            'ogImage' => asset('images/honorarec-logo.png'),
+            'jobTypes' => [
+                [
+                    'title' => 'Хонорарна работа',
+                    'text' => 'Краткорочни и флексибилни ангажмани за дополнителен приход, проекти или сезонски потреби.',
+                ],
+                [
+                    'title' => 'Работа на дневница',
+                    'text' => 'Огласи за брз почеток, јасно дефиниран ангажман и исплата по ден или по смена.',
+                ],
+                [
+                    'title' => 'Part-time работа',
+                    'text' => 'Позиции за неколку часа дневно, викенд смени или комбинирање со редовна обврска.',
+                ],
+                [
+                    'title' => 'Сезонска работа',
+                    'text' => 'Ангажмани поврзани со туристичка сезона, настани, продажба и зголемени оперативни потреби.',
+                ],
+                [
+                    'title' => 'Флексибилни ангажмани',
+                    'text' => 'Работи со прилагодливо работно време, теренски активности и краткорочен договор.',
+                ],
+            ],
+            'latestJobs' => $jobs->take(6)->values()->all(),
+            'footerStats' => $this->footerStats($jobs),
+        ]);
+    }
+
     public function showJob(string $slug): View
     {
         abort_unless(Schema::hasTable('job_listings') && Schema::hasTable('companies'), 404);

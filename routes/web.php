@@ -15,6 +15,7 @@ use App\Http\Controllers\PublicMediaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/honorarna-rabota', [HomeController::class, 'honorarnaRabota'])->name('seo.honorarna-rabota');
 Route::get('/media/{path}', [PublicMediaController::class, 'show'])->where('path', '.*')->name('media.public');
 Route::get('/blog', [HomeController::class, 'blog'])->name('blog.index');
 Route::get('/chpp', [HomeController::class, 'faq'])->name('faq');
@@ -22,6 +23,7 @@ Route::get('/blog/{slug}', [HomeController::class, 'showBlogPost'])->name('blog.
 Route::get('/oglasi', [HomeController::class, 'jobs'])->name('jobs.index');
 Route::get('/oglasi/{slug}', [HomeController::class, 'showJob'])->name('jobs.show');
 Route::post('/oglasi/{slug}/apliciraj', [HomeController::class, 'apply'])->name('jobs.apply');
+Route::get('/post-a-job', fn () => redirect()->route('employer.register'))->name('post-a-job');
 Route::redirect('/login', '/admin/login')->name('login');
 Route::redirect('/company/login', '/employer/login');
 
