@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\BlogPost;
 use App\Models\Company;
 use App\Models\JobListing;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -204,5 +205,75 @@ class PublicJobsTest extends TestCase
             ->assertSee(route('home'), false)
             ->assertSee(route('jobs.index'), false)
             ->assertSee(route('post-a-job'), false);
+    }
+
+    public function test_sitemap_xml_includes_static_pages_and_public_database_content(): void
+    {
+        $company = Company::create([
+            'name' => 'Sitemap Company',
+            'email' => 'sitemap@test-company.mk',
+            'phone' => '070123456',
+            'description' => 'Sitemap company description',
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Активен sitemap оглас',
+            'slug' => 'aktiven-sitemap-oglas',
+            'description' => 'Опис за активен sitemap оглас.',
+            'daily_pay' => 1800,
+            'location' => 'Скопје',
+            'category' => 'Промоции',
+            'featured' => true,
+            'status' => JobListing::STATUS_ACTIVE,
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Паузиран sitemap оглас',
+            'slug' => 'pauziran-sitemap-oglas',
+            'description' => 'Опис за паузиран sitemap оглас.',
+            'daily_pay' => 1200,
+            'location' => 'Битола',
+            'category' => 'Магацин',
+            'featured' => false,
+            'status' => JobListing::STATUS_PAUSED,
+        ]);
+
+        BlogPost::create([
+            'title' => 'Објавен blog пост',
+            'slug' => 'objaven-blog-post',
+            'excerpt' => 'Краток извадок.',
+            'content' => 'Содржина на објавениот пост.',
+            'category' => 'Совети',
+            'status' => BlogPost::STATUS_PUBLISHED,
+            'published_at' => now()->subDay(),
+        ]);
+
+        BlogPost::create([
+            'title' => 'Нацрт blog пост',
+            'slug' => 'nacrt-blog-post',
+            'excerpt' => 'Краток извадок за нацрт.',
+            'content' => 'Содржина на нацрт постот.',
+            'category' => 'Совети',
+            'status' => BlogPost::STATUS_DRAFT,
+        ]);
+
+        $response = $this->get(route('sitemap'));
+
+        $response->assertOk()
+            ->assertHeader('Content-Type', 'application/xml; charset=UTF-8')
+            ->assertSee('<?xml version="1.0" encoding="UTF-8"?>', false)
+            ->assertSee('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', false)
+            ->assertSee(route('home'), false)
+            ->assertSee(route('jobs.index'), false)
+            ->assertSee(route('seo.honorarna-rabota'), false)
+            ->assertSee(route('faq'), false)
+            ->assertSee(route('jobs.show', 'aktiven-sitemap-oglas'), false)
+            ->assertDontSee(route('jobs.show', 'pauziran-sitemap-oglas'), false)
+            ->assertSee(route('blog.show', 'objaven-blog-post'), false)
+            ->assertDontSee(route('blog.show', 'nacrt-blog-post'), false)
+            ->assertSee('<changefreq>daily</changefreq>', false)
+            ->assertSee('<priority>1.0</priority>', false);
     }
 }

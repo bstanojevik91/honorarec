@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/honorarna-rabota', [HomeController::class, 'honorarnaRabota'])->name('seo.honorarna-rabota');
+Route::get('/sitemap.xml', [HomeController::class, 'sitemap'])->name('sitemap');
 Route::get('/media/{path}', [PublicMediaController::class, 'show'])->where('path', '.*')->name('media.public');
 Route::get('/blog', [HomeController::class, 'blog'])->name('blog.index');
 Route::get('/chpp', [HomeController::class, 'faq'])->name('faq');

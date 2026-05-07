@@ -10,8 +10,11 @@ use App\Support\DefaultBlogPosts;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
 class HomeController extends Controller
@@ -227,6 +230,24 @@ class HomeController extends Controller
         ]);
     }
 
+    public function sitemap(): Response
+    {
+        $payload = app()->environment('testing')
+            ? $this->buildSitemapPayload()
+            : Cache::remember('public-sitemap.xml', now()->addMinutes(30), fn (): array => $this->buildSitemapPayload());
+
+        $response = response()
+            ->view('sitemap.xml', ['urls' => $payload['urls']])
+            ->header('Content-Type', 'application/xml; charset=UTF-8')
+            ->header('Cache-Control', 'public, max-age=1800');
+
+        if (! empty($payload['lastModified'])) {
+            $response->header('Last-Modified', $payload['lastModified']);
+        }
+
+        return $response;
+    }
+
     public function showJob(string $slug): View
     {
         abort_unless(Schema::hasTable('job_listings') && Schema::hasTable('companies'), 404);
@@ -340,6 +361,137 @@ class HomeController extends Controller
         }
 
         return $this->fallbackBlogPosts();
+    }
+
+    /**
+     * @return array<int, array{loc:string,lastmod:string,changefreq:string,priority:string}>
+     */
+    private function sitemapStaticEntries(?string $jobLatest, ?string $blogLatest): array
+    {
+        $homeLastmod = $this->sitemapLastmod(
+            $this->latestTimestamp(
+                $this->viewLastModified('home.blade.php'),
+                $this->parseSitemapDate($jobLatest),
+                $this->parseSitemapDate($blogLatest)
+            )
+        );
+        $jobsLastmod = $this->sitemapLastmod(
+            $this->latestTimestamp(
+                $this->viewLastModified('jobs.blade.php'),
+                $this->parseSitemapDate($jobLatest)
+            )
+        );
+        $seoLastmod = $this->sitemapLastmod(
+            $this->latestTimestamp(
+                $this->viewLastModified('honorarna-rabota.blade.php'),
+                $this->parseSitemapDate($jobLatest)
+            )
+        );
+        $faqLastmod = $this->sitemapLastmod($this->viewLastModified('faq.blade.php'));
+        $blogIndexLastmod = $this->sitemapLastmod(
+            $this->latestTimestamp(
+                $this->viewLastModified('blog-index.blade.php'),
+                $this->parseSitemapDate($blogLatest)
+            )
+        );
+
+        return array_values(array_filter([
+            [
+                'loc' => route('home'),
+                'lastmod' => $homeLastmod,
+                'changefreq' => 'daily',
+                'priority' => '1.0',
+            ],
+            [
+                'loc' => route('jobs.index'),
+                'lastmod' => $jobsLastmod,
+                'changefreq' => 'daily',
+                'priority' => '0.9',
+            ],
+            [
+                'loc' => route('seo.honorarna-rabota'),
+                'lastmod' => $seoLastmod,
+                'changefreq' => 'weekly',
+                'priority' => '0.8',
+            ],
+            [
+                'loc' => route('faq'),
+                'lastmod' => $faqLastmod,
+                'changefreq' => 'monthly',
+                'priority' => '0.6',
+            ],
+            [
+                'loc' => route('blog.index'),
+                'lastmod' => $blogIndexLastmod,
+                'changefreq' => 'weekly',
+                'priority' => '0.7',
+            ],
+        ]));
+    }
+
+    /**
+     * @return array<int, array{loc:string,lastmod:string,changefreq:string,priority:string}>
+     */
+    private function sitemapJobEntries(): array
+    {
+        if (! Schema::hasTable('job_listings') || ! Schema::hasTable('companies')) {
+            return [];
+        }
+
+        return $this->publicJobListingsQuery()
+            ->get(['slug', 'updated_at', 'created_at'])
+            ->map(fn (JobListing $job): array => [
+                'loc' => route('jobs.show', $job->slug),
+                'lastmod' => $this->sitemapLastmod($job->updated_at ?? $job->created_at),
+                'changefreq' => 'daily',
+                'priority' => '0.8',
+            ])
+            ->all();
+    }
+
+    /**
+     * @return array<int, array{loc:string,lastmod:string,changefreq:string,priority:string}>
+     */
+    private function sitemapBlogEntries(): array
+    {
+        if (! Schema::hasTable('blog_posts')) {
+            return [];
+        }
+
+        return BlogPost::query()
+            ->where('status', BlogPost::STATUS_PUBLISHED)
+            ->latest('published_at')
+            ->latest()
+            ->get(['slug', 'published_at', 'updated_at', 'created_at'])
+            ->map(fn (BlogPost $post): array => [
+                'loc' => route('blog.show', $post->slug),
+                'lastmod' => $this->sitemapLastmod($post->updated_at ?? $post->published_at ?? $post->created_at),
+                'changefreq' => 'monthly',
+                'priority' => '0.7',
+            ])
+            ->all();
+    }
+
+    /**
+     * @return array{urls:array<int, array{loc:string,lastmod:string,changefreq:string,priority:string}>,lastModified:?string}
+     */
+    private function buildSitemapPayload(): array
+    {
+        $jobEntries = $this->sitemapJobEntries();
+        $blogEntries = $this->sitemapBlogEntries();
+        $jobLatest = collect($jobEntries)->pluck('lastmod')->filter()->max();
+        $blogLatest = collect($blogEntries)->pluck('lastmod')->filter()->max();
+
+        $urls = array_merge(
+            $this->sitemapStaticEntries($jobLatest, $blogLatest),
+            $jobEntries,
+            $blogEntries
+        );
+
+        return [
+            'urls' => $urls,
+            'lastModified' => collect($urls)->pluck('lastmod')->filter()->max(),
+        ];
     }
 
     /**
@@ -732,5 +884,34 @@ class HomeController extends Controller
         }
 
         return $placeholder;
+    }
+
+    private function viewLastModified(string $view): ?Carbon
+    {
+        $path = resource_path('views/pages/' . $view);
+
+        if (! is_file($path)) {
+            return null;
+        }
+
+        return Carbon::createFromTimestamp(filemtime($path));
+    }
+
+    private function latestTimestamp(?Carbon ...$timestamps): ?Carbon
+    {
+        return collect($timestamps)
+            ->filter(fn (?Carbon $timestamp): bool => $timestamp !== null)
+            ->sortByDesc(fn (Carbon $timestamp): int => $timestamp->getTimestamp())
+            ->first();
+    }
+
+    private function parseSitemapDate(?string $value): ?Carbon
+    {
+        return filled($value) ? Carbon::parse($value) : null;
+    }
+
+    private function sitemapLastmod(?Carbon $value): string
+    {
+        return ($value ?? now())->copy()->utc()->toAtomString();
     }
 }
