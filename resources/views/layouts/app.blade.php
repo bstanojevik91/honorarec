@@ -12,6 +12,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'Honorarec.mk' }}</title>
     <meta name="description" content="{{ $description ?? 'Хонорарец.мк - најди работа на дневница.' }}">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/favicon.png">
     @if (!empty($canonical))
         <link rel="canonical" href="{{ $canonical }}">
     @endif
