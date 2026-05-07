@@ -12,6 +12,7 @@
         $companyName = trim((string) ($job['company'] ?? 'Компанија'));
         $logoUrl = trim((string) ($job['logo'] ?? ''));
         $callPhone = $callPhone ?? null;
+        $relatedJobs = collect($relatedJobs ?? []);
 
         $companyWords = preg_split('/\s+/u', $companyName, -1, PREG_SPLIT_NO_EMPTY) ?: [];
         $companyInitials = collect($companyWords)
@@ -57,53 +58,6 @@
                 'text' => 'За најрелевантните кандидати работодавачот контактира директно.',
             ],
         ];
-
-        $relatedJobs = collect([
-            [
-                'slug' => 'promoter-za-vikend-aktivnost',
-                'logo' => 'https://placehold.co/96x96/eff6ff/166534?text=MK',
-                'title' => 'Промотер за викенд активност',
-                'badge' => 'Итно',
-                'company' => 'Маркет Плус',
-                'category' => 'Промоции',
-                'location' => 'Скопје',
-                'engagement_type' => 'Викенд работа',
-                'tags' => ['Истакнато', 'Викенд', 'Флексибилно'],
-            ],
-            [
-                'slug' => 'magacioner-za-sezonska-rabota',
-                'logo' => 'https://placehold.co/96x96/fef2f2/9a3412?text=HR',
-                'title' => 'Магационер за сезонска работа',
-                'badge' => 'Дневница',
-                'company' => 'Логистик Дооел',
-                'category' => 'Магацин',
-                'location' => 'Битола',
-                'engagement_type' => 'Сезонска работа',
-                'tags' => ['Магацин', 'Сезонско', 'Платено веднаш'],
-            ],
-            [
-                'slug' => 'terenski-popisuvac',
-                'logo' => 'https://placehold.co/96x96/f0fdf4/14532d?text=IT',
-                'title' => 'Теренски попишувач',
-                'badge' => 'Ново',
-                'company' => 'Дата Фокус',
-                'category' => 'Администрација',
-                'location' => 'Тетово',
-                'engagement_type' => 'На дневница',
-                'tags' => ['Теренска работа', 'Брз почеток', 'Флексибилно'],
-            ],
-            [
-                'slug' => 'pomosen-rabotnik-vo-ugostitelstvo',
-                'logo' => 'https://placehold.co/96x96/ecfccb/3f6212?text=FO',
-                'title' => 'Помошен работник во угостителство',
-                'badge' => 'Викенд',
-                'company' => 'Гастро Лајн',
-                'category' => 'Угостителство',
-                'location' => 'Охрид',
-                'engagement_type' => 'Викенд работа',
-                'tags' => ['Викенд', 'Без искуство', 'Брз почеток'],
-            ],
-        ])->reject(fn (array $relatedJob): bool => $relatedJob['slug'] === $job['slug'])->take(3)->values();
     @endphp
 
     <div class="relative isolate overflow-hidden bg-slate-950">
@@ -355,7 +309,7 @@
                             </form>
                         @else
                             <div class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm leading-7 text-amber-800">
-                                Формата за аплицирање ќе биде активна кога овој оглас ќе биде поврзан со базата и достапен за прием на апликации.
+                                Аплицирањето за овој оглас моментално не е достапно.
                             </div>
                         @endif
                     </div>
@@ -402,18 +356,20 @@
             </div>
         </section>
 
-        <section class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8 lg:pb-20">
-            <div class="mb-6 text-center sm:mb-8 lg:text-left">
-                <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Слични огласи</h2>
-                <p class="mt-2 text-sm text-slate-600">Погледнете уште неколку ангажмани што може да ви одговараат.</p>
-            </div>
+        @if ($relatedJobs->isNotEmpty())
+            <section class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8 lg:pb-20">
+                <div class="mb-6 text-center sm:mb-8 lg:text-left">
+                    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Слични огласи</h2>
+                    <p class="mt-2 text-sm text-slate-600">Погледнете уште неколку ангажмани што може да ви одговараат.</p>
+                </div>
 
-            <div class="grid gap-5 lg:grid-cols-3 sm:gap-6">
-                @foreach ($relatedJobs as $relatedJob)
-                    @include('partials.job-card', ['job' => $relatedJob, 'showAction' => true])
-                @endforeach
-            </div>
-        </section>
+                <div class="grid gap-5 lg:grid-cols-3 sm:gap-6">
+                    @foreach ($relatedJobs as $relatedJob)
+                        @include('partials.job-card', ['job' => $relatedJob, 'showAction' => true])
+                    @endforeach
+                </div>
+            </section>
+        @endif
     </main>
 
     @include('partials.footer')

@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreJobApplicationRequest;
 use App\Models\BlogPost;
 use App\Models\Company;
-use App\Models\JobApplication;
 use App\Models\JobListing;
 use App\Support\DefaultBlogPosts;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -38,33 +38,12 @@ class HomeController extends Controller
 
     public function index(): View
     {
+        $jobs = $this->frontendJobs();
+
         $hero = [
             'title' => 'Хонорарец.мк',
             'subtitle' => 'Најди работа на дневница',
             'image' => 'https://images.pexels.com/photos/4481260/pexels-photo-4481260.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        ];
-
-        $categories = [
-            [
-                'icon' => 'briefcase',
-                'name' => 'Дневни работи',
-                'count' => '12 огласи',
-            ],
-            [
-                'icon' => 'building-storefront',
-                'name' => 'Сезонски ангажмани',
-                'count' => '8 огласи',
-            ],
-            [
-                'icon' => 'briefcase',
-                'name' => 'Угостителство',
-                'count' => '9 огласи',
-            ],
-            [
-                'icon' => 'building-storefront',
-                'name' => 'Магацин и логистика',
-                'count' => '7 огласи',
-            ],
         ];
 
         $promo = [
@@ -100,8 +79,6 @@ class HomeController extends Controller
         ];
 
         $posts = $this->publicBlogPosts();
-
-        $jobs = $this->frontendJobs();
         $searchCategories = $jobs
             ->pluck('category')
             ->filter()
@@ -113,7 +90,7 @@ class HomeController extends Controller
         return view('pages.home', [
             'hero' => $hero,
             'jobs' => $jobs->take(3)->all(),
-            'categories' => collect($categories)->take(4)->all(),
+            'categories' => $this->homepageCategories($jobs),
             'searchCategories' => $searchCategories,
             'promo' => $promo,
             'testimonials' => $testimonials,
@@ -212,23 +189,20 @@ class HomeController extends Controller
 
     public function showJob(string $slug): View
     {
-        $job = $this->frontendJobs()->firstWhere('slug', $slug);
-        $jobListing = null;
+        abort_unless(Schema::hasTable('job_listings') && Schema::hasTable('companies'), 404);
 
-        abort_if($job === null, 404);
-
-        if (Schema::hasTable('job_listings')) {
-            $jobListing = JobListing::query()
-                ->with('company')
-                ->where('slug', $slug)
-                ->first();
-        }
+        $jobListing = $this->publicJobListingsQuery()
+            ->where('slug', $slug)
+            ->firstOrFail();
+        $job = $this->mapFrontendJob($jobListing);
+        $jobs = $this->frontendJobs();
 
         return view('pages.job-show', [
             'job' => $job,
-            'applicationEnabled' => $jobListing !== null,
+            'relatedJobs' => $this->relatedJobsFor($job, $jobs),
+            'applicationEnabled' => Schema::hasTable('job_applications'),
             'callPhone' => $this->normalizeCallPhone($jobListing?->company?->phone),
-            'footerStats' => $this->footerStats($this->frontendJobs()),
+            'footerStats' => $this->footerStats($jobs),
         ]);
     }
 
@@ -271,11 +245,15 @@ class HomeController extends Controller
     public function apply(StoreJobApplicationRequest $request, string $slug): RedirectResponse
     {
         abort_unless(
-            Schema::hasTable('job_listings') && Schema::hasTable('job_applications'),
+            Schema::hasTable('job_listings') &&
+            Schema::hasTable('job_applications') &&
+            Schema::hasTable('companies'),
             404
         );
 
-        $jobListing = JobListing::query()->where('slug', $slug)->firstOrFail();
+        $jobListing = $this->publicJobListingsQuery()
+            ->where('slug', $slug)
+            ->firstOrFail();
         $data = $request->validated();
 
         if ($request->hasFile('cv')) {
@@ -297,38 +275,13 @@ class HomeController extends Controller
      */
     private function frontendJobs(): Collection
     {
-        if (
-            Schema::hasTable('job_listings') &&
-            Schema::hasTable('companies') &&
-            JobListing::query()->exists()
-        ) {
-            return JobListing::query()
-                ->with('company')
-                ->where('status', 'active')
-                ->latest()
-                ->get()
-                ->map(function (JobListing $job): array {
-                    return [
-                        'slug' => $job->slug,
-                        'logo' => $this->resolveCompanyLogoUrl($job->company),
-                        'title' => $job->title,
-                        'badge' => $job->featured ? 'Издвоено' : match ($job->status) {
-                            'paused' => 'Паузирано',
-                            'filled' => 'Пополнето',
-                            default => 'Активно',
-                        },
-                        'company' => $job->company?->name ?? 'Непозната компанија',
-                        'category' => $job->category,
-                        'location' => $job->location,
-                        'description' => $job->description,
-                        'daily_pay' => $job->daily_pay,
-                        'engagement_type' => $this->resolveEngagementType($job),
-                        'tags' => $this->inferTags($job),
-                    ];
-                });
+        if (! Schema::hasTable('job_listings') || ! Schema::hasTable('companies')) {
+            return collect();
         }
 
-        return collect($this->fallbackJobListings());
+        return $this->publicJobListingsQuery()
+            ->get()
+            ->map(fn (JobListing $job): array => $this->mapFrontendJob($job));
     }
 
     /**
@@ -417,6 +370,72 @@ class HomeController extends Controller
                 return $matchesKeyword && $matchesCity && $matchesCategory && $matchesEngagementType && $matchesTags;
             })
             ->values();
+    }
+
+    /**
+     * @param array<string, mixed> $job
+     * @param \Illuminate\Support\Collection<int, array<string, mixed>> $jobs
+     * @return array<int, array<string, mixed>>
+     */
+    private function relatedJobsFor(array $job, Collection $jobs): array
+    {
+        return $jobs
+            ->reject(fn (array $candidate): bool => $candidate['slug'] === $job['slug'])
+            ->values()
+            ->map(function (array $candidate, int $index) use ($job): array {
+                return [
+                    'job' => $candidate,
+                    'index' => $index,
+                    'score' => $this->relatedJobScore($job, $candidate),
+                ];
+            })
+            ->sort(function (array $left, array $right): int {
+                return $right['score'] <=> $left['score']
+                    ?: $left['index'] <=> $right['index'];
+            })
+            ->take(3)
+            ->pluck('job')
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @param array<string, mixed> $job
+     * @param array<string, mixed> $candidate
+     */
+    private function relatedJobScore(array $job, array $candidate): int
+    {
+        $score = 0;
+
+        if (
+            filled($job['category'] ?? null) &&
+            mb_strtolower((string) $candidate['category']) === mb_strtolower((string) $job['category'])
+        ) {
+            $score += 4;
+        }
+
+        if (
+            filled($job['location'] ?? null) &&
+            mb_strtolower((string) $candidate['location']) === mb_strtolower((string) $job['location'])
+        ) {
+            $score += 3;
+        }
+
+        if (
+            filled($job['engagement_type'] ?? null) &&
+            mb_strtolower((string) $candidate['engagement_type']) === mb_strtolower((string) $job['engagement_type'])
+        ) {
+            $score += 2;
+        }
+
+        if (
+            filled($job['company'] ?? null) &&
+            mb_strtolower((string) $candidate['company']) === mb_strtolower((string) $job['company'])
+        ) {
+            $score += 1;
+        }
+
+        return $score;
     }
 
     private function inferEngagementType(JobListing $job): string
@@ -564,112 +583,76 @@ class HomeController extends Controller
             ->all();
     }
 
+    private function publicJobListingsQuery(): Builder
+    {
+        return JobListing::query()
+            ->with('company')
+            ->where('status', JobListing::STATUS_ACTIVE)
+            ->latest();
+    }
+
     /**
-     * @return array<int, array<string, string>>
+     * @return array<string, mixed>
      */
-    private function fallbackJobListings(): array
+    private function mapFrontendJob(JobListing $job): array
     {
         return [
-            [
-                'slug' => 'promoter-za-vikend-aktivnost',
-                'logo' => 'https://placehold.co/96x96/eff6ff/166534?text=MK',
-                'title' => 'Промотер за викенд активност',
-                'badge' => 'Итно',
-                'company' => 'Маркет Плус',
-                'category' => 'Промоции',
-                'location' => 'Скопје',
-                'engagement_type' => 'Викенд работа',
-                'tags' => ['Истакнато', 'Итно', 'Студенти', 'Флексибилно'],
-            ],
-            [
-                'slug' => 'magacioner-za-sezonska-rabota',
-                'logo' => 'https://placehold.co/96x96/fef2f2/9a3412?text=HR',
-                'title' => 'Магационер за сезонска работа',
-                'badge' => 'Дневница',
-                'company' => 'Логистик Дооел',
-                'category' => 'Магацин',
-                'location' => 'Битола',
-                'engagement_type' => 'Сезонска работа',
-                'tags' => ['Магацин', 'Сезонско', 'Брз почеток'],
-            ],
-            [
-                'slug' => 'terenski-popisuvac',
-                'logo' => 'https://placehold.co/96x96/f0fdf4/14532d?text=IT',
-                'title' => 'Теренски попишувач',
-                'badge' => 'Ново',
-                'company' => 'Дата Фокус',
-                'category' => 'Администрација',
-                'location' => 'Тетово',
-                'engagement_type' => 'На дневница',
-                'tags' => ['Теренска работа', 'Брз почеток', 'Флексибилно'],
-            ],
-            [
-                'slug' => 'pomosen-rabotnik-vo-ugostitelstvo',
-                'logo' => 'https://placehold.co/96x96/ecfccb/3f6212?text=FO',
-                'title' => 'Помошен работник во угостителство',
-                'badge' => 'Викенд',
-                'company' => 'Гастро Лајн',
-                'category' => 'Угостителство',
-                'location' => 'Охрид',
-                'engagement_type' => 'Викенд работа',
-                'tags' => ['Викенд', 'Без искуство', 'Брз почеток'],
-            ],
-            [
-                'slug' => 'asistent-za-nastan-i-registracija',
-                'logo' => 'https://placehold.co/96x96/fae8ff/86198f?text=EV',
-                'title' => 'Асистент за настан и регистрација',
-                'badge' => 'Настан',
-                'company' => 'Евент Партнери',
-                'category' => 'Настани',
-                'location' => 'Скопје',
-                'engagement_type' => 'На дневница',
-                'tags' => ['Настани', 'Флексибилно', 'Студенти'],
-            ],
-            [
-                'slug' => 'vozac-za-lokalna-dostava',
-                'logo' => 'https://placehold.co/96x96/e0f2fe/0c4a6e?text=DS',
-                'title' => 'Возач за локална достава',
-                'badge' => 'Флекс',
-                'company' => 'Деливери Сервис',
-                'category' => 'Логистика',
-                'location' => 'Прилеп',
-                'engagement_type' => 'Полно работно време',
-                'tags' => ['Возачка дозвола', 'Логистика', 'Флексибилно'],
-            ],
-            [
-                'slug' => 'promoter-vo-prodaen-salon',
-                'logo' => 'https://placehold.co/96x96/fff7ed/c2410c?text=PR',
-                'title' => 'Промотер во продажен салон',
-                'badge' => 'Популарно',
-                'company' => 'Ритејл Про',
-                'category' => 'Продажба',
-                'location' => 'Штип',
-                'engagement_type' => 'Полно работно време',
-                'tags' => ['Продажба', 'Истакнато', 'Комуникација'],
-            ],
-            [
-                'slug' => 'administrativen-asistent-na-opredeleno',
-                'logo' => 'https://placehold.co/96x96/f1f5f9/1e293b?text=AD',
-                'title' => 'Административен асистент на определено',
-                'badge' => 'Канцеларија',
-                'company' => 'Офис Плус',
-                'category' => 'Администрација',
-                'location' => 'Куманово',
-                'engagement_type' => 'Полно работно време',
-                'tags' => ['Канцелариска работа', 'Администрација', 'Организација'],
-            ],
-            [
-                'slug' => 'sezonski-rabotnik-za-magacin',
-                'logo' => 'https://placehold.co/96x96/dcfce7/166534?text=SE',
-                'title' => 'Сезонски работник за магацин',
-                'badge' => 'Сезонско',
-                'company' => 'Фреш Трејд',
-                'category' => 'Сезонска работа',
-                'location' => 'Струмица',
-                'engagement_type' => 'Сезонска работа',
-                'tags' => ['Сезонско', 'Магацин', 'Брз почеток'],
-            ],
+            'slug' => $job->slug,
+            'logo' => $this->resolveCompanyLogoUrl($job->company),
+            'title' => $job->title,
+            'badge' => $job->featured ? 'Издвоено' : match ($job->status) {
+                JobListing::STATUS_PAUSED => 'Паузирано',
+                JobListing::STATUS_FILLED => 'Пополнето',
+                default => 'Активно',
+            },
+            'company' => $job->company?->name ?? 'Непозната компанија',
+            'category' => $job->category,
+            'location' => $job->location,
+            'description' => $job->description,
+            'daily_pay' => $job->daily_pay,
+            'engagement_type' => $this->resolveEngagementType($job),
+            'tags' => $this->inferTags($job),
         ];
+    }
+
+    /**
+     * @param \Illuminate\Support\Collection<int, array<string, mixed>> $jobs
+     * @return array<int, array<string, string>>
+     */
+    private function homepageCategories(Collection $jobs): array
+    {
+        return $jobs
+            ->pluck('category')
+            ->map(fn (mixed $category): string => trim((string) $category))
+            ->filter()
+            ->countBy()
+            ->sortDesc()
+            ->take(4)
+            ->map(function (int $count, string $category): array {
+                return [
+                    'icon' => $this->homepageCategoryIcon($category),
+                    'name' => $category,
+                    'count' => $count . ' ' . ($count === 1 ? 'оглас' : 'огласи'),
+                ];
+            })
+            ->values()
+            ->all();
+    }
+
+    private function homepageCategoryIcon(string $category): string
+    {
+        $normalized = mb_strtolower($category);
+
+        if (
+            str_contains($normalized, 'продаж') ||
+            str_contains($normalized, 'промо') ||
+            str_contains($normalized, 'угост') ||
+            str_contains($normalized, 'настан')
+        ) {
+            return 'building-storefront';
+        }
+
+        return 'briefcase';
     }
 
     /**
@@ -678,7 +661,7 @@ class HomeController extends Controller
      */
     private function footerStats(Collection $jobs): array
     {
-        $companiesCount = Schema::hasTable('companies') ? Company::count() : 15;
+        $companiesCount = Schema::hasTable('companies') ? Company::count() : 0;
 
         return [
             ['value' => $jobs->count(), 'label' => 'Огласи за работа'],

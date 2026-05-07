@@ -122,11 +122,18 @@
                 </div>
             </div>
 
-            <div class="grid gap-4 lg:grid-cols-3 sm:gap-5">
-                @foreach ($jobs as $job)
-                    @include('partials.job-card', ['job' => $job])
-                @endforeach
-            </div>
+            @if (count($jobs) > 0)
+                <div class="grid gap-4 lg:grid-cols-3 sm:gap-5">
+                    @foreach ($jobs as $job)
+                        @include('partials.job-card', ['job' => $job])
+                    @endforeach
+                </div>
+            @else
+                <div class="rounded-[1.35rem] border border-slate-200 bg-white px-5 py-10 text-center shadow-[0_20px_45px_-34px_rgba(15,23,42,0.18)] sm:rounded-[1.6rem] sm:px-6 sm:py-12">
+                    <h3 class="text-xl font-bold text-slate-900">Моментално нема активни огласи</h3>
+                    <p class="mt-3 text-sm leading-7 text-slate-600">Кога ќе се објават нови позиции од компаниите, ќе се појават тука.</p>
+                </div>
+            @endif
 
             <div class="mt-6 text-center">
                 <a href="{{ route('jobs.index') }}" class="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-white px-5 py-2.5 text-sm font-semibold text-emerald-700 shadow-[0_12px_24px_-18px_rgba(5,150,105,0.45)] transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800">
@@ -144,11 +151,17 @@
                     </div>
                 </div>
 
-                <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 sm:gap-4">
-                    @foreach ($categories as $category)
-                        @include('partials.category-card', ['category' => $category])
-                    @endforeach
-                </div>
+                @if (count($categories) > 0)
+                    <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 sm:gap-4">
+                        @foreach ($categories as $category)
+                            @include('partials.category-card', ['category' => $category])
+                        @endforeach
+                    </div>
+                @else
+                    <div class="rounded-[1.35rem] border border-dashed border-slate-200 bg-slate-50 px-5 py-8 text-center">
+                        <p class="text-sm leading-7 text-slate-600">Категориите ќе се појават автоматски кога ќе има активни огласи.</p>
+                    </div>
+                @endif
 
                 <div class="mt-6 text-center">
                     <a href="{{ route('jobs.index') }}" class="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-white px-5 py-2.5 text-sm font-semibold text-emerald-700 shadow-[0_12px_24px_-18px_rgba(5,150,105,0.45)] transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800">
