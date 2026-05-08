@@ -148,6 +148,179 @@ class PublicJobsTest extends TestCase
             ->assertDontSee('pauziran-test-oglas');
     }
 
+    public function test_city_filter_for_skopje_includes_jobs_from_skopje_municipalities(): void
+    {
+        $company = Company::create([
+            'name' => 'Skopje Filter Company',
+            'email' => 'skopje-filter@test-company.mk',
+            'phone' => '070123456',
+            'description' => 'Company for Skopje filter test.',
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Општ оглас за Скопје',
+            'slug' => 'opst-oglas-za-skopje',
+            'description' => 'Опис за оглас од Скопје.',
+            'daily_pay' => 1700,
+            'location' => 'Скопје',
+            'category' => 'Промоции',
+            'featured' => false,
+            'status' => JobListing::STATUS_ACTIVE,
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Оглас за Аеродром',
+            'slug' => 'oglas-za-aerodrom',
+            'description' => 'Опис за оглас од Аеродром.',
+            'daily_pay' => 1650,
+            'location' => 'Аеродром',
+            'category' => 'Промоции',
+            'featured' => false,
+            'status' => JobListing::STATUS_ACTIVE,
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Оглас за Кисела Вода',
+            'slug' => 'oglas-za-kisela-voda',
+            'description' => 'Опис за оглас од Кисела Вода.',
+            'daily_pay' => 1600,
+            'location' => 'Скопје - Кисела Вода',
+            'category' => 'Промоции',
+            'featured' => false,
+            'status' => JobListing::STATUS_ACTIVE,
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Оглас за Битола',
+            'slug' => 'oglas-za-bitola',
+            'description' => 'Опис за оглас од Битола.',
+            'daily_pay' => 1500,
+            'location' => 'Битола',
+            'category' => 'Промоции',
+            'featured' => false,
+            'status' => JobListing::STATUS_ACTIVE,
+        ]);
+
+        $this->get(route('jobs.index', ['city' => 'Скопје']))
+            ->assertOk()
+            ->assertSee('Општ оглас за Скопје')
+            ->assertSee('Оглас за Аеродром')
+            ->assertSee('Оглас за Кисела Вода')
+            ->assertDontSee('Оглас за Битола');
+    }
+
+    public function test_city_filter_for_specific_municipality_only_returns_that_municipality(): void
+    {
+        $company = Company::create([
+            'name' => 'Municipality Filter Company',
+            'email' => 'municipality-filter@test-company.mk',
+            'phone' => '070123456',
+            'description' => 'Company for municipality filter test.',
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Оглас во Аеродром',
+            'slug' => 'oglas-vo-aerodrom',
+            'description' => 'Опис за оглас во Аеродром.',
+            'daily_pay' => 1750,
+            'location' => 'Скопје - Аеродром',
+            'category' => 'Промоции',
+            'featured' => false,
+            'status' => JobListing::STATUS_ACTIVE,
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Оглас во Карпош',
+            'slug' => 'oglas-vo-karpos',
+            'description' => 'Опис за оглас во Карпош.',
+            'daily_pay' => 1600,
+            'location' => 'Карпош',
+            'category' => 'Промоции',
+            'featured' => false,
+            'status' => JobListing::STATUS_ACTIVE,
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Општ оглас во Скопје',
+            'slug' => 'opst-oglas-vo-skopje',
+            'description' => 'Опис за општ оглас во Скопје.',
+            'daily_pay' => 1550,
+            'location' => 'Скопје',
+            'category' => 'Промоции',
+            'featured' => false,
+            'status' => JobListing::STATUS_ACTIVE,
+        ]);
+
+        $this->get(route('jobs.index', ['city' => 'Аеродром']))
+            ->assertOk()
+            ->assertSee('Оглас во Аеродром')
+            ->assertDontSee('Оглас во Карпош')
+            ->assertDontSee('Општ оглас во Скопје');
+    }
+
+    public function test_location_filter_keeps_keyword_and_category_filters_working(): void
+    {
+        $company = Company::create([
+            'name' => 'Combined Filter Company',
+            'email' => 'combined-filter@test-company.mk',
+            'phone' => '070123456',
+            'description' => 'Company for combined filter test.',
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Промотер во Аеродром',
+            'slug' => 'promoter-vo-aerodrom',
+            'description' => 'Промотерски ангажман во Аеродром.',
+            'daily_pay' => 1800,
+            'location' => 'Аеродром',
+            'category' => 'Промоции',
+            'featured' => false,
+            'status' => JobListing::STATUS_ACTIVE,
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Магационер во Аеродром',
+            'slug' => 'magacioner-vo-aerodrom',
+            'description' => 'Магацински ангажман во Аеродром.',
+            'daily_pay' => 1700,
+            'location' => 'Аеродром',
+            'category' => 'Магацин',
+            'featured' => false,
+            'status' => JobListing::STATUS_ACTIVE,
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Промотер во Битола',
+            'slug' => 'promoter-vo-bitola',
+            'description' => 'Промотерски ангажман во Битола.',
+            'daily_pay' => 1650,
+            'location' => 'Битола',
+            'category' => 'Промоции',
+            'featured' => false,
+            'status' => JobListing::STATUS_ACTIVE,
+        ]);
+
+        $this->get(route('jobs.index', [
+            'q' => 'промотер',
+            'city' => 'Скопје',
+            'category' => 'Промоции',
+        ]))
+            ->assertOk()
+            ->assertSee('Промотер во Аеродром')
+            ->assertDontSee('Магационер во Аеродром')
+            ->assertDontSee('Промотер во Битола');
+    }
+
     public function test_honorarna_rabota_landing_page_shows_seo_content_and_latest_jobs(): void
     {
         $company = Company::create([

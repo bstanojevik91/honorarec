@@ -7,6 +7,7 @@ use App\Models\BlogPost;
 use App\Models\Company;
 use App\Models\JobListing;
 use App\Support\DefaultBlogPosts;
+use App\Support\LocationOptions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -99,6 +100,7 @@ class HomeController extends Controller
             'testimonials' => $testimonials,
             'posts' => collect($posts)->take(2)->all(),
             'footerStats' => $this->footerStats($jobs),
+            ...$this->locationFilterViewData(trim((string) request()->string('city'))),
         ]);
     }
 
@@ -187,6 +189,7 @@ class HomeController extends Controller
             'engagementTypes' => self::ENGAGEMENT_TYPES,
             'availableTags' => $availableTags,
             'footerStats' => $this->footerStats($allJobs),
+            ...$this->locationFilterViewData($filters['city']),
         ]);
     }
 
@@ -548,10 +551,7 @@ class HomeController extends Controller
                     $job['description'] ?? '',
                 ])->contains(fn (string $value): bool => str_contains(mb_strtolower($value), mb_strtolower($filters['q'])));
 
-                $matchesCity = $filters['city'] === '' || str_contains(
-                    mb_strtolower((string) ($job['location'] ?? '')),
-                    mb_strtolower($filters['city'])
-                );
+                $matchesCity = LocationOptions::matches($job['location'] ?? null, $filters['city']);
 
                 $matchesCategory = $filters['category'] === '' || mb_strtolower((string) ($job['category'] ?? '')) === mb_strtolower($filters['category']);
                 $matchesEngagementType = $filters['engagement_type'] === '' || mb_strtolower((string) ($job['engagement_type'] ?? '')) === mb_strtolower($filters['engagement_type']);
@@ -858,6 +858,17 @@ class HomeController extends Controller
         return [
             ['value' => $jobs->count(), 'label' => 'Огласи за работа'],
             ['value' => $companiesCount, 'label' => 'Компании'],
+        ];
+    }
+
+    /**
+     * @return array{locationTree:array<int, array{name:string, municipalities:array<int, array{name:string}>}>, selectedLocationLabel:?string}
+     */
+    private function locationFilterViewData(string $selectedLocation): array
+    {
+        return [
+            'locationTree' => LocationOptions::tree(),
+            'selectedLocationLabel' => LocationOptions::displayLabel($selectedLocation),
         ];
     }
 

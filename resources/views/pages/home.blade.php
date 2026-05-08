@@ -61,23 +61,15 @@
                             </span>
                         </label>
 
-                        <label class="block">
-                            <span class="mb-2 block text-sm font-semibold text-slate-700">Локација</span>
-                            <span class="relative block">
-                                <span class="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-slate-400">
-                                    <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M10 2.75a5.75 5.75 0 00-5.75 5.75c0 4.21 4.615 8.047 5.132 8.463a1 1 0 001.236 0c.517-.416 5.132-4.252 5.132-8.463A5.75 5.75 0 0010 2.75zm0 7.5a1.75 1.75 0 100-3.5 1.75 1.75 0 000 3.5z" clip-rule="evenodd" />
-                                    </svg>
-                                </span>
-                                <input
-                                    name="city"
-                                    type="text"
-                                    value="{{ request('city') }}"
-                                    placeholder="Пр. Скопје"
-                                    class="hero-search-field h-[3.55rem] w-full rounded-[1.25rem] border border-slate-200 bg-slate-50/90 pl-12 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-0"
-                                >
-                            </span>
-                        </label>
+                        @include('partials.location-filter', [
+                            'locationTree' => $locationTree,
+                            'selectedValue' => request('city'),
+                            'selectedLabel' => $selectedLocationLabel,
+                            'placeholder' => 'Избери локација',
+                            'containerClass' => 'block',
+                            'triggerClass' => 'hero-search-field flex h-[3.55rem] w-full items-center justify-between gap-3 rounded-[1.25rem] border border-slate-200 bg-slate-50/90 pl-12 pr-4 text-sm font-medium text-slate-900 outline-none transition hover:bg-white focus:border-emerald-500 focus:bg-white focus:ring-0',
+                            'panelClass' => 'absolute left-0 right-0 top-[calc(100%+0.8rem)] z-50',
+                        ])
 
                         <label class="block">
                             <span class="mb-2 block text-sm font-semibold text-slate-700">Категорија</span>

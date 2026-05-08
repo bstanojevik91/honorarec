@@ -28,10 +28,16 @@
                         <label for="q" class="mb-2 block text-sm font-semibold text-slate-700">Клучен збор / назив на работа</label>
                         <input id="q" name="q" type="text" value="{{ $filters['q'] }}" placeholder="Пр. промотер, магационер..." class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 sm:col-span-2 xl:col-span-1">
                     </div>
-                    <div>
-                        <label for="city" class="mb-2 block text-sm font-semibold text-slate-700">Град</label>
-                        <input id="city" name="city" type="text" value="{{ $filters['city'] }}" placeholder="Пр. Скопје" class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
-                    </div>
+                    @include('partials.location-filter', [
+                        'locationTree' => $locationTree,
+                        'selectedValue' => $filters['city'],
+                        'selectedLabel' => $selectedLocationLabel,
+                        'placeholder' => 'Избери локација',
+                        'containerClass' => 'block',
+                        'triggerClass' => 'flex h-12 w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white pl-4 pr-3 text-sm font-medium text-slate-900 outline-none transition hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100',
+                        'panelClass' => 'absolute left-0 right-0 top-[calc(100%+0.7rem)] z-50',
+                        'iconWrapperClass' => 'pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-slate-400',
+                    ])
                     <div>
                         <label for="category" class="mb-2 block text-sm font-semibold text-slate-700">Категорија</label>
                         <select id="category" name="category" class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
