@@ -39,7 +39,6 @@ class JobListingController extends Controller
         $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
         $data = $this->onlyJobFields($data);
         $data = $this->normalizeJobFields($data);
-        $data = $this->applyInitialApprovalLifecycle($data);
 
         JobListing::create($data);
 
@@ -65,7 +64,6 @@ class JobListingController extends Controller
         $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
         $data = $this->onlyJobFields($data);
         $data = $this->normalizeJobFields($data);
-        $data = $this->applyInitialApprovalLifecycle($data, $job);
 
         $job->update($data);
 
@@ -100,17 +98,9 @@ class JobListingController extends Controller
 
     public function approve(JobListing $job): RedirectResponse
     {
-        $updates = [
+        $job->update([
             'status' => JobListing::STATUS_ACTIVE,
-        ];
-
-        if ($job->approved_at === null) {
-            $approvedAt = now();
-            $updates['approved_at'] = $approvedAt;
-            $updates['expires_at'] = $job->expires_at ?? $job->defaultApprovalExpiry($approvedAt);
-        }
-
-        $job->update($updates);
+        ]);
 
         return redirect()
             ->route('admin.jobs.index')
@@ -174,7 +164,6 @@ class JobListingController extends Controller
             'engagement_type',
             'featured',
             'status',
-            'approved_at',
             'expires_at',
         ])->when(
             ! Schema::hasColumn('job_listings', 'engagement_type'),
@@ -192,27 +181,6 @@ class JobListingController extends Controller
         $data['location'] = $data['location'] ?? '';
         $data['category'] = $data['category'] ?? '';
         $data['engagement_type'] = $data['engagement_type'] ?? null;
-
-        return $data;
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     * @return array<string, mixed>
-     */
-    private function applyInitialApprovalLifecycle(array $data, ?JobListing $job = null): array
-    {
-        $currentApprovedAt = $job?->approved_at;
-
-        if (($data['status'] ?? null) !== JobListing::STATUS_ACTIVE || $currentApprovedAt !== null) {
-            $data['approved_at'] = $currentApprovedAt;
-
-            return $data;
-        }
-
-        $approvedAt = now();
-        $data['approved_at'] = $approvedAt;
-        $data['expires_at'] = $data['expires_at'] ?? $job?->expires_at ?? (new JobListing())->defaultApprovalExpiry($approvedAt);
 
         return $data;
     }

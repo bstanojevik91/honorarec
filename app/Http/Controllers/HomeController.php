@@ -780,11 +780,6 @@ class HomeController extends Controller
         return JobListing::query()
             ->with('company')
             ->where('status', JobListing::STATUS_ACTIVE)
-            ->where(function (Builder $query): void {
-                $query
-                    ->whereNull('expires_at')
-                    ->orWhere('expires_at', '>', now()->startOfDay());
-            })
             ->latest();
     }
 

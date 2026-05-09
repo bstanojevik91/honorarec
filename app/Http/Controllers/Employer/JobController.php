@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Employer\StoreEmployerJobRequest;
 use App\Http\Requests\Employer\UpdateEmployerJobRequest;
 use App\Models\JobListing;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
@@ -50,8 +51,7 @@ class JobController extends Controller
         $data['status'] = JobListing::STATUS_PENDING;
         $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
         $data = $this->normalizeJobFields($data);
-        $data['approved_at'] = null;
-        $data['expires_at'] = null;
+        $data['expires_at'] = $this->defaultExpiryDate();
 
         JobListing::create($data);
 
@@ -145,5 +145,10 @@ class JobController extends Controller
         $data['engagement_type'] = $data['engagement_type'] ?? null;
 
         return $data;
+    }
+
+    private function defaultExpiryDate(): Carbon
+    {
+        return now()->addDays(30)->startOfDay();
     }
 }

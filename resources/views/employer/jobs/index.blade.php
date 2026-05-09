@@ -63,12 +63,6 @@
                                 <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $job->status === 'active' ? 'bg-emerald-100 text-emerald-700' : ($job->status === 'pending' ? 'bg-sky-100 text-sky-700' : ($job->status === 'paused' ? 'bg-amber-100 text-amber-700' : ($job->status === 'rejected' ? 'bg-rose-100 text-rose-700' : 'bg-slate-200 text-slate-700'))) }}">
                                     {{ $job->statusLabel() }}
                                 </span>
-                                @if ($job->isApproved())
-                                    <div class="mt-2 text-xs text-slate-500">Одобрен на: {{ $job->approvedAtLabel() }}</div>
-                                @endif
-                                <div class="mt-1 text-xs {{ $job->isExpired() ? 'text-rose-600' : 'text-slate-500' }}">
-                                    {{ $job->employerLifecycleMessage() }}
-                                </div>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex justify-end gap-3">

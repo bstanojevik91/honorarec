@@ -18,10 +18,6 @@ class DashboardController extends Controller
                 'companies' => Company::count(),
                 'applications' => JobApplication::count(),
             ],
-            'recentJobs' => JobListing::with('company')
-                ->latest()
-                ->take(8)
-                ->get(),
             'recentApplications' => JobApplication::with('jobListing.company')
                 ->latest()
                 ->take(8)
