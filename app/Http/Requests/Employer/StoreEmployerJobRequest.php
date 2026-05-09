@@ -55,7 +55,6 @@ class StoreEmployerJobRequest extends FormRequest
             'category' => ['nullable', 'string', 'max:255'],
             'engagement_type' => ['nullable', Rule::in(JobListing::engagementTypeOptions())],
             'featured' => ['nullable', 'boolean'],
-            'expires_at' => ['nullable', 'date'],
         ];
     }
 
@@ -70,7 +69,6 @@ class StoreEmployerJobRequest extends FormRequest
             'location' => 'локација',
             'category' => 'категорија',
             'engagement_type' => 'вид на работен ангажман',
-            'expires_at' => 'датум на истекување',
             'description' => 'опис',
         ];
     }

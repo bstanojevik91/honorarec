@@ -56,11 +56,6 @@
         </select>
     </div>
 
-    <div>
-        <label for="expires_at" class="mb-2 block text-sm font-semibold text-slate-700">Датум на истекување</label>
-        <input id="expires_at" name="expires_at" type="date" value="{{ old('expires_at', isset($job) && $job->expires_at ? $job->expires_at->format('Y-m-d') : '') }}" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
-    </div>
-
     <div class="lg:col-span-2">
         <label for="description" class="mb-2 block text-sm font-semibold text-slate-700">Опис</label>
         <textarea id="description" name="description" rows="8" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">{{ old('description', $job->description ?? '') }}</textarea>
