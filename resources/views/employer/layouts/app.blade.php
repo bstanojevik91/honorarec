@@ -66,7 +66,10 @@
                         @endisset
                     </div>
 
-                    <div class="flex items-center gap-4">
+                    <div class="flex flex-wrap items-center gap-3 sm:gap-4">
+                        <a href="{{ route('employer.jobs.create') }}" class="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500">
+                            + Објави оглас
+                        </a>
                         <a href="{{ route('home') }}" class="text-sm font-medium text-slate-500 transition hover:text-slate-900">Види сајт</a>
                         <form method="POST" action="{{ route('employer.logout') }}">
                             @csrf
