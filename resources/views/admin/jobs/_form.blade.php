@@ -1,6 +1,7 @@
 @php($statusOptions = \App\Models\JobListing::statusOptions())
 @php($engagementTypeOptions = \App\Models\JobListing::engagementTypeOptions())
 @php($dailyPayMode = old('daily_pay_mode', isset($job) ? ($job->daily_pay !== null ? 'amount' : 'agreement') : 'amount'))
+@php($selectedLocation = old('location', $job->location ?? ''))
 
 @if ($errors->any())
     <div class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-700">
@@ -47,10 +48,16 @@
         <p class="mt-2 text-xs text-slate-500">Ако изберете „По договор“, бројката нема да се зачува.</p>
     </div>
 
-    <div>
-        <label for="location" class="mb-2 block text-sm font-semibold text-slate-700">Локација</label>
-        <input id="location" name="location" type="text" value="{{ old('location', $job->location ?? '') }}" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
-    </div>
+    @include('partials.location-filter', [
+        'locationTree' => \App\Support\LocationOptions::tree(),
+        'inputName' => 'location',
+        'selectedValue' => $selectedLocation,
+        'selectedLabel' => \App\Support\LocationOptions::displayLabel($selectedLocation),
+        'placeholder' => 'Избери локација',
+        'containerClass' => 'relative z-[80] block',
+        'triggerClass' => 'flex h-[3.125rem] w-full min-w-0 items-center justify-between gap-3 overflow-hidden rounded-2xl border border-slate-200 bg-white pl-4 pr-3 text-sm font-medium text-slate-900 outline-none transition hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100',
+        'panelClass' => 'absolute left-0 right-0 top-[calc(100%+0.7rem)] z-[120] lg:right-auto lg:w-[24rem]',
+    ])
 
     <div>
         <label for="category" class="mb-2 block text-sm font-semibold text-slate-700">Категорија</label>

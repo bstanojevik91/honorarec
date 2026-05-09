@@ -28,6 +28,7 @@
             },
         };
     </script>
+    @stack('styles')
 </head>
 <body class="bg-stone-100 font-sans text-slate-900 antialiased">
     <div class="min-h-screen lg:flex">
@@ -88,5 +89,6 @@
             </main>
         </div>
     </div>
+    @stack('scripts')
 </body>
 </html>
