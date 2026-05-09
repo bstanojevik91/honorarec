@@ -9,7 +9,7 @@
     $panelClass = $panelClass ?? '';
     $iconWrapperClass = $iconWrapperClass ?? 'pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-slate-400';
     $iconClass = $iconClass ?? 'h-5 w-5';
-    $menuMaxHeightClass = $menuMaxHeightClass ?? 'max-h-[24rem]';
+    $menuMaxHeightClass = $menuMaxHeightClass ?? 'max-h-[26rem]';
 @endphp
 
 <div class="{{ $containerClass }}" data-location-filter>
@@ -41,7 +41,7 @@
         </button>
 
         <div class="hidden {{ $panelClass }}" data-location-filter-panel>
-            <div class="overflow-hidden rounded-[1.55rem] border border-slate-200 bg-white p-2 shadow-[0_30px_60px_-32px_rgba(15,23,42,0.38)]">
+            <div class="overflow-visible rounded-[1.55rem] border border-slate-200 bg-white p-2 shadow-[0_30px_60px_-32px_rgba(15,23,42,0.38)]">
                 <div class="mb-2 border-b border-slate-100 pb-2">
                     <button
                         type="button"
@@ -62,6 +62,9 @@
                                 $cityName = $city['name'];
                                 $cityMunicipalities = $city['municipalities'] ?? [];
                                 $citySelected = $selectedValue === $cityName;
+                                $cityHasSelectedMunicipality = collect($cityMunicipalities)->contains(
+                                    fn (array $municipality): bool => $selectedValue === ($municipality['name'] ?? '')
+                                );
                             @endphp
 
                             @if ($cityMunicipalities === [])
@@ -80,65 +83,70 @@
                                     @endif
                                 </button>
                             @else
-                                <div class="relative" data-location-item>
-                                    <div class="flex items-center gap-2 rounded-[1rem] border border-transparent px-1 py-1 transition hover:bg-slate-50">
+                                <div class="relative" data-location-item @if($citySelected || $cityHasSelectedMunicipality) data-location-item-selected="true" @endif>
+                                    <button
+                                        type="button"
+                                        class="flex w-full items-center justify-between rounded-[1rem] border border-transparent px-3.5 py-3 text-left text-sm font-semibold transition hover:border-emerald-100 hover:bg-emerald-50/80 hover:text-emerald-700 {{ $citySelected ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'text-slate-700' }}"
+                                        data-location-filter-submenu-toggle
+                                        aria-expanded="false"
+                                        aria-label="Прикажи општини за {{ $cityName }}"
+                                    >
+                                        <span class="flex min-w-0 flex-col">
+                                            <span class="truncate">{{ $cityName }}</span>
+                                            <span class="mt-0.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                                                {{ count($cityMunicipalities) }} општини
+                                            </span>
+                                        </span>
+
+                                        <span class="ml-3 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition">
+                                            <svg viewBox="0 0 20 20" fill="currentColor" class="h-[1.05rem] w-[1.05rem] transition duration-200" data-location-filter-submenu-chevron aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M7.22 5.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L10.94 10 7.22 6.28a.75.75 0 010-1.06z" clip-rule="evenodd" />
+                                            </svg>
+                                        </span>
+                                    </button>
+
+                                    <div class="mt-2 hidden rounded-[1.15rem] border border-slate-200 bg-slate-50/80 p-2.5" data-location-submenu>
                                         <button
                                             type="button"
-                                            class="flex min-w-0 flex-1 items-center justify-between rounded-[0.95rem] px-2.5 py-2.5 text-left text-sm font-semibold transition hover:bg-emerald-50/80 hover:text-emerald-700 {{ $citySelected ? 'bg-emerald-50 text-emerald-700' : 'text-slate-700' }}"
+                                            class="mb-2 flex w-full items-center justify-between rounded-[0.95rem] border border-transparent bg-white px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:border-emerald-100 hover:bg-emerald-50/80 hover:text-emerald-700 {{ $citySelected ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : '' }}"
                                             data-location-filter-select
                                             data-location-value="{{ $cityName }}"
                                             data-location-label="{{ $cityName }}"
                                         >
-                                            <span class="truncate">{{ $cityName }}</span>
+                                            <span>{{ $cityName }} - сите општини</span>
                                             @if ($citySelected)
-                                                <svg viewBox="0 0 20 20" fill="currentColor" class="ml-3 h-4 w-4 shrink-0 text-emerald-600" aria-hidden="true">
+                                                <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 text-emerald-600" aria-hidden="true">
                                                     <path fill-rule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-7.2 7.2a1 1 0 01-1.415 0l-3-3a1 1 0 111.414-1.42l2.293 2.294 6.493-6.494a1 1 0 011.415 0z" clip-rule="evenodd" />
                                                 </svg>
                                             @endif
                                         </button>
 
-                                        <button
-                                            type="button"
-                                            class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[0.95rem] text-slate-500 transition hover:bg-white hover:text-slate-800"
-                                            data-location-filter-submenu-toggle
-                                            aria-expanded="false"
-                                            aria-label="Прикажи општини за {{ $cityName }}"
-                                        >
-                                            <svg viewBox="0 0 20 20" fill="currentColor" class="h-[1.125rem] w-[1.125rem] transition duration-200 md:rotate-0" data-location-filter-submenu-chevron aria-hidden="true">
-                                                <path fill-rule="evenodd" d="M7.22 5.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L10.94 10 7.22 6.28a.75.75 0 010-1.06z" clip-rule="evenodd" />
-                                            </svg>
-                                        </button>
-                                    </div>
+                                        <div class="mb-2 px-2 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">
+                                            {{ $cityName }} општини
+                                        </div>
 
-                                    <div class="mt-2 hidden md:absolute md:left-full md:top-0 md:z-10 md:mt-0 md:ml-2 md:w-[17rem]" data-location-submenu>
-                                        <div class="rounded-[1.3rem] border border-slate-200 bg-white p-2 shadow-[0_26px_50px_-32px_rgba(15,23,42,0.34)]">
-                                            <div class="mb-2 px-3 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">
-                                                {{ $cityName }} општини
-                                            </div>
+                                        <div class="space-y-1">
+                                            @foreach ($cityMunicipalities as $municipality)
+                                                @php
+                                                    $municipalityName = $municipality['name'];
+                                                    $municipalitySelected = $selectedValue === $municipalityName;
+                                                @endphp
 
-                                            <div class="space-y-1">
-                                                @foreach ($cityMunicipalities as $municipality)
-                                                    @php
-                                                        $municipalityName = $municipality['name'];
-                                                        $municipalitySelected = $selectedValue === $municipalityName;
-                                                    @endphp
-
-                                                    <button
-                                                        type="button"
-                                                        class="flex w-full items-center justify-between rounded-[0.95rem] border border-transparent px-3 py-2.5 text-left text-sm font-medium transition hover:border-emerald-100 hover:bg-emerald-50/80 hover:text-emerald-700 {{ $municipalitySelected ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'text-slate-700' }}"
-                                                        data-location-filter-select
-                                                        data-location-value="{{ $municipalityName }}"
-                                                        data-location-label="{{ $municipalityName }}"
-                                                    >
-                                                        <span>{{ $municipalityName }}</span>
-                                                        @if ($municipalitySelected)
-                                                            <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 text-emerald-600" aria-hidden="true">
-                                                                <path fill-rule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-7.2 7.2a1 1 0 01-1.415 0l-3-3a1 1 0 111.414-1.42l2.293 2.294 6.493-6.494a1 1 0 011.415 0z" clip-rule="evenodd" />
-                                                            </svg>
-                                                        @endif
-                                                    </button>
-                                                @endforeach
-                                            </div>
+                                                <button
+                                                    type="button"
+                                                    class="flex w-full items-center justify-between rounded-[0.95rem] border border-transparent bg-white px-3 py-2.5 text-left text-sm font-medium transition hover:border-emerald-100 hover:bg-emerald-50/80 hover:text-emerald-700 {{ $municipalitySelected ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'text-slate-700' }}"
+                                                    data-location-filter-select
+                                                    data-location-value="{{ $municipalityName }}"
+                                                    data-location-label="{{ $municipalityName }}"
+                                                >
+                                                    <span>{{ $municipalityName }}</span>
+                                                    @if ($municipalitySelected)
+                                                        <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 text-emerald-600" aria-hidden="true">
+                                                            <path fill-rule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-7.2 7.2a1 1 0 01-1.415 0l-3-3a1 1 0 111.414-1.42l2.293 2.294 6.493-6.494a1 1 0 011.415 0z" clip-rule="evenodd" />
+                                                        </svg>
+                                                    @endif
+                                                </button>
+                                            @endforeach
                                         </div>
                                     </div>
                                 </div>
@@ -205,6 +213,12 @@
                         panel.classList.remove('hidden');
                         trigger.setAttribute('aria-expanded', 'true');
                         chevron.classList.add('rotate-180');
+
+                        const selectedItem = root.querySelector('[data-location-item-selected="true"]');
+
+                        if (selectedItem) {
+                            openSubmenu(selectedItem);
+                        }
                     };
 
                     const openSubmenu = (item) => {

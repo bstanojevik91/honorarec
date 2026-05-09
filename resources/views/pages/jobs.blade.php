@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="relative isolate overflow-hidden bg-slate-950">
+    <div class="relative isolate bg-slate-950">
         <div class="absolute inset-0">
             <div class="h-full w-full bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_34%),linear-gradient(180deg,_rgba(2,6,23,0.8),_rgba(2,6,23,0.94))]"></div>
         </div>
@@ -21,7 +21,7 @@
 
     <main class="bg-stone-50">
         <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
-            <div class="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.18)] sm:rounded-[1.6rem] sm:p-6">
+            <div class="relative z-[70] rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.18)] sm:rounded-[1.6rem] sm:p-6">
                 <form method="GET" action="{{ route('jobs.index') }}" class="space-y-5">
                     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-[1.45fr_1fr_1fr_1fr_auto]">
                     <div>
@@ -33,9 +33,9 @@
                         'selectedValue' => $filters['city'],
                         'selectedLabel' => $selectedLocationLabel,
                         'placeholder' => 'Избери локација',
-                        'containerClass' => 'block',
+                        'containerClass' => 'relative z-[80] block',
                         'triggerClass' => 'flex h-12 w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white pl-4 pr-3 text-sm font-medium text-slate-900 outline-none transition hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100',
-                        'panelClass' => 'absolute left-0 right-0 top-[calc(100%+0.7rem)] z-50',
+                        'panelClass' => 'absolute left-0 right-0 top-[calc(100%+0.7rem)] z-[120] lg:right-auto lg:w-[24rem]',
                         'iconWrapperClass' => 'pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-slate-400',
                     ])
                     <div>

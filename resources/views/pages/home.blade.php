@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="relative isolate overflow-hidden bg-slate-950">
+    <div class="relative isolate bg-slate-950">
         <div class="absolute inset-0">
             <img src="{{ $hero['image'] }}" alt="Hero background" class="h-full w-full object-cover object-center">
             <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,7,18,0.42)_0%,rgba(7,10,24,0.62)_18%,rgba(10,14,29,0.72)_38%,rgba(5,8,20,0.9)_68%,rgba(2,6,23,0.98)_100%)]"></div>
@@ -36,7 +36,7 @@
                 </div>
             </div>
 
-            <form id="home-search-card" method="GET" action="{{ route('jobs.index') }}" class="relative z-10 mx-auto -mt-1 max-w-5xl rounded-[1.6rem] bg-white p-3.5 shadow-[0_28px_68px_-30px_rgba(15,23,42,0.34)] sm:-mt-12 sm:rounded-[2rem] sm:p-5 lg:-mt-18 lg:p-6">
+            <form id="home-search-card" method="GET" action="{{ route('jobs.index') }}" class="relative z-[80] mx-auto -mt-1 max-w-5xl rounded-[1.6rem] bg-white p-3.5 shadow-[0_28px_68px_-30px_rgba(15,23,42,0.34)] sm:-mt-12 sm:rounded-[2rem] sm:p-5 lg:-mt-18 lg:p-6">
                 <div class="space-y-4">
                     <div class="text-center lg:text-left">
                         <h2 class="text-[1.55rem] font-bold tracking-tight text-slate-900 sm:text-[1.7rem]">Најди оглас за неколку секунди</h2>
@@ -66,9 +66,9 @@
                             'selectedValue' => request('city'),
                             'selectedLabel' => $selectedLocationLabel,
                             'placeholder' => 'Избери локација',
-                            'containerClass' => 'block',
+                            'containerClass' => 'relative z-[90] block',
                             'triggerClass' => 'hero-search-field flex h-[3.55rem] w-full items-center justify-between gap-3 rounded-[1.25rem] border border-slate-200 bg-slate-50/90 pl-12 pr-4 text-sm font-medium text-slate-900 outline-none transition hover:bg-white focus:border-emerald-500 focus:bg-white focus:ring-0',
-                            'panelClass' => 'absolute left-0 right-0 top-[calc(100%+0.8rem)] z-50',
+                            'panelClass' => 'absolute left-0 right-0 top-[calc(100%+0.8rem)] z-[120] lg:right-auto lg:w-[24rem]',
                         ])
 
                         <label class="block">
