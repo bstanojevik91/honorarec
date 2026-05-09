@@ -449,4 +449,14 @@ class PublicJobsTest extends TestCase
             ->assertSee('<changefreq>daily</changefreq>', false)
             ->assertSee('<priority>1.0</priority>', false);
     }
+
+    public function test_public_robots_txt_matches_expected_rules(): void
+    {
+        $this->assertFileExists(public_path('robots.txt'));
+
+        $this->assertSame(
+            "User-agent: *\nAllow: /\n\nSitemap: https://honorarec.mk/sitemap.xml\n",
+            file_get_contents(public_path('robots.txt'))
+        );
+    }
 }
