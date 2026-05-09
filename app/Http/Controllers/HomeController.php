@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\JobListing;
 use App\Support\DefaultBlogPosts;
 use App\Support\LocationOptions;
+use App\Support\PublicUrl;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Schema;
 class HomeController extends Controller
 {
     private const NO_PUBLIC_CALL_TOKEN = '__NO_PUBLIC_CALL__';
+    private const SITEMAP_CACHE_KEY = 'public-sitemap.xml.v2';
 
     private const ENGAGEMENT_TYPES = [
         'На дневница',
@@ -237,7 +239,7 @@ class HomeController extends Controller
     {
         $payload = app()->environment('testing')
             ? $this->buildSitemapPayload()
-            : Cache::remember('public-sitemap.xml', now()->addMinutes(30), fn (): array => $this->buildSitemapPayload());
+            : Cache::remember(self::SITEMAP_CACHE_KEY, now()->addMinutes(30), fn (): array => $this->buildSitemapPayload());
 
         $response = response()
             ->view('sitemap.xml', ['urls' => $payload['urls']])
@@ -400,31 +402,31 @@ class HomeController extends Controller
 
         return array_values(array_filter([
             [
-                'loc' => route('home'),
+                'loc' => $this->publicRoute('home'),
                 'lastmod' => $homeLastmod,
                 'changefreq' => 'daily',
                 'priority' => '1.0',
             ],
             [
-                'loc' => route('jobs.index'),
+                'loc' => $this->publicRoute('jobs.index'),
                 'lastmod' => $jobsLastmod,
                 'changefreq' => 'daily',
                 'priority' => '0.9',
             ],
             [
-                'loc' => route('seo.honorarna-rabota'),
+                'loc' => $this->publicRoute('seo.honorarna-rabota'),
                 'lastmod' => $seoLastmod,
                 'changefreq' => 'weekly',
                 'priority' => '0.8',
             ],
             [
-                'loc' => route('faq'),
+                'loc' => $this->publicRoute('faq'),
                 'lastmod' => $faqLastmod,
                 'changefreq' => 'monthly',
                 'priority' => '0.6',
             ],
             [
-                'loc' => route('blog.index'),
+                'loc' => $this->publicRoute('blog.index'),
                 'lastmod' => $blogIndexLastmod,
                 'changefreq' => 'weekly',
                 'priority' => '0.7',
@@ -444,7 +446,7 @@ class HomeController extends Controller
         return $this->publicJobListingsQuery()
             ->get(['slug', 'updated_at', 'created_at'])
             ->map(fn (JobListing $job): array => [
-                'loc' => route('jobs.show', $job->slug),
+                'loc' => $this->publicRoute('jobs.show', $job->slug),
                 'lastmod' => $this->sitemapLastmod($job->updated_at ?? $job->created_at),
                 'changefreq' => 'daily',
                 'priority' => '0.8',
@@ -467,7 +469,7 @@ class HomeController extends Controller
             ->latest()
             ->get(['slug', 'published_at', 'updated_at', 'created_at'])
             ->map(fn (BlogPost $post): array => [
-                'loc' => route('blog.show', $post->slug),
+                'loc' => $this->publicRoute('blog.show', $post->slug),
                 'lastmod' => $this->sitemapLastmod($post->updated_at ?? $post->published_at ?? $post->created_at),
                 'changefreq' => 'monthly',
                 'priority' => '0.7',
@@ -924,5 +926,13 @@ class HomeController extends Controller
     private function sitemapLastmod(?Carbon $value): string
     {
         return ($value ?? now())->copy()->utc()->toAtomString();
+    }
+
+    /**
+     * @param  array<string, mixed>|string  $parameters
+     */
+    private function publicRoute(string $name, array|string $parameters = []): string
+    {
+        return PublicUrl::absolutePath(route($name, $parameters, false));
     }
 }

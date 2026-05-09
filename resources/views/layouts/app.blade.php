@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="mk">
 <head>
+    @php
+        $resolvedCanonical = \App\Support\PublicUrl::normalize($canonical ?? url()->current());
+        $resolvedOgUrl = \App\Support\PublicUrl::normalize($ogUrl ?? $resolvedCanonical);
+        $resolvedOgImage = ! empty($ogImage) ? \App\Support\PublicUrl::normalize($ogImage) : null;
+    @endphp
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VDST4H1ZZ7"></script>
     <script>
@@ -16,15 +21,13 @@
     <meta name="description" content="{{ $description ?? 'Хонорарец.мк - најди работа на дневница.' }}">
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="apple-touch-icon" href="/favicon.png">
-    @if (!empty($canonical))
-        <link rel="canonical" href="{{ $canonical }}">
-    @endif
+    <link rel="canonical" href="{{ $resolvedCanonical }}">
     <meta property="og:type" content="{{ $ogType ?? 'website' }}">
     <meta property="og:title" content="{{ $ogTitle ?? ($title ?? 'Honorarec.mk') }}">
     <meta property="og:description" content="{{ $ogDescription ?? ($description ?? 'Хонорарец.мк - најди работа на дневница.') }}">
-    <meta property="og:url" content="{{ $ogUrl ?? ($canonical ?? request()->url()) }}">
-    @if (!empty($ogImage))
-        <meta property="og:image" content="{{ $ogImage }}">
+    <meta property="og:url" content="{{ $resolvedOgUrl }}">
+    @if ($resolvedOgImage)
+        <meta property="og:image" content="{{ $resolvedOgImage }}">
     @endif
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Support\PublicUrl;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (PublicUrl::shouldForceHttps()) {
+            URL::forceRootUrl(PublicUrl::baseUrl());
+            URL::forceScheme('https');
+        }
     }
 }

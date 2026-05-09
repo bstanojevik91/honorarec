@@ -3,6 +3,7 @@
 use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\EnsureEmployer;
 use App\Http\Middleware\EnsureEmployerVerified;
+use App\Http\Middleware\ForceHttps;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Foundation\Application;
@@ -16,6 +17,8 @@ $app = Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->prepend(ForceHttps::class);
+
         $middleware->alias([
             'admin' => EnsureAdmin::class,
             'employer' => EnsureEmployer::class,

@@ -459,4 +459,54 @@ class PublicJobsTest extends TestCase
             file_get_contents(public_path('robots.txt'))
         );
     }
+
+    public function test_sitemap_xml_uses_https_urls_for_public_domain(): void
+    {
+        config(['app.url' => 'http://honorarec.mk']);
+
+        $response = $this
+            ->withServerVariables([
+                'HTTP_HOST' => 'honorarec.mk',
+                'HTTPS' => 'on',
+                'SERVER_PORT' => 443,
+            ])
+            ->get('/sitemap.xml');
+
+        $response->assertOk()
+            ->assertSee('https://honorarec.mk', false)
+            ->assertDontSee('http://honorarec.mk', false);
+    }
+
+    public function test_homepage_emits_https_canonical_and_open_graph_urls(): void
+    {
+        config(['app.url' => 'http://honorarec.mk']);
+
+        $response = $this
+            ->withServerVariables([
+                'HTTP_HOST' => 'honorarec.mk',
+                'HTTPS' => 'on',
+                'SERVER_PORT' => 443,
+            ])
+            ->get('/');
+
+        $response->assertOk()
+            ->assertSee('<link rel="canonical" href="https://honorarec.mk">', false)
+            ->assertSee('<meta property="og:url" content="https://honorarec.mk">', false)
+            ->assertDontSee('http://honorarec.mk', false);
+    }
+
+    public function test_http_requests_redirect_to_https_for_public_domain(): void
+    {
+        config(['app.url' => 'http://honorarec.mk']);
+
+        $response = $this
+            ->withServerVariables([
+                'HTTP_HOST' => 'honorarec.mk',
+                'SERVER_PORT' => 80,
+            ])
+            ->get('/');
+
+        $response->assertRedirect('https://honorarec.mk/');
+        $this->assertSame(301, $response->getStatusCode());
+    }
 }
