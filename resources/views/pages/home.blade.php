@@ -67,7 +67,7 @@
                             'selectedLabel' => $selectedLocationLabel,
                             'placeholder' => 'Избери локација',
                             'containerClass' => 'relative z-[90] block',
-                            'triggerClass' => 'hero-search-field flex h-[3.55rem] w-full items-center justify-between gap-3 rounded-[1.25rem] border border-slate-200 bg-slate-50/90 pl-12 pr-4 text-sm font-medium text-slate-900 outline-none transition hover:bg-white focus:border-emerald-500 focus:bg-white focus:ring-0',
+                            'triggerClass' => 'hero-search-field flex h-[3.55rem] w-full min-w-0 items-center justify-between gap-3 overflow-hidden rounded-[1.25rem] border border-slate-200 bg-slate-50/90 pl-12 pr-4 text-sm font-medium text-slate-900 outline-none transition hover:bg-white focus:border-emerald-500 focus:bg-white focus:ring-0',
                             'panelClass' => 'absolute left-0 right-0 top-[calc(100%+0.8rem)] z-[120] lg:right-auto lg:w-[24rem]',
                         ])
 

@@ -31,7 +31,11 @@
             aria-haspopup="true"
             aria-expanded="false"
         >
-            <span data-location-filter-label data-placeholder="{{ $placeholder }}">
+            <span
+                class="min-w-0 flex-1 truncate whitespace-nowrap text-left {{ $selectedValue === '' ? 'text-slate-600' : 'text-slate-900' }}"
+                data-location-filter-label
+                data-placeholder="{{ $placeholder }}"
+            >
                 {{ $selectedLabel ?: $placeholder }}
             </span>
 
@@ -182,6 +186,12 @@
                         return;
                     }
 
+                    const updateLabelState = (value, text) => {
+                        label.textContent = text;
+                        label.classList.toggle('text-slate-600', value === '');
+                        label.classList.toggle('text-slate-900', value !== '');
+                    };
+
                     const closeSubmenus = () => {
                         root.querySelectorAll('[data-location-item]').forEach((item) => {
                             const submenu = item.querySelector('[data-location-submenu]');
@@ -251,8 +261,11 @@
 
                     root.querySelectorAll('[data-location-filter-select]').forEach((button) => {
                         button.addEventListener('click', () => {
-                            input.value = button.dataset.locationValue ?? '';
-                            label.textContent = button.dataset.locationLabel ?? label.dataset.placeholder ?? '';
+                            const value = button.dataset.locationValue ?? '';
+                            const text = button.dataset.locationLabel ?? label.dataset.placeholder ?? '';
+
+                            input.value = value;
+                            updateLabelState(value, text);
                             closePanel();
                         });
                     });
