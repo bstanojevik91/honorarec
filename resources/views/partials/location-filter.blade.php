@@ -7,6 +7,7 @@
     $containerClass = $containerClass ?? '';
     $triggerClass = $triggerClass ?? '';
     $panelClass = $panelClass ?? '';
+    $showIcon = $showIcon ?? false;
     $iconWrapperClass = $iconWrapperClass ?? 'pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-slate-400';
     $iconClass = $iconClass ?? 'h-5 w-5';
     $menuMaxHeightClass = $menuMaxHeightClass ?? 'max-h-[26rem]';
@@ -18,11 +19,13 @@
     <div class="relative">
         <input type="hidden" name="{{ $inputName }}" value="{{ $selectedValue }}" data-location-filter-input>
 
-        <span class="{{ $iconWrapperClass }}">
-            <svg viewBox="0 0 20 20" fill="currentColor" class="{{ $iconClass }}" aria-hidden="true">
-                <path fill-rule="evenodd" d="M10 2.75a5.75 5.75 0 00-5.75 5.75c0 4.21 4.615 8.047 5.132 8.463a1 1 0 001.236 0c.517-.416 5.132-4.252 5.132-8.463A5.75 5.75 0 0010 2.75zm0 7.5a1.75 1.75 0 100-3.5 1.75 1.75 0 000 3.5z" clip-rule="evenodd" />
-            </svg>
-        </span>
+        @if ($showIcon)
+            <span class="{{ $iconWrapperClass }}">
+                <svg viewBox="0 0 20 20" fill="currentColor" class="{{ $iconClass }}" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 2.75a5.75 5.75 0 00-5.75 5.75c0 4.21 4.615 8.047 5.132 8.463a1 1 0 001.236 0c.517-.416 5.132-4.252 5.132-8.463A5.75 5.75 0 0010 2.75zm0 7.5a1.75 1.75 0 100-3.5 1.75 1.75 0 000 3.5z" clip-rule="evenodd" />
+                </svg>
+            </span>
+        @endif
 
         <button
             type="button"
