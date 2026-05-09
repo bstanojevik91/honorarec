@@ -1,4 +1,14 @@
-<article class="flex items-center gap-4 rounded-[1.35rem] border border-slate-200/85 bg-white p-4 shadow-[0_16px_36px_-30px_rgba(15,23,42,0.18)] transition duration-300 hover:shadow-[0_22px_40px_-30px_rgba(15,23,42,0.22)] sm:rounded-[1.5rem] sm:p-5 md:hover:-translate-y-1">
+@php
+    $categoryUrl = route('jobs.index', [
+        'q' => '',
+        'city' => '',
+        'category' => $category['name'],
+        'engagement_type' => '',
+    ]);
+@endphp
+
+<a href="{{ $categoryUrl }}" class="group block cursor-pointer rounded-[1.35rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 focus-visible:ring-offset-2 sm:rounded-[1.5rem]">
+<article class="flex items-center gap-4 rounded-[1.35rem] border border-slate-200/85 bg-white p-4 shadow-[0_16px_36px_-30px_rgba(15,23,42,0.18)] transition duration-300 hover:border-emerald-200 hover:shadow-[0_22px_40px_-30px_rgba(15,23,42,0.22)] sm:rounded-[1.5rem] sm:p-5 md:hover:-translate-y-1">
     <div class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-[0.95rem] bg-emerald-50 text-emerald-700 sm:h-14 sm:w-14 sm:rounded-[1rem]">
         @if ($category['icon'] === 'briefcase')
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="h-8 w-8" aria-hidden="true">
@@ -12,7 +22,8 @@
     </div>
 
     <div>
-        <h3 class="text-base font-bold text-slate-900 sm:text-lg">{{ $category['name'] }}</h3>
+        <h3 class="text-base font-bold text-slate-900 transition group-hover:text-emerald-700 sm:text-lg">{{ $category['name'] }}</h3>
         <p class="mt-1 text-xs text-slate-500 sm:text-sm">{{ $category['count'] }}</p>
     </div>
 </article>
+</a>
