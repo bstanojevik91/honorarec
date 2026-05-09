@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 class JobListing extends Model
 {
@@ -32,6 +34,7 @@ class JobListing extends Model
         'engagement_type',
         'featured',
         'status',
+        'approved_at',
         'expires_at',
     ];
 
@@ -39,7 +42,8 @@ class JobListing extends Model
     {
         return [
             'featured' => 'boolean',
-            'expires_at' => 'date',
+            'approved_at' => 'datetime',
+            'expires_at' => 'datetime',
             'daily_pay' => 'decimal:2',
         ];
     }
@@ -79,5 +83,62 @@ class JobListing extends Model
     public function applications(): HasMany
     {
         return $this->hasMany(JobApplication::class);
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->approved_at !== null;
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->expires_at !== null
+            && now()->greaterThanOrEqualTo($this->expires_at->copy()->startOfDay());
+    }
+
+    public function remainingDays(): ?int
+    {
+        if (! $this->isApproved() || $this->expires_at === null || $this->isExpired()) {
+            return null;
+        }
+
+        return now()->startOfDay()->diffInDays($this->expires_at->copy()->startOfDay(), false);
+    }
+
+    public function approvedAtLabel(): ?string
+    {
+        return $this->approved_at?->format('d.m.Y');
+    }
+
+    public function expiresAtLabel(): ?string
+    {
+        return $this->expires_at?->format('d.m.Y');
+    }
+
+    public function createdAtLabel(): ?string
+    {
+        return $this->created_at?->format('d.m.Y');
+    }
+
+    public function employerLifecycleMessage(): string
+    {
+        if (! $this->isApproved()) {
+            return 'Огласот чека одобрување';
+        }
+
+        if ($this->isExpired()) {
+            return 'Огласот е истечен';
+        }
+
+        $remainingDays = $this->remainingDays();
+
+        return $remainingDays === null
+            ? 'Нема поставен рок на истекување'
+            : 'Имате уште ' . $remainingDays . ' дена';
+    }
+
+    public function defaultApprovalExpiry(Carbon $approvedAt): Carbon
+    {
+        return $approvedAt->copy()->addDays(30)->startOfDay();
     }
 }

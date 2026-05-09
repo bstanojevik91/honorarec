@@ -93,7 +93,7 @@ class JobExpiryControlTest extends TestCase
             ->assertSee('name="expires_at"', false);
     }
 
-    public function test_employer_store_ignores_manual_expiry_and_sets_default_thirty_days(): void
+    public function test_employer_store_ignores_manual_expiry_until_admin_approval(): void
     {
         Carbon::setTestNow('2026-05-09 10:00:00');
 
@@ -124,7 +124,9 @@ class JobExpiryControlTest extends TestCase
 
         $job = JobListing::query()->where('title', 'Ново employer оглас')->firstOrFail();
 
-        $this->assertSame('2026-06-08', $job->expires_at?->format('Y-m-d'));
+        $this->assertSame(JobListing::STATUS_PENDING, $job->status);
+        $this->assertNull($job->approved_at);
+        $this->assertNull($job->expires_at);
 
         Carbon::setTestNow();
     }
@@ -173,5 +175,61 @@ class JobExpiryControlTest extends TestCase
         $this->assertSame('2026-06-15', $job->expires_at?->format('Y-m-d'));
         $this->assertSame('Ажуриран employer оглас', $job->title);
         $this->assertSame('Битола', $job->location);
+    }
+
+    public function test_admin_approval_sets_approved_at_and_thirty_day_expiry_only_once(): void
+    {
+        Carbon::setTestNow('2026-05-09 09:00:00');
+
+        $company = Company::create([
+            'name' => 'Approval Company',
+            'email' => 'approval-company@test.mk',
+            'phone' => '070123456',
+            'description' => 'Approval company',
+        ]);
+
+        $admin = User::create([
+            'name' => 'Approval Admin',
+            'email' => 'approval-admin@test.mk',
+            'password' => 'password123',
+            'is_admin' => true,
+            'company_id' => null,
+        ]);
+        $admin->forceFill(['email_verified_at' => now()])->save();
+
+        $job = JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Pending Job',
+            'slug' => 'pending-job',
+            'description' => 'Pending job description',
+            'location' => 'Скопје',
+            'category' => 'Промоции',
+            'status' => JobListing::STATUS_PENDING,
+            'approved_at' => null,
+            'expires_at' => null,
+        ]);
+
+        $this->actingAs($admin)
+            ->patch(route('admin.jobs.approve', $job))
+            ->assertRedirect(route('admin.jobs.index'));
+
+        $job->refresh();
+
+        $this->assertSame(JobListing::STATUS_ACTIVE, $job->status);
+        $this->assertSame('2026-05-09 09:00:00', $job->approved_at?->format('Y-m-d H:i:s'));
+        $this->assertSame('2026-06-08 00:00:00', $job->expires_at?->format('Y-m-d H:i:s'));
+
+        Carbon::setTestNow('2026-05-15 12:00:00');
+
+        $this->actingAs($admin)
+            ->patch(route('admin.jobs.approve', $job))
+            ->assertRedirect(route('admin.jobs.index'));
+
+        $job->refresh();
+
+        $this->assertSame('2026-05-09 09:00:00', $job->approved_at?->format('Y-m-d H:i:s'));
+        $this->assertSame('2026-06-08 00:00:00', $job->expires_at?->format('Y-m-d H:i:s'));
+
+        Carbon::setTestNow();
     }
 }

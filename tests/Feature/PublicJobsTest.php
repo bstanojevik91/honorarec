@@ -6,6 +6,7 @@ use App\Models\BlogPost;
 use App\Models\Company;
 use App\Models\JobListing;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class PublicJobsTest extends TestCase
@@ -63,6 +64,61 @@ class PublicJobsTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertSee('Моментално нема активни огласи');
+    }
+
+    public function test_public_jobs_pages_do_not_show_expired_active_listings(): void
+    {
+        Carbon::setTestNow('2026-05-10 09:00:00');
+
+        $company = Company::create([
+            'name' => 'Expiry Company',
+            'email' => 'expiry@test-company.mk',
+            'phone' => '070123456',
+            'description' => 'Expiry company description',
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Истечен активен оглас',
+            'slug' => 'istecen-aktiven-oglas',
+            'description' => 'Опис за истечен оглас.',
+            'daily_pay' => 1200,
+            'location' => 'Скопје',
+            'category' => 'Промоции',
+            'featured' => false,
+            'status' => JobListing::STATUS_ACTIVE,
+            'approved_at' => Carbon::parse('2026-04-01 10:00:00'),
+            'expires_at' => Carbon::parse('2026-05-10 00:00:00'),
+        ]);
+
+        JobListing::create([
+            'company_id' => $company->id,
+            'title' => 'Важечки активен оглас',
+            'slug' => 'vazecki-aktiven-oglas',
+            'description' => 'Опис за важечки оглас.',
+            'daily_pay' => 1400,
+            'location' => 'Битола',
+            'category' => 'Магацин',
+            'featured' => false,
+            'status' => JobListing::STATUS_ACTIVE,
+            'approved_at' => Carbon::parse('2026-05-01 10:00:00'),
+            'expires_at' => Carbon::parse('2026-05-30 00:00:00'),
+        ]);
+
+        $this->get('/oglasi')
+            ->assertOk()
+            ->assertSee('Важечки активен оглас')
+            ->assertDontSee('Истечен активен оглас');
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Важечки активен оглас')
+            ->assertDontSee('Истечен активен оглас');
+
+        $this->get(route('jobs.show', 'istecen-aktiven-oglas'))
+            ->assertNotFound();
+
+        Carbon::setTestNow();
     }
 
     public function test_job_page_shows_only_real_active_related_jobs(): void

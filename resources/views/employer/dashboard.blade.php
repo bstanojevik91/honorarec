@@ -58,7 +58,15 @@
                             <td class="py-4 font-semibold text-slate-900">{{ $job->title }}</td>
                             <td class="py-4 text-slate-700">{{ $job->category ?: 'Нема категорија' }}</td>
                             <td class="py-4 text-slate-700">{{ $job->location ?: 'Нема локација' }}</td>
-                            <td class="py-4 text-slate-500">{{ $job->status }}</td>
+                            <td class="py-4">
+                                <div class="font-medium text-slate-700">{{ $job->statusLabel() }}</div>
+                                @if ($job->isApproved())
+                                    <div class="mt-1 text-xs text-slate-500">Одобрен на: {{ $job->approvedAtLabel() }}</div>
+                                @endif
+                                <div class="mt-1 text-xs {{ $job->isExpired() ? 'text-rose-600' : 'text-slate-500' }}">
+                                    {{ $job->employerLifecycleMessage() }}
+                                </div>
+                            </td>
                         </tr>
                     @empty
                         <tr>

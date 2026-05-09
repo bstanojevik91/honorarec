@@ -22,6 +22,59 @@
     <div class="mt-8 rounded-[1.6rem] bg-white p-6 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.2)]">
         <div class="flex items-center justify-between gap-4">
             <div>
+                <h2 class="text-xl font-bold text-slate-900">Последни огласи</h2>
+                <p class="mt-1 text-sm text-slate-500">Преглед на креирање, одобрување и истекување на огласите.</p>
+            </div>
+            <a href="{{ route('admin.jobs.index') }}" class="text-sm font-semibold text-emerald-700 transition hover:text-emerald-600">Види ги сите</a>
+        </div>
+
+        <div class="mt-6 overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200 text-sm">
+                <thead>
+                    <tr class="text-left text-slate-500">
+                        <th class="pb-3 font-semibold">Оглас</th>
+                        <th class="pb-3 font-semibold">Компанија</th>
+                        <th class="pb-3 font-semibold">Статус</th>
+                        <th class="pb-3 font-semibold">Важност</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse ($recentJobs as $job)
+                        <tr>
+                            <td class="py-4 font-semibold text-slate-900">{{ $job->title }}</td>
+                            <td class="py-4 text-slate-700">{{ $job->company?->name }}</td>
+                            <td class="py-4 text-slate-700">{{ $job->statusLabel() }}</td>
+                            <td class="py-4 text-xs leading-6 text-slate-600">
+                                <div>Креиран на: <span class="font-semibold text-slate-800">{{ $job->createdAtLabel() }}</span></div>
+                                <div>Одобрен на: <span class="font-semibold text-slate-800">{{ $job->approvedAtLabel() ?? 'Не е одобрен' }}</span></div>
+                                <div>Истекува на: <span class="font-semibold text-slate-800">{{ $job->expiresAtLabel() ?? 'Нема рок' }}</span></div>
+                                <div>
+                                    Преостануваат:
+                                    <span class="font-semibold {{ $job->isExpired() ? 'text-rose-600' : 'text-slate-800' }}">
+                                        @if (! $job->isApproved())
+                                            Чека одобрување
+                                        @elseif ($job->isExpired())
+                                            Истечен
+                                        @else
+                                            {{ $job->remainingDays() !== null ? $job->remainingDays() . ' дена' : 'Нема рок' }}
+                                        @endif
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="py-8 text-center text-slate-500">Сè уште нема огласи.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-8 rounded-[1.6rem] bg-white p-6 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.2)]">
+        <div class="flex items-center justify-between gap-4">
+            <div>
                 <h2 class="text-xl font-bold text-slate-900">Последни апликации</h2>
                 <p class="mt-1 text-sm text-slate-500">Брз преглед на најновите кандидати и огласите за кои аплицирале.</p>
             </div>

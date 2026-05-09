@@ -22,6 +22,7 @@
                         <th class="px-6 py-4 font-semibold">Работен ангажман</th>
                         <th class="px-6 py-4 font-semibold">Локација</th>
                         <th class="px-6 py-4 font-semibold">Статус</th>
+                        <th class="px-6 py-4 font-semibold">Важност</th>
                         <th class="px-6 py-4 font-semibold text-right">Акции</th>
                     </tr>
                 </thead>
@@ -62,6 +63,23 @@
                                     {{ $job->statusLabel() }}
                                 </span>
                             </td>
+                            <td class="px-6 py-4 text-xs leading-6 text-slate-600">
+                                <div>Креиран на: <span class="font-semibold text-slate-800">{{ $job->createdAtLabel() }}</span></div>
+                                <div>Одобрен на: <span class="font-semibold text-slate-800">{{ $job->approvedAtLabel() ?? 'Не е одобрен' }}</span></div>
+                                <div>Истекува на: <span class="font-semibold text-slate-800">{{ $job->expiresAtLabel() ?? 'Нема рок' }}</span></div>
+                                <div>
+                                    Преостануваат:
+                                    <span class="font-semibold {{ $job->isExpired() ? 'text-rose-600' : 'text-slate-800' }}">
+                                        @if (! $job->isApproved())
+                                            Чека одобрување
+                                        @elseif ($job->isExpired())
+                                            Истечен
+                                        @else
+                                            {{ $job->remainingDays() !== null ? $job->remainingDays() . ' дена' : 'Нема рок' }}
+                                        @endif
+                                    </span>
+                                </div>
+                            </td>
                             <td class="px-6 py-4">
                                 <div class="flex justify-end gap-3">
                                     @if ($job->status === \App\Models\JobListing::STATUS_PENDING || $job->status === \App\Models\JobListing::STATUS_REJECTED)
@@ -89,7 +107,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-10 text-center text-slate-500">Нема креирани огласи.</td>
+                            <td colspan="7" class="px-6 py-10 text-center text-slate-500">Нема креирани огласи.</td>
                         </tr>
                     @endforelse
                 </tbody>
