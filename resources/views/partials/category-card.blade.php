@@ -4,7 +4,7 @@
         'city' => '',
         'category' => $category['name'],
         'engagement_type' => '',
-    ]);
+    ], false);
 @endphp
 
 <a href="{{ $categoryUrl }}" class="group block cursor-pointer rounded-[1.35rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 focus-visible:ring-offset-2 sm:rounded-[1.5rem]">
