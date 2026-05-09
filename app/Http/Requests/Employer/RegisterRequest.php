@@ -28,4 +28,24 @@ class RegisterRequest extends FormRequest
             'password' => ['required', 'confirmed', Password::min(8)],
         ];
     }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'password.min' => 'Вашиот пасворд е прекраток (минимум 8 карактери е потребно).',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'password' => 'пасворд',
+        ];
+    }
 }
