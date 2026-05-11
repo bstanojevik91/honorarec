@@ -1,6 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $baseTagQuery = array_filter([
+            'q' => $filters['q'],
+            'city' => $filters['city'],
+            'category' => $filters['category'],
+            'engagement_type' => $filters['engagement_type'],
+        ], fn (string $value): bool => $value !== '');
+    @endphp
+
     <div class="relative isolate bg-slate-950">
         <div class="absolute inset-0">
             <div class="h-full w-full bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_34%),linear-gradient(180deg,_rgba(2,6,23,0.8),_rgba(2,6,23,0.94))]"></div>
@@ -23,6 +32,10 @@
         <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
             <div class="relative z-[70] rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.18)] sm:rounded-[1.6rem] sm:p-6">
                 <form method="GET" action="{{ route('jobs.index') }}" class="space-y-5">
+                    @if ($filters['tag'] !== '')
+                        <input type="hidden" name="tag" value="{{ $filters['tag'] }}">
+                    @endif
+
                     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-[1.45fr_1fr_1fr_1fr_auto]">
                     <div>
                         <label for="q" class="mb-2 block text-sm font-semibold text-slate-700">Клучен збор / назив на работа</label>
@@ -64,29 +77,47 @@
                         </a>
                     </div>
                     </div>
-
-                    @if (count($availableTags) > 0)
-                        <div>
-                            <p class="mb-3 text-sm font-semibold text-slate-700">Тагови</p>
-                            <div class="flex flex-wrap gap-2">
-                                @foreach ($availableTags as $tag)
-                                    <label class="inline-flex cursor-pointer items-center">
-                                        <input type="checkbox" name="tags[]" value="{{ $tag['slug'] }}" class="peer sr-only" @checked(in_array($tag['slug'], $filters['tags'], true))>
-                                        <span class="inline-flex rounded-full border border-slate-200 px-3.5 py-2 text-sm font-semibold text-slate-600 transition peer-checked:border-emerald-200 peer-checked:bg-emerald-50 peer-checked:text-emerald-700 hover:border-slate-300 hover:bg-slate-50 sm:px-4">
-                                            {{ $tag['name'] }}
-                                        </span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
                 </form>
             </div>
+
+            @if (count($availableTags) > 0)
+                <div class="mt-6 rounded-[1.35rem] border border-slate-200 bg-white p-5 shadow-[0_20px_45px_-34px_rgba(15,23,42,0.14)] sm:rounded-[1.6rem] sm:p-6">
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                        <div>
+                            <p class="text-sm font-semibold uppercase tracking-[0.22em] text-emerald-600">Тагови</p>
+                            <h2 class="mt-2 text-xl font-bold tracking-tight text-slate-900">Филтрирај по таг</h2>
+                            <p class="mt-2 text-sm text-slate-600">Сите достапни тагови се прикажани подолу и секој од нив веднаш филтрира активни огласи.</p>
+                        </div>
+                        @if (! empty($selectedTag))
+                            <a href="{{ route('jobs.index', $baseTagQuery) }}" class="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100">
+                                Исчисти таг: {{ $selectedTag['name'] }}
+                            </a>
+                        @endif
+                    </div>
+
+                    <div class="mt-5 flex flex-wrap gap-2.5">
+                        @foreach ($availableTags as $tag)
+                            <a
+                                href="{{ route('jobs.index', array_merge($baseTagQuery, ['tag' => $tag['slug']])) }}"
+                                class="{{ $filters['tag'] === $tag['slug'] ? 'border-emerald-200 bg-emerald-50 text-emerald-700 shadow-sm shadow-emerald-100/80' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50' }} inline-flex items-center rounded-full border px-4 py-2 text-sm font-semibold transition"
+                                aria-pressed="{{ $filters['tag'] === $tag['slug'] ? 'true' : 'false' }}"
+                            >
+                                {{ $tag['name'] }}
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
 
             <div class="mb-6 mt-8 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
                 <div class="text-center sm:text-left">
                     <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-[2rem]">Достапни работни ангажмани</h2>
-                    <p class="mt-2 text-sm text-slate-600">Пронајдени се {{ count($jobs) }} огласи според избраните филтри.</p>
+                    <p class="mt-2 text-sm text-slate-600">
+                        Пронајдени се {{ count($jobs) }} огласи според избраните филтри.
+                        @if (! empty($selectedTag))
+                            Активен таг: <span class="font-semibold text-emerald-700">{{ $selectedTag['name'] }}</span>.
+                        @endif
+                    </p>
                 </div>
             </div>
 

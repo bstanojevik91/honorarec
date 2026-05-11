@@ -112,7 +112,7 @@
                                     @endif
 
                                     @foreach ($job['tags'] ?? [] as $tag)
-                                        <a href="{{ route('jobs.index', ['tags' => [$tag['slug']]]) }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm font-medium text-slate-100 transition hover:bg-white/10">
+                                        <a href="{{ route('jobs.index', ['tag' => $tag['slug']]) }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm font-medium text-slate-100 transition hover:bg-white/10">
                                             {{ $tag['name'] }}
                                         </a>
                                     @endforeach
@@ -176,7 +176,7 @@
                                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Тагови</p>
                                 <div class="mt-2 flex flex-wrap justify-center gap-2 lg:justify-start">
                                     @foreach ($job['tags'] as $tag)
-                                        <a href="{{ route('jobs.index', ['tags' => [$tag['slug']]]) }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-100 transition hover:bg-white/10">
+                                        <a href="{{ route('jobs.index', ['tag' => $tag['slug']]) }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-100 transition hover:bg-white/10">
                                             {{ $tag['name'] }}
                                         </a>
                                     @endforeach

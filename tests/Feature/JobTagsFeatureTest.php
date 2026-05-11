@@ -137,7 +137,7 @@ class JobTagsFeatureTest extends TestCase
         ]);
         $otherJob->tags()->sync([$weekendTag->id]);
 
-        $this->get(route('jobs.index', ['tags' => ['itno']]))
+        $this->get(route('jobs.index', ['tag' => 'itno']))
             ->assertOk()
             ->assertSee('Итен оглас')
             ->assertDontSee('Викенд оглас')
@@ -146,7 +146,7 @@ class JobTagsFeatureTest extends TestCase
         $this->get(route('jobs.show', $taggedJob->slug))
             ->assertOk()
             ->assertSee('Итно')
-            ->assertSee(route('jobs.index', ['tags' => ['itno']]), false);
+            ->assertSee(route('jobs.index', ['tag' => 'itno']), false);
     }
 
     private function createTagTables(): void

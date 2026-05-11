@@ -29,7 +29,7 @@
             @endif
 
             @foreach (array_slice($job['tags'] ?? [], 0, 3) as $tag)
-                <a href="{{ route('jobs.index', ['tags' => [$tag['slug']]]) }}" class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 transition hover:bg-slate-200 hover:text-slate-700">
+                <a href="{{ route('jobs.index', ['tag' => $tag['slug']]) }}" class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 transition hover:bg-slate-200 hover:text-slate-700">
                     {{ $tag['name'] }}
                 </a>
             @endforeach
