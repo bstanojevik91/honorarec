@@ -113,14 +113,16 @@ class CompanyController extends Controller
 
         $validated = $request->validated();
 
-        User::create([
+        $user = new User([
             'name' => $company->name,
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'is_admin' => false,
             'company_id' => $company->id,
-            'email_verified_at' => now(),
         ]);
+        $user->forceFill([
+            'email_verified_at' => now(),
+        ])->save();
 
         return redirect()
             ->route('admin.companies.edit', $company)
@@ -146,7 +148,10 @@ class CompanyController extends Controller
             $data['password'] = Hash::make($validated['password']);
         }
 
-        $user->update($data);
+        $user->fill($data);
+        $user->forceFill([
+            'email_verified_at' => now(),
+        ])->save();
 
         return redirect()
             ->route('admin.companies.edit', $company)
