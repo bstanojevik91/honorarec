@@ -158,21 +158,24 @@ class HomeController extends Controller
     public function jobs(Request $request): View
     {
         $allJobs = $this->frontendJobs();
-        $selectedTag = trim((string) $request->string('tag'));
-
-        if ($selectedTag === '') {
-            $selectedTag = collect((array) $request->input('tags', []))
-                ->map(fn (mixed $tag): string => trim((string) $tag))
-                ->filter()
-                ->first() ?? '';
-        }
+        $selectedTags = collect(explode(',', trim((string) $request->string('tag'))))
+            ->map(fn (string $tag): string => trim($tag))
+            ->filter()
+            ->merge(
+                collect((array) $request->input('tags', []))
+                    ->map(fn (mixed $tag): string => trim((string) $tag))
+                    ->filter()
+            )
+            ->unique()
+            ->values()
+            ->all();
 
         $filters = [
             'q' => trim((string) $request->string('q')),
             'city' => trim((string) $request->string('city')),
             'category' => trim((string) $request->string('category')),
             'engagement_type' => trim((string) $request->string('engagement_type')),
-            'tag' => $selectedTag,
+            'tags' => $selectedTags,
         ];
 
         $jobs = $this->filterJobs($allJobs, $filters);
@@ -192,7 +195,10 @@ class HomeController extends Controller
             'availableCategories' => $availableCategories,
             'engagementTypes' => self::ENGAGEMENT_TYPES,
             'availableTags' => $availableTags,
-            'selectedTag' => collect($availableTags)->firstWhere('slug', $filters['tag']),
+            'selectedTags' => collect($availableTags)
+                ->filter(fn (array $tag): bool => in_array($tag['slug'], $filters['tags'], true))
+                ->values()
+                ->all(),
             'footerStats' => $this->footerStats($allJobs),
             ...$this->locationFilterViewData($filters['city']),
         ]);
@@ -542,7 +548,7 @@ class HomeController extends Controller
 
     /**
      * @param \Illuminate\Support\Collection<int, array<string, mixed>> $jobs
-     * @param array{q:string,city:string,category:string,engagement_type:string,tag:string} $filters
+     * @param array{q:string,city:string,category:string,engagement_type:string,tags:array<int, string>} $filters
      * @return \Illuminate\Support\Collection<int, array<string, mixed>>
      */
     private function filterJobs(Collection $jobs, array $filters): Collection
@@ -562,9 +568,10 @@ class HomeController extends Controller
                 $matchesEngagementType = $filters['engagement_type'] === '' || mb_strtolower((string) ($job['engagement_type'] ?? '')) === mb_strtolower($filters['engagement_type']);
                 $jobTags = collect($job['tags'] ?? [])
                     ->map(fn (array $tag): string => mb_strtolower((string) ($tag['slug'] ?? '')));
-                $matchesTag = $filters['tag'] === '' || $jobTags->contains(mb_strtolower($filters['tag']));
+                $matchesTags = $filters['tags'] === [] || collect($filters['tags'])
+                    ->every(fn (string $tag): bool => $jobTags->contains(mb_strtolower($tag)));
 
-                return $matchesKeyword && $matchesCity && $matchesCategory && $matchesEngagementType && $matchesTag;
+                return $matchesKeyword && $matchesCity && $matchesCategory && $matchesEngagementType && $matchesTags;
             })
             ->values();
     }
