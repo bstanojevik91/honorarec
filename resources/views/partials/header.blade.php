@@ -11,11 +11,11 @@
     $companyRegisterLabel = auth()->check() ? $companyAccessLabel : 'Регистрација за компании';
 @endphp
 
-<header class="absolute inset-x-0 top-0 z-20">
+<header class="absolute inset-x-0 top-0 z-[140] md:z-20">
     <div class="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-5 lg:px-8">
-        <div class="relative z-30 md:hidden">
+        <div class="relative z-[150] md:hidden">
             <div class="grid grid-cols-[2.9rem_1fr_2.9rem] items-center gap-3 px-0.5">
-                <details class="relative">
+                <details class="relative z-[160]">
                     <summary class="flex h-[2.9rem] w-[2.9rem] cursor-pointer list-none items-center justify-center rounded-[1rem] border border-white/12 bg-slate-950/50 text-white shadow-[0_18px_40px_-24px_rgba(0,0,0,0.8)] ring-1 ring-white/8 backdrop-blur-md transition hover:bg-white/10 active:scale-[0.98]">
                         <span class="sr-only">Отвори мени</span>
                         <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
@@ -23,7 +23,7 @@
                         </svg>
                     </summary>
 
-                    <div class="absolute left-0 top-full z-40 mt-3 w-[min(17.5rem,calc(100vw-2rem))] overflow-hidden rounded-[1.3rem] border border-white/8 bg-slate-950 p-2.5 text-sm font-medium text-slate-100 shadow-[0_26px_46px_-24px_rgba(2,6,23,0.92)]">
+                    <div class="absolute left-0 top-full z-[170] mt-3 w-[min(17.5rem,calc(100vw-2rem))] overflow-hidden rounded-[1.3rem] border border-white/8 bg-slate-950 p-2.5 text-sm font-medium text-slate-100 shadow-[0_26px_46px_-24px_rgba(2,6,23,0.92)]">
                         <div class="grid gap-1">
                             <a href="{{ route('jobs.index') }}" class="rounded-[0.95rem] px-3.5 py-3 leading-5 text-slate-100 transition hover:bg-white/6">Сите огласи</a>
                             <a href="{{ route('faq') }}" class="rounded-[0.95rem] px-3.5 py-3 leading-5 text-slate-100 transition hover:bg-white/6">ЧПП</a>
