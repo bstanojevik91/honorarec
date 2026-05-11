@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Employer;
 
 use App\Models\JobListing;
+use App\Support\TagSystem;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -37,6 +38,12 @@ class StoreEmployerJobRequest extends FormRequest
             'featured' => $this->boolean('featured'),
             'daily_pay_mode' => $dailyPayMode,
             'daily_pay' => $dailyPay,
+            'tag_ids' => collect((array) $this->input('tag_ids', []))
+                ->map(fn (mixed $tagId): int => (int) $tagId)
+                ->filter(fn (int $tagId): bool => $tagId > 0)
+                ->unique()
+                ->values()
+                ->all(),
         ]);
     }
 
@@ -45,7 +52,7 @@ class StoreEmployerJobRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:job_listings,slug'],
             'description' => ['nullable', 'string'],
@@ -55,6 +62,23 @@ class StoreEmployerJobRequest extends FormRequest
             'category' => ['nullable', 'string', 'max:255'],
             'engagement_type' => ['nullable', Rule::in(JobListing::engagementTypeOptions())],
             'featured' => ['nullable', 'boolean'],
+        ];
+
+        if (TagSystem::enabled()) {
+            $rules['tag_ids'] = ['nullable', 'array', 'max:5'];
+            $rules['tag_ids.*'] = ['integer', 'exists:tags,id'];
+        }
+
+        return $rules;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'tag_ids.max' => 'Може да изберете најмногу :max тагови.',
         ];
     }
 
@@ -70,6 +94,8 @@ class StoreEmployerJobRequest extends FormRequest
             'category' => 'категорија',
             'engagement_type' => 'вид на работен ангажман',
             'description' => 'опис',
+            'tag_ids' => 'тагови',
+            'tag_ids.*' => 'таг',
         ];
     }
 }

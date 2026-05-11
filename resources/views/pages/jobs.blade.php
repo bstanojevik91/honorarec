@@ -71,9 +71,9 @@
                             <div class="flex flex-wrap gap-2">
                                 @foreach ($availableTags as $tag)
                                     <label class="inline-flex cursor-pointer items-center">
-                                        <input type="checkbox" name="tags[]" value="{{ $tag }}" class="peer sr-only" @checked(in_array($tag, $filters['tags'], true))>
+                                        <input type="checkbox" name="tags[]" value="{{ $tag['slug'] }}" class="peer sr-only" @checked(in_array($tag['slug'], $filters['tags'], true))>
                                         <span class="inline-flex rounded-full border border-slate-200 px-3.5 py-2 text-sm font-semibold text-slate-600 transition peer-checked:border-emerald-200 peer-checked:bg-emerald-50 peer-checked:text-emerald-700 hover:border-slate-300 hover:bg-slate-50 sm:px-4">
-                                            {{ $tag }}
+                                            {{ $tag['name'] }}
                                         </span>
                                     </label>
                                 @endforeach

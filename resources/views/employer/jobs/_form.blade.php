@@ -7,6 +7,7 @@
 @php($dailyPayMode = old('daily_pay_mode', isset($job) ? ($job->daily_pay !== null ? 'amount' : 'agreement') : 'amount'))
 @php($engagementTypeOptions = \App\Models\JobListing::engagementTypeOptions())
 @php($selectedLocation = old('location', $job->location ?? ''))
+@php($selectedTagIds = old('tag_ids', isset($job) && $job->relationLoaded('tags') ? $job->tags->pluck('id')->all() : []))
 
 <div class="grid gap-6 lg:grid-cols-2">
     <div>
@@ -55,6 +56,12 @@
             @endforeach
         </select>
     </div>
+
+    @include('partials.tag-selector', [
+        'availableTags' => $availableTags ?? collect(),
+        'selectedTagIds' => $selectedTagIds,
+        'helpText' => 'Избери тагови што најдобро го опишуваат огласот за полесно пронаоѓање од кандидатите.',
+    ])
 
     <div class="lg:col-span-2">
         <label for="description" class="mb-2 block text-sm font-semibold text-slate-700">Опис</label>

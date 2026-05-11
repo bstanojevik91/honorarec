@@ -2,6 +2,7 @@
 @php($engagementTypeOptions = \App\Models\JobListing::engagementTypeOptions())
 @php($dailyPayMode = old('daily_pay_mode', isset($job) ? ($job->daily_pay !== null ? 'amount' : 'agreement') : 'amount'))
 @php($selectedLocation = old('location', $job->location ?? ''))
+@php($selectedTagIds = old('tag_ids', isset($job) && $job->relationLoaded('tags') ? $job->tags->pluck('id')->all() : []))
 
 @if ($errors->any())
     <div class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-700">
@@ -73,6 +74,12 @@
             @endforeach
         </select>
     </div>
+
+    @include('partials.tag-selector', [
+        'availableTags' => $availableTags ?? collect(),
+        'selectedTagIds' => $selectedTagIds,
+        'helpText' => 'Избери повеќе тагови за подобро прикажување, филтрирање и идни SEO landing страници.',
+    ])
 
     <div>
         <label for="status" class="mb-2 block text-sm font-semibold text-slate-700">Статус</label>

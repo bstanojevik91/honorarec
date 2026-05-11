@@ -7,9 +7,12 @@ use App\Http\Requests\Admin\StoreJobListingRequest;
 use App\Http\Requests\Admin\UpdateJobListingRequest;
 use App\Models\Company;
 use App\Models\JobListing;
+use App\Models\Tag;
+use App\Support\TagSystem;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -19,7 +22,7 @@ class JobListingController extends Controller
     public function index(): View
     {
         return view('admin.jobs.index', [
-            'jobs' => JobListing::with('company')->latest()->paginate(12),
+            'jobs' => $this->jobListingQuery()->latest()->paginate(12),
         ]);
     }
 
@@ -27,12 +30,14 @@ class JobListingController extends Controller
     {
         return view('admin.jobs.create', [
             'companies' => Company::orderBy('name')->get(),
+            'availableTags' => $this->availableTags(),
         ]);
     }
 
     public function store(StoreJobListingRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        $tagIds = $data['tag_ids'] ?? [];
         $data['company_id'] = $this->resolveCompanyId($request, $data);
         $data['featured'] = $request->boolean('featured');
         $data['status'] = $data['status'] ?? 'active';
@@ -40,7 +45,8 @@ class JobListingController extends Controller
         $data = $this->onlyJobFields($data);
         $data = $this->normalizeJobFields($data);
 
-        JobListing::create($data);
+        $job = JobListing::create($data);
+        $this->syncTags($job, $tagIds);
 
         return redirect()
             ->route('admin.jobs.index')
@@ -49,15 +55,21 @@ class JobListingController extends Controller
 
     public function edit(JobListing $job): View
     {
+        if (TagSystem::enabled()) {
+            $job->loadMissing('tags');
+        }
+
         return view('admin.jobs.edit', [
             'job' => $job,
             'companies' => Company::orderBy('name')->get(),
+            'availableTags' => $this->availableTags(),
         ]);
     }
 
     public function update(UpdateJobListingRequest $request, JobListing $job): RedirectResponse
     {
         $data = $request->validated();
+        $tagIds = $data['tag_ids'] ?? [];
         $data['company_id'] = $this->resolveCompanyId($request, $data);
         $data['featured'] = $request->boolean('featured');
         $data['status'] = $data['status'] ?? 'active';
@@ -66,6 +78,7 @@ class JobListingController extends Controller
         $data = $this->normalizeJobFields($data);
 
         $job->update($data);
+        $this->syncTags($job, $tagIds);
 
         return redirect()
             ->route('admin.jobs.index')
@@ -183,5 +196,40 @@ class JobListingController extends Controller
         $data['engagement_type'] = $data['engagement_type'] ?? null;
 
         return $data;
+    }
+
+    private function jobListingQuery()
+    {
+        $query = JobListing::query()->with('company');
+
+        if (TagSystem::enabled()) {
+            $query->with('tags');
+        }
+
+        return $query;
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, \App\Models\Tag>
+     */
+    private function availableTags(): Collection
+    {
+        if (! TagSystem::enabled()) {
+            return collect();
+        }
+
+        return Tag::query()->orderBy('name')->get();
+    }
+
+    /**
+     * @param  array<int, int>  $tagIds
+     */
+    private function syncTags(JobListing $job, array $tagIds): void
+    {
+        if (! TagSystem::enabled()) {
+            return;
+        }
+
+        $job->tags()->sync($tagIds);
     }
 }

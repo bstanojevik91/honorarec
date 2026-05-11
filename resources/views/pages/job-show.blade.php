@@ -105,6 +105,20 @@
                                 </div>
                             </div>
 
+                            @if (! empty($job['engagement_type']) || ! empty($job['tags']))
+                                <div class="mt-5 flex flex-wrap items-center justify-center gap-2.5 lg:justify-start">
+                                    @if (! empty($job['engagement_type']))
+                                        <span class="rounded-full bg-emerald-500/15 px-3 py-1 text-sm font-semibold text-emerald-200">{{ $job['engagement_type'] }}</span>
+                                    @endif
+
+                                    @foreach ($job['tags'] ?? [] as $tag)
+                                        <a href="{{ route('jobs.index', ['tags' => [$tag['slug']]]) }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm font-medium text-slate-100 transition hover:bg-white/10">
+                                            {{ $tag['name'] }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            @endif
+
                             <div class="mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
                                 <a href="#apply-form" class="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 sm:w-auto">
                                     Аплицирај
@@ -157,6 +171,18 @@
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Категорија</p>
                             <p class="mt-2 text-sm font-semibold text-white">{{ $job['category'] ?: 'Не е наведено' }}</p>
                         </div>
+                        @if (! empty($job['tags']))
+                            <div class="sm:col-span-3 lg:col-span-1">
+                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Тагови</p>
+                                <div class="mt-2 flex flex-wrap justify-center gap-2 lg:justify-start">
+                                    @foreach ($job['tags'] as $tag)
+                                        <a href="{{ route('jobs.index', ['tags' => [$tag['slug']]]) }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-100 transition hover:bg-white/10">
+                                            {{ $tag['name'] }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

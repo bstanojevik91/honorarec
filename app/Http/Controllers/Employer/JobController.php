@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Employer\StoreEmployerJobRequest;
 use App\Http\Requests\Employer\UpdateEmployerJobRequest;
 use App\Models\JobListing;
+use App\Models\Tag;
+use App\Support\TagSystem;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
@@ -19,7 +22,8 @@ class JobController extends Controller
     public function index(): View
     {
         return view('employer.jobs.index', [
-            'jobs' => JobListing::where('company_id', request()->user()->company_id)
+            'jobs' => $this->jobListingQuery()
+                ->where('company_id', request()->user()->company_id)
                 ->latest()
                 ->paginate(12),
         ]);
@@ -27,12 +31,17 @@ class JobController extends Controller
 
     public function create(): View
     {
-        return view('employer.jobs.create');
+        return view('employer.jobs.create', [
+            'availableTags' => $this->availableTags(),
+        ]);
     }
 
     public function store(StoreEmployerJobRequest $request): RedirectResponse
     {
-        $data = collect($request->validated())->only([
+        $validated = $request->validated();
+        $tagIds = $validated['tag_ids'] ?? [];
+
+        $data = collect($validated)->only([
             'title',
             'slug',
             'description',
@@ -53,7 +62,8 @@ class JobController extends Controller
         $data = $this->normalizeJobFields($data);
         $data['expires_at'] = $this->defaultExpiryDate();
 
-        JobListing::create($data);
+        $job = JobListing::create($data);
+        $this->syncTags($job, $tagIds);
 
         return redirect()
             ->route('employer.jobs.index')
@@ -64,8 +74,13 @@ class JobController extends Controller
     {
         $this->authorizeCompanyJob($job);
 
+        if (TagSystem::enabled()) {
+            $job->loadMissing('tags');
+        }
+
         return view('employer.jobs.edit', [
             'job' => $job,
+            'availableTags' => $this->availableTags(),
         ]);
     }
 
@@ -73,7 +88,10 @@ class JobController extends Controller
     {
         $this->authorizeCompanyJob($job);
 
-        $data = collect($request->validated())->only([
+        $validated = $request->validated();
+        $tagIds = $validated['tag_ids'] ?? [];
+
+        $data = collect($validated)->only([
             'title',
             'slug',
             'description',
@@ -93,6 +111,7 @@ class JobController extends Controller
         $data = $this->normalizeJobFields($data);
 
         $job->update($data);
+        $this->syncTags($job, $tagIds);
 
         return redirect()
             ->route('employer.jobs.index')
@@ -150,5 +169,40 @@ class JobController extends Controller
     private function defaultExpiryDate(): Carbon
     {
         return now()->addDays(30)->startOfDay();
+    }
+
+    private function jobListingQuery()
+    {
+        $query = JobListing::query();
+
+        if (TagSystem::enabled()) {
+            $query->with('tags');
+        }
+
+        return $query;
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, \App\Models\Tag>
+     */
+    private function availableTags(): Collection
+    {
+        if (! TagSystem::enabled()) {
+            return collect();
+        }
+
+        return Tag::query()->orderBy('name')->get();
+    }
+
+    /**
+     * @param  array<int, int>  $tagIds
+     */
+    private function syncTags(JobListing $job, array $tagIds): void
+    {
+        if (! TagSystem::enabled()) {
+            return;
+        }
+
+        $job->tags()->sync($tagIds);
     }
 }

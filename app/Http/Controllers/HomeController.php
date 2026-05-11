@@ -6,9 +6,11 @@ use App\Http\Requests\StoreJobApplicationRequest;
 use App\Models\BlogPost;
 use App\Models\Company;
 use App\Models\JobListing;
+use App\Models\Tag;
 use App\Support\DefaultBlogPosts;
 use App\Support\LocationOptions;
 use App\Support\PublicUrl;
+use App\Support\TagSystem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -18,6 +20,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -176,13 +179,7 @@ class HomeController extends Controller
             ->values()
             ->all();
         $availableTags = $allJobs
-            ->pluck('tags')
-            ->flatten()
-            ->filter()
-            ->unique()
-            ->sort()
-            ->values()
-            ->all();
+            ->pipe(fn (Collection $jobs): array => $this->availablePublicTags($jobs));
 
         return view('pages.jobs', [
             'jobs' => $jobs->all(),
@@ -557,7 +554,8 @@ class HomeController extends Controller
 
                 $matchesCategory = $filters['category'] === '' || mb_strtolower((string) ($job['category'] ?? '')) === mb_strtolower($filters['category']);
                 $matchesEngagementType = $filters['engagement_type'] === '' || mb_strtolower((string) ($job['engagement_type'] ?? '')) === mb_strtolower($filters['engagement_type']);
-                $jobTags = collect($job['tags'] ?? [])->map(fn (mixed $tag): string => mb_strtolower((string) $tag));
+                $jobTags = collect($job['tags'] ?? [])
+                    ->map(fn (array $tag): string => mb_strtolower((string) ($tag['slug'] ?? '')));
                 $matchesTags = $filters['tags'] === [] || collect($filters['tags'])
                     ->every(fn (string $tag): bool => $jobTags->contains(mb_strtolower($tag)));
 
@@ -779,10 +777,16 @@ class HomeController extends Controller
 
     private function publicJobListingsQuery(): Builder
     {
-        return JobListing::query()
+        $query = JobListing::query()
             ->with('company')
             ->where('status', JobListing::STATUS_ACTIVE)
             ->latest();
+
+        if (TagSystem::enabled()) {
+            $query->with('tags');
+        }
+
+        return $query;
     }
 
     /**
@@ -805,8 +809,64 @@ class HomeController extends Controller
             'description' => $job->description,
             'daily_pay' => $job->daily_pay,
             'engagement_type' => $this->resolveEngagementType($job),
-            'tags' => $this->inferTags($job),
+            'tags' => $this->resolvePublicTags($job),
         ];
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, array<string, mixed>>  $jobs
+     * @return array<int, array{name:string,slug:string}>
+     */
+    private function availablePublicTags(Collection $jobs): array
+    {
+        if (TagSystem::enabled()) {
+            return Tag::query()
+                ->whereHas('jobListings', fn (Builder $query): Builder => $query->where('status', JobListing::STATUS_ACTIVE))
+                ->orderBy('name')
+                ->get(['name', 'slug'])
+                ->map(fn (Tag $tag): array => [
+                    'name' => $tag->name,
+                    'slug' => $tag->slug,
+                ])
+                ->all();
+        }
+
+        return $jobs
+            ->pluck('tags')
+            ->flatten(1)
+            ->filter(fn (mixed $tag): bool => is_array($tag) && filled($tag['name'] ?? null) && filled($tag['slug'] ?? null))
+            ->unique('slug')
+            ->sortBy('name')
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @return array<int, array{name:string,slug:string}>
+     */
+    private function resolvePublicTags(JobListing $job): array
+    {
+        if (TagSystem::enabled()) {
+            $tags = $job->relationLoaded('tags')
+                ? $job->tags
+                : $job->tags()->orderBy('name')->get();
+
+            return $tags
+                ->sortBy('name')
+                ->map(fn (Tag $tag): array => [
+                    'name' => $tag->name,
+                    'slug' => $tag->slug,
+                ])
+                ->values()
+                ->all();
+        }
+
+        return collect($this->inferTags($job))
+            ->map(fn (string $tag): array => [
+                'name' => $tag,
+                'slug' => Str::slug($tag),
+            ])
+            ->all();
     }
 
     /**

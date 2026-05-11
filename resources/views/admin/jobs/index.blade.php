@@ -39,6 +39,13 @@
                                         По договор
                                     @endif
                                 </div>
+                                @if ($job->relationLoaded('tags') && $job->tags->isNotEmpty())
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                        @foreach ($job->tags as $tag)
+                                            <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">{{ $tag->name }}</span>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </td>
                             <td class="px-6 py-4 text-slate-700">{{ $job->company?->name }}</td>
                             <td class="px-6 py-4">

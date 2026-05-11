@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Models\JobListing;
+use App\Support\TagSystem;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -41,6 +42,12 @@ class StoreJobListingRequest extends FormRequest
             'featured' => $this->boolean('featured'),
             'daily_pay_mode' => $dailyPayMode,
             'daily_pay' => $dailyPay,
+            'tag_ids' => collect((array) $this->input('tag_ids', []))
+                ->map(fn (mixed $tagId): int => (int) $tagId)
+                ->filter(fn (int $tagId): bool => $tagId > 0)
+                ->unique()
+                ->values()
+                ->all(),
         ]);
     }
 
@@ -49,7 +56,7 @@ class StoreJobListingRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'company_id' => ['nullable', 'exists:companies,id', 'required_without:new_company_name'],
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:job_listings,slug'],
@@ -68,6 +75,13 @@ class StoreJobListingRequest extends FormRequest
             'new_company_logo' => ['nullable', 'image', 'max:2048'],
             'new_company_description' => ['nullable', 'string'],
         ];
+
+        if (TagSystem::enabled()) {
+            $rules['tag_ids'] = ['nullable', 'array', 'max:5'];
+            $rules['tag_ids.*'] = ['integer', 'exists:tags,id'];
+        }
+
+        return $rules;
     }
 
     /**
@@ -81,6 +95,7 @@ class StoreJobListingRequest extends FormRequest
             'new_company_name.required_without' => 'Внесете нова компанија или изберете постоечка од листата.',
             'new_company_email.email' => 'Внесете валидна е-пошта за новата компанија.',
             'new_company_logo.image' => 'Логото на новата компанија мора да биде слика.',
+            'tag_ids.max' => 'Може да изберете најмногу :max тагови.',
         ];
     }
 
@@ -95,6 +110,8 @@ class StoreJobListingRequest extends FormRequest
             'new_company_email' => 'е-пошта на нова компанија',
             'new_company_logo' => 'лого на нова компанија',
             'engagement_type' => 'вид на работен ангажман',
+            'tag_ids' => 'тагови',
+            'tag_ids.*' => 'таг',
         ];
     }
 }
