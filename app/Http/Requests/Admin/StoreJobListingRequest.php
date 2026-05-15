@@ -66,6 +66,7 @@ class StoreJobListingRequest extends FormRequest
             'location' => ['nullable', 'string', 'max:255'],
             'category' => ['nullable', 'string', 'max:255'],
             'engagement_type' => ['nullable', Rule::in(JobListing::engagementTypeOptions())],
+            'job_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
             'featured' => ['nullable', 'boolean'],
             'status' => ['nullable', Rule::in(array_keys(JobListing::statusOptions()))],
             'expires_at' => ['nullable', 'date'],
@@ -94,6 +95,9 @@ class StoreJobListingRequest extends FormRequest
             'company_id.exists' => 'Избраната компанија не постои.',
             'new_company_name.required_without' => 'Внесете нова компанија или изберете постоечка од листата.',
             'new_company_email.email' => 'Внесете валидна е-пошта за новата компанија.',
+            'job_image.image' => 'Прикачениот фајл за огласот мора да биде слика.',
+            'job_image.mimes' => 'Сликата за огласот мора да биде во JPG, PNG или WEBP формат.',
+            'job_image.max' => 'Сликата за огласот не смее да биде поголема од 3MB.',
             'new_company_logo.image' => 'Логото на новата компанија мора да биде слика.',
             'tag_ids.max' => 'Може да изберете најмногу :max тагови.',
         ];
@@ -110,6 +114,7 @@ class StoreJobListingRequest extends FormRequest
             'new_company_email' => 'е-пошта на нова компанија',
             'new_company_logo' => 'лого на нова компанија',
             'engagement_type' => 'вид на работен ангажман',
+            'job_image' => 'слика за оглас / банер',
             'tag_ids' => 'тагови',
             'tag_ids.*' => 'таг',
         ];

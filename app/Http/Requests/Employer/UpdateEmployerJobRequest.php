@@ -17,6 +17,7 @@ class UpdateEmployerJobRequest extends StoreEmployerJobRequest
 
         $rules = parent::rules();
         $rules['slug'] = ['nullable', 'string', 'max:255', Rule::unique('job_listings', 'slug')->ignore($job->id)];
+        $rules['remove_job_image'] = ['nullable', 'boolean'];
 
         return $rules;
     }

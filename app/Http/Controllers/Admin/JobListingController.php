@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\UpdateJobListingRequest;
 use App\Models\Company;
 use App\Models\JobListing;
 use App\Models\Tag;
+use App\Support\JobImageManager;
 use App\Support\TagSystem;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -34,7 +35,7 @@ class JobListingController extends Controller
         ]);
     }
 
-    public function store(StoreJobListingRequest $request): RedirectResponse
+    public function store(StoreJobListingRequest $request, JobImageManager $jobImageManager): RedirectResponse
     {
         $data = $request->validated();
         $tagIds = $data['tag_ids'] ?? [];
@@ -46,6 +47,13 @@ class JobListingController extends Controller
         $data = $this->normalizeJobFields($data);
 
         $job = JobListing::create($data);
+
+        if ($request->hasFile('job_image')) {
+            $job->update([
+                'job_image' => $jobImageManager->store($request->file('job_image'), $job),
+            ]);
+        }
+
         $this->syncTags($job, $tagIds);
 
         return redirect()
@@ -66,7 +74,7 @@ class JobListingController extends Controller
         ]);
     }
 
-    public function update(UpdateJobListingRequest $request, JobListing $job): RedirectResponse
+    public function update(UpdateJobListingRequest $request, JobListing $job, JobImageManager $jobImageManager): RedirectResponse
     {
         $data = $request->validated();
         $tagIds = $data['tag_ids'] ?? [];
@@ -77,6 +85,14 @@ class JobListingController extends Controller
         $data = $this->onlyJobFields($data);
         $data = $this->normalizeJobFields($data);
 
+        if ($request->hasFile('job_image')) {
+            $jobImageManager->delete($job->job_image);
+            $data['job_image'] = $jobImageManager->store($request->file('job_image'), $job);
+        } elseif ($request->boolean('remove_job_image')) {
+            $jobImageManager->delete($job->job_image);
+            $data['job_image'] = null;
+        }
+
         $job->update($data);
         $this->syncTags($job, $tagIds);
 
@@ -85,8 +101,9 @@ class JobListingController extends Controller
             ->with('status', 'Огласот е успешно ажуриран.');
     }
 
-    public function destroy(JobListing $job): RedirectResponse
+    public function destroy(JobListing $job, JobImageManager $jobImageManager): RedirectResponse
     {
+        $jobImageManager->delete($job->job_image);
         $job->delete();
 
         return redirect()

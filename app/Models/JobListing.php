@@ -31,6 +31,7 @@ class JobListing extends Model
         'location',
         'category',
         'engagement_type',
+        'job_image',
         'featured',
         'status',
         'expires_at',

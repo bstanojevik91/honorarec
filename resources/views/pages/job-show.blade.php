@@ -200,6 +200,17 @@
                             <p class="mt-4 text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
                                 {{ $jobIntro }}
                             </p>
+
+                            @if (! empty($job['job_image']))
+                                <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+                                    <img
+                                        src="{{ asset($job['job_image']) }}"
+                                        alt="{{ $job['title'] }}"
+                                        class="h-auto w-full object-contain"
+                                        loading="lazy"
+                                    >
+                                </div>
+                            @endif
                         </div>
 
                         <div class="grid gap-8 pt-6">

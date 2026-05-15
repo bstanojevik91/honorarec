@@ -821,6 +821,7 @@ class HomeController extends Controller
             'description' => $job->description,
             'daily_pay' => $job->daily_pay,
             'engagement_type' => $this->resolveEngagementType($job),
+            'job_image' => $job->job_image,
             'tags' => $this->resolvePublicTags($job),
         ];
     }

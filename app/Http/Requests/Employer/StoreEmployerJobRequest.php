@@ -61,6 +61,7 @@ class StoreEmployerJobRequest extends FormRequest
             'location' => ['nullable', 'string', 'max:255'],
             'category' => ['nullable', 'string', 'max:255'],
             'engagement_type' => ['nullable', Rule::in(JobListing::engagementTypeOptions())],
+            'job_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
             'featured' => ['nullable', 'boolean'],
         ];
 
@@ -78,6 +79,9 @@ class StoreEmployerJobRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'job_image.image' => 'Прикачениот фајл за огласот мора да биде слика.',
+            'job_image.mimes' => 'Сликата за огласот мора да биде во JPG, PNG или WEBP формат.',
+            'job_image.max' => 'Сликата за огласот не смее да биде поголема од 3MB.',
             'tag_ids.max' => 'Може да изберете најмногу :max тагови.',
         ];
     }
@@ -93,6 +97,7 @@ class StoreEmployerJobRequest extends FormRequest
             'location' => 'локација',
             'category' => 'категорија',
             'engagement_type' => 'вид на работен ангажман',
+            'job_image' => 'слика за оглас / банер',
             'description' => 'опис',
             'tag_ids' => 'тагови',
             'tag_ids.*' => 'таг',

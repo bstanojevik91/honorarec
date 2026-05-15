@@ -101,6 +101,44 @@
     </div>
 
     <div class="lg:col-span-2">
+        <label for="job_image" class="block text-sm font-semibold text-slate-700">
+            Слика за оглас / банер
+        </label>
+
+        <input
+            type="file"
+            name="job_image"
+            id="job_image"
+            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+            class="mt-2 block w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
+        >
+
+        <p class="mt-2 text-xs text-slate-500">
+            Опционално. Дозволени формати: JPG, PNG, WEBP. Максимум 3MB.
+        </p>
+
+        @if (!empty($job?->job_image))
+            <div class="mt-4">
+                <p class="text-sm font-semibold text-slate-700">Моментална слика:</p>
+                <img
+                    src="{{ asset($job->job_image) }}"
+                    alt="{{ $job->title }}"
+                    class="mt-2 max-h-48 rounded-xl border border-slate-200 object-contain"
+                >
+
+                <label class="mt-3 flex items-center gap-2 text-sm text-slate-700">
+                    <input type="checkbox" name="remove_job_image" value="1" @checked(old('remove_job_image')) class="rounded border-slate-300">
+                    <span>Избриши ја моменталната слика</span>
+                </label>
+            </div>
+        @endif
+
+        @error('job_image')
+            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div class="lg:col-span-2">
         <div class="rounded-[1.5rem] border border-dashed border-emerald-200 bg-emerald-50/60 p-6">
             <div class="mb-5">
                 <h3 class="text-lg font-bold text-slate-900">Нова компанија</h3>
