@@ -19,8 +19,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'Honorarec.mk' }}</title>
     <meta name="description" content="{{ $description ?? 'Хонорарец.мк - најди работа на дневница.' }}">
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="apple-touch-icon" href="/favicon.png">
+    <link rel="icon" href="https://honorarec.mk/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="https://honorarec.mk/favicon.png" sizes="48x48">
+    <link rel="apple-touch-icon" href="https://honorarec.mk/favicon.png">
     <link rel="canonical" href="{{ $resolvedCanonical }}">
     <meta property="og:type" content="{{ $ogType ?? 'website' }}">
     <meta property="og:title" content="{{ $ogTitle ?? ($title ?? 'Honorarec.mk') }}">
