@@ -98,7 +98,7 @@ class HomeController extends Controller
 
         return view('pages.home', [
             'hero' => $hero,
-            'jobs' => $jobs->take(3)->all(),
+            'jobs' => $jobs->take(9)->all(),
             'categories' => $this->homepageCategories($jobs),
             'searchCategories' => $searchCategories,
             'promo' => $promo,

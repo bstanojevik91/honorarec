@@ -116,8 +116,10 @@
 
             @if (count($jobs) > 0)
                 <div class="grid gap-4 lg:grid-cols-3 sm:gap-5">
-                    @foreach ($jobs as $job)
-                        @include('partials.job-card', ['job' => $job])
+                    @foreach ($jobs as $index => $job)
+                        <div class="{{ $index >= 6 ? 'hidden lg:block' : '' }}">
+                            @include('partials.job-card', ['job' => $job])
+                        </div>
                     @endforeach
                 </div>
             @else
