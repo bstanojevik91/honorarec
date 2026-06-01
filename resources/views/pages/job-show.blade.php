@@ -403,6 +403,13 @@
                         @include('partials.job-card', ['job' => $relatedJob, 'showAction' => true])
                     @endforeach
                 </div>
+
+                <div class="mt-8 flex justify-center sm:mt-10">
+                    <a href="{{ url('/oglasi') }}"
+                       class="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 sm:w-auto sm:min-w-[220px]">
+                        Види ги сите огласи
+                    </a>
+                </div>
             </section>
         @endif
     </main>
