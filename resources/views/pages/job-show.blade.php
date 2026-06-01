@@ -133,19 +133,19 @@
                                 </a>
                             </div>
 
-                            <div class="mt-5 flex items-center justify-center gap-2 sm:mt-6 sm:gap-3 lg:justify-start">
-                                <span class="whitespace-nowrap text-sm font-medium text-slate-300">Сподели оглас:</span>
-                                <a href="{{ $facebookShareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:px-4">
+                            <div class="mt-5 flex max-w-full flex-wrap items-center justify-center gap-2 overflow-hidden sm:mt-6 sm:gap-3 lg:justify-start">
+                                <span class="w-full text-center text-sm font-medium text-slate-300 lg:w-auto lg:text-left">Сподели оглас:</span>
+                                <a href="{{ $facebookShareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-w-0 max-w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:px-4">
                                     <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
                                         <path d="M13.5 21v-7h2.4l.4-3h-2.8V9.3c0-.9.3-1.5 1.6-1.5H16V5.1c-.3 0-1.1-.1-2.1-.1-2.1 0-3.5 1.3-3.5 3.8V11H8v3h2.3v7h3.2z" />
                                     </svg>
-                                    Facebook
+                                    <span>Facebook</span>
                                 </a>
-                                <a href="{{ $linkedinShareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:px-4">
+                                <a href="{{ $linkedinShareUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-w-0 max-w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:px-4">
                                     <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
                                         <path d="M6.94 8.5A1.56 1.56 0 105.38 6.94 1.56 1.56 0 006.94 8.5zM5.56 10h2.77v8.44H5.56zm4.5 0h2.65v1.15h.04a2.9 2.9 0 012.61-1.43c2.79 0 3.3 1.84 3.3 4.22V18.4h-2.77v-3.96c0-.94-.02-2.15-1.31-2.15s-1.51 1.02-1.51 2.08v4.03h-2.77z" />
                                     </svg>
-                                    LinkedIn
+                                    <span>LinkedIn</span>
                                 </a>
                             </div>
                         </div>
