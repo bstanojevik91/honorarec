@@ -88,7 +88,7 @@
                                 <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-slate-100">{{ $companyName }}</span>
                             </div>
 
-                            <h1 class="mt-4 max-w-4xl text-[2.1rem] font-extrabold tracking-tight sm:mt-5 sm:text-5xl lg:text-[3.7rem] lg:leading-[1.03]">{{ $job['title'] }}</h1>
+                            <h1 class="mt-4 max-w-4xl text-[1.8rem] font-extrabold tracking-tight sm:mt-5 sm:text-5xl lg:text-[3.7rem] lg:leading-[1.03]">{{ $job['title'] }}</h1>
 
                             <div class="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-sm text-slate-200 sm:mt-6 sm:gap-x-6 sm:text-base lg:justify-start">
                                 <div class="inline-flex items-center gap-2">
