@@ -58,7 +58,7 @@ class HomeController extends Controller
         $promo = [
             'title' => 'Зошто пребарувањето е полесно со Honorarec.mk',
             'points' => [
-                'Брзо филтрирање по клучен збор, локација и категорија',
+                'Брзо филтрирање по категорија, локација и тип на ангажман',
                 'Проверени огласи што лесно се скенираат и споредуваат',
                 'Јасен пат од пребарување до аплицирање без непотребни чекори',
             ],
@@ -101,6 +101,7 @@ class HomeController extends Controller
             'jobs' => $jobs->take(9)->all(),
             'categories' => $this->homepageCategories($jobs),
             'searchCategories' => $searchCategories,
+            'engagementTypes' => self::ENGAGEMENT_TYPES,
             'promo' => $promo,
             'testimonials' => $testimonials,
             'posts' => collect($posts)->take(2)->all(),
@@ -171,7 +172,6 @@ class HomeController extends Controller
             ->all();
 
         $filters = [
-            'q' => trim((string) $request->string('q')),
             'city' => trim((string) $request->string('city')),
             'category' => trim((string) $request->string('category')),
             'engagement_type' => trim((string) $request->string('engagement_type')),
@@ -548,20 +548,13 @@ class HomeController extends Controller
 
     /**
      * @param \Illuminate\Support\Collection<int, array<string, mixed>> $jobs
-     * @param array{q:string,city:string,category:string,engagement_type:string,tags:array<int, string>} $filters
+     * @param array{city:string,category:string,engagement_type:string,tags:array<int, string>} $filters
      * @return \Illuminate\Support\Collection<int, array<string, mixed>>
      */
     private function filterJobs(Collection $jobs, array $filters): Collection
     {
         return $jobs
             ->filter(function (array $job) use ($filters): bool {
-                $matchesKeyword = $filters['q'] === '' || collect([
-                    $job['title'] ?? '',
-                    $job['company'] ?? '',
-                    $job['category'] ?? '',
-                    $job['description'] ?? '',
-                ])->contains(fn (string $value): bool => str_contains(mb_strtolower($value), mb_strtolower($filters['q'])));
-
                 $matchesCity = LocationOptions::matches($job['location'] ?? null, $filters['city']);
 
                 $matchesCategory = $filters['category'] === '' || mb_strtolower((string) ($job['category'] ?? '')) === mb_strtolower($filters['category']);
@@ -571,7 +564,7 @@ class HomeController extends Controller
                 $matchesTags = $filters['tags'] === [] || collect($filters['tags'])
                     ->every(fn (string $tag): bool => $jobTags->contains(mb_strtolower($tag)));
 
-                return $matchesKeyword && $matchesCity && $matchesCategory && $matchesEngagementType && $matchesTags;
+                return $matchesCity && $matchesCategory && $matchesEngagementType && $matchesTags;
             })
             ->values();
     }

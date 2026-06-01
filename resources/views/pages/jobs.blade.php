@@ -3,7 +3,6 @@
 @section('content')
     @php
         $baseTagQuery = array_filter([
-            'q' => $filters['q'],
             'city' => $filters['city'],
             'category' => $filters['category'],
             'engagement_type' => $filters['engagement_type'],
@@ -37,46 +36,48 @@
                         <input type="hidden" name="tag" value="{{ implode(',', $selectedTagSlugs) }}">
                     @endif
 
-                    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-[1.45fr_1fr_1fr_1fr_auto]">
-                    <div>
-                        <label for="q" class="mb-2 block text-sm font-semibold text-slate-700">Клучен збор / назив на работа</label>
-                        <input id="q" name="q" type="text" value="{{ $filters['q'] }}" placeholder="Пр. промотер, магационер..." class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 sm:col-span-2 xl:col-span-1">
-                    </div>
-                    @include('partials.location-filter', [
-                        'locationTree' => $locationTree,
-                        'selectedValue' => $filters['city'],
-                        'selectedLabel' => $selectedLocationLabel,
-                        'placeholder' => 'Избери локација',
-                        'containerClass' => 'relative z-[80] block',
-                        'triggerClass' => 'flex h-12 w-full min-w-0 items-center justify-between gap-3 overflow-hidden rounded-2xl border border-slate-200 bg-white pl-4 pr-3 text-sm font-medium text-slate-900 outline-none transition hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100',
-                        'panelClass' => 'absolute left-0 right-0 top-[calc(100%+0.7rem)] z-[120] lg:right-auto lg:w-[24rem]',
-                    ])
-                    <div>
-                        <label for="category" class="mb-2 block text-sm font-semibold text-slate-700">Категорија</label>
-                        <select id="category" name="category" class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
-                            <option value="">Сите категории</option>
-                            @foreach ($availableCategories as $category)
-                                <option value="{{ $category }}" @selected($filters['category'] === $category)>{{ $category }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label for="engagement_type" class="mb-2 block text-sm font-semibold text-slate-700">Вид на работен ангажман</label>
-                        <select id="engagement_type" name="engagement_type" class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
-                            <option value="">Сите типови</option>
-                            @foreach ($engagementTypes as $type)
-                                <option value="{{ $type }}" @selected($filters['engagement_type'] === $type)>{{ $type }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="grid gap-3 sm:grid-cols-2 xl:flex xl:items-end">
-                        <button type="submit" class="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-emerald-600 px-6 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 xl:w-auto">
-                            Пребарувај
-                        </button>
-                        <a href="{{ route('jobs.index') }}" class="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-slate-200 px-5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 xl:w-auto">
-                            Исчисти
-                        </a>
-                    </div>
+                    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto_auto]">
+                        <div>
+                            <label for="category" class="mb-2 block text-sm font-semibold text-slate-700">Категорија</label>
+                            <select id="category" name="category" class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
+                                <option value="">Сите категории</option>
+                                @foreach ($availableCategories as $category)
+                                    <option value="{{ $category }}" @selected($filters['category'] === $category)>{{ $category }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        @include('partials.location-filter', [
+                            'locationTree' => $locationTree,
+                            'selectedValue' => $filters['city'],
+                            'selectedLabel' => $selectedLocationLabel,
+                            'placeholder' => 'Избери локација',
+                            'containerClass' => 'relative z-[80] block',
+                            'triggerClass' => 'flex h-12 w-full min-w-0 items-center justify-between gap-3 overflow-hidden rounded-2xl border border-slate-200 bg-white pl-4 pr-3 text-sm font-medium text-slate-900 outline-none transition hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100',
+                            'panelClass' => 'absolute left-0 right-0 top-[calc(100%+0.7rem)] z-[120] lg:right-auto lg:w-[24rem]',
+                        ])
+
+                        <div>
+                            <label for="engagement_type" class="mb-2 block text-sm font-semibold text-slate-700">Вид на работен ангажман</label>
+                            <select id="engagement_type" name="engagement_type" class="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
+                                <option value="">Сите типови</option>
+                                @foreach ($engagementTypes as $type)
+                                    <option value="{{ $type }}" @selected($filters['engagement_type'] === $type)>{{ $type }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="flex items-end">
+                            <button type="submit" class="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-emerald-600 px-6 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 xl:w-auto">
+                                Пребарувај
+                            </button>
+                        </div>
+
+                        <div class="flex items-end">
+                            <a href="{{ route('jobs.index') }}" class="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-slate-200 px-5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 xl:w-auto">
+                                Исчисти
+                            </a>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -129,7 +130,7 @@
             @else
                 <div class="rounded-[1.35rem] border border-slate-200 bg-white px-5 py-10 text-center shadow-[0_20px_45px_-34px_rgba(15,23,42,0.18)] sm:rounded-[1.6rem] sm:px-6 sm:py-12">
                     <h3 class="text-xl font-bold text-slate-900">Нема огласи за овие критериуми</h3>
-                    <p class="mt-3 text-sm leading-7 text-slate-600">Пробај со друг клучен збор, друг град или избери поширока категорија.</p>
+                    <p class="mt-3 text-sm leading-7 text-slate-600">Пробај со друг град, друг тип на ангажман или избери поширока категорија.</p>
                     <a href="{{ route('jobs.index') }}" class="mt-6 inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 sm:w-auto">
                         Прикажи ги сите огласи
                     </a>

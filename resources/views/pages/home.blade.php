@@ -42,22 +42,24 @@
                         <h2 class="text-[1.55rem] font-bold tracking-tight text-slate-900 sm:text-[1.7rem]">Најди оглас за неколку секунди</h2>
                     </div>
 
-                    <div class="grid gap-3.5 lg:grid-cols-[1.55fr_0.9fr_0.9fr_auto]">
+                    <div class="grid gap-3.5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
                         <label class="block">
-                            <span class="mb-2 block text-sm font-semibold text-slate-700">Клучен збор</span>
+                            <span class="mb-2 block text-sm font-semibold text-slate-700">Категорија</span>
                             <span class="relative block">
                                 <span class="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-slate-400">
                                     <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M8.5 3a5.5 5.5 0 013.937 9.34l3.111 3.112a.75.75 0 11-1.06 1.06l-3.112-3.11A5.5 5.5 0 118.5 3zm0 1.5a4 4 0 100 8 4 4 0 000-8z" clip-rule="evenodd" />
+                                        <path d="M4.75 4A1.75 1.75 0 003 5.75v8.5C3 15.216 3.784 16 4.75 16h10.5A1.75 1.75 0 0017 14.25v-8.5A1.75 1.75 0 0015.25 4H4.75zM4.5 7.75A.75.75 0 015.25 7h9.5a.75.75 0 010 1.5h-9.5a.75.75 0 01-.75-.75zm.75 2.75a.75.75 0 000 1.5h5.5a.75.75 0 000-1.5h-5.5z"/>
                                     </svg>
                                 </span>
-                                <input
-                                    name="q"
-                                    type="text"
-                                    value="{{ request('q') }}"
-                                    placeholder="Пр. промотер, магационер..."
-                                    class="hero-search-field h-[3.55rem] w-full rounded-[1.25rem] border border-slate-200 bg-slate-50/90 pl-12 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-0"
-                                >
+                                <select name="category" class="hero-search-field h-[3.55rem] w-full appearance-none rounded-[1.25rem] border border-slate-200 bg-slate-50/90 bg-none pl-12 pr-11 text-sm font-medium text-slate-600 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-0">
+                                    <option value="" @selected(request('category') === '')>Избери категорија</option>
+                                    @foreach ($searchCategories as $category)
+                                        <option value="{{ $category }}" @selected(request('category') === $category)>{{ $category }}</option>
+                                    @endforeach
+                                </select>
+                                <svg viewBox="0 0 20 20" fill="currentColor" class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400">
+                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                </svg>
                             </span>
                         </label>
 
@@ -72,17 +74,18 @@
                         ])
 
                         <label class="block">
-                            <span class="mb-2 block text-sm font-semibold text-slate-700">Категорија</span>
+                            <span class="mb-2 block text-sm font-semibold text-slate-700">Вид на работен ангажман</span>
                             <span class="relative block">
                                 <span class="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-slate-400">
                                     <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
-                                        <path d="M4.75 4A1.75 1.75 0 003 5.75v8.5C3 15.216 3.784 16 4.75 16h10.5A1.75 1.75 0 0017 14.25v-8.5A1.75 1.75 0 0015.25 4H4.75zM4.5 7.75A.75.75 0 015.25 7h9.5a.75.75 0 010 1.5h-9.5a.75.75 0 01-.75-.75zm.75 2.75a.75.75 0 000 1.5h5.5a.75.75 0 000-1.5h-5.5z"/>
+                                        <path fill-rule="evenodd" d="M10 2.75a.75.75 0 01.75.75v6.19l3.03 3.03a.75.75 0 11-1.06 1.06l-3.25-3.25A.75.75 0 019 10V3.5a.75.75 0 01.75-.75z" clip-rule="evenodd" />
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-1.5a6.5 6.5 0 100-13 6.5 6.5 0 000 13z" clip-rule="evenodd" />
                                     </svg>
                                 </span>
-                                <select name="category" class="hero-search-field h-[3.55rem] w-full appearance-none rounded-[1.25rem] border border-slate-200 bg-slate-50/90 bg-none pl-12 pr-11 text-sm font-medium text-slate-600 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-0">
-                                    <option value="" @selected(request('category') === '')>Избери категорија</option>
-                                    @foreach ($searchCategories as $category)
-                                        <option value="{{ $category }}" @selected(request('category') === $category)>{{ $category }}</option>
+                                <select name="engagement_type" class="hero-search-field h-[3.55rem] w-full appearance-none rounded-[1.25rem] border border-slate-200 bg-slate-50/90 bg-none pl-12 pr-11 text-sm font-medium text-slate-600 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-0">
+                                    <option value="" @selected(request('engagement_type') === '')>Избери тип</option>
+                                    @foreach ($engagementTypes as $type)
+                                        <option value="{{ $type }}" @selected(request('engagement_type') === $type)>{{ $type }}</option>
                                     @endforeach
                                 </select>
                                 <svg viewBox="0 0 20 20" fill="currentColor" class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400">
