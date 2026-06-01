@@ -197,7 +197,7 @@
                         <div class="border-b border-slate-100 pb-6 text-center lg:text-left">
                             <p class="text-sm font-semibold uppercase tracking-[0.22em] text-emerald-600">Преглед на оглас</p>
                             <h2 class="mt-3 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">Краток вовед</h2>
-                            <p class="mt-4 text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+                            <p class="mt-4 whitespace-pre-wrap text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
                                 {{ $jobIntro }}
                             </p>
 
