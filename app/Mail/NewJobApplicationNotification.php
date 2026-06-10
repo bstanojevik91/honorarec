@@ -38,7 +38,7 @@ class NewJobApplicationNotification extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.new-application-notification',
+            view: 'emails.new-application-notification',
         );
     }
 }
