@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobApplicationRequest;
+use App\Mail\NewJobApplicationNotification;
 use App\Models\BlogPost;
 use App\Models\Company;
+use App\Models\JobApplication;
 use App\Models\JobListing;
 use App\Models\Tag;
 use App\Support\DefaultBlogPosts;
@@ -19,8 +21,11 @@ use Illuminate\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Throwable;
 
 class HomeController extends Controller
 {
@@ -337,12 +342,52 @@ class HomeController extends Controller
 
         unset($data['cv']);
 
-        $jobListing->applications()->create($data);
+        $application = $jobListing->applications()->create($data);
+        $application->loadMissing('jobListing.company');
+
+        $this->notifyCompanyAboutNewApplication($application);
 
         return redirect()
             ->route('jobs.show', $slug)
             ->with('application_status', 'Вашата апликација е успешно испратена.')
             ->withFragment('apply-form');
+    }
+
+    private function notifyCompanyAboutNewApplication(JobApplication $application): void
+    {
+        $jobListing = $application->jobListing;
+        $company = $jobListing?->company;
+
+        if ($jobListing === null || $company === null) {
+            Log::warning('Skipping new job application email because the job listing or company is missing.', [
+                'application_id' => $application->id,
+                'job_listing_id' => $application->job_listing_id,
+            ]);
+
+            return;
+        }
+
+        if (blank($company->email)) {
+            Log::warning('Skipping new job application email because the company email is missing.', [
+                'application_id' => $application->id,
+                'job_listing_id' => $jobListing->id,
+                'company_id' => $company->id,
+            ]);
+
+            return;
+        }
+
+        try {
+            Mail::to($company->email)->send(new NewJobApplicationNotification($company, $jobListing, $application));
+        } catch (Throwable $throwable) {
+            Log::error('Failed to send new job application email.', [
+                'application_id' => $application->id,
+                'job_listing_id' => $jobListing->id,
+                'company_id' => $company->id,
+                'company_email' => $company->email,
+                'error' => $throwable->getMessage(),
+            ]);
+        }
     }
 
     /**
