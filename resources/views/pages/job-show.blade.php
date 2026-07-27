@@ -12,6 +12,11 @@
         $companyName = trim((string) ($job['company'] ?? 'Компанија'));
         $logoUrl = trim((string) ($job['logo'] ?? ''));
         $callPhone = $callPhone ?? null;
+        $callPhoneDisplay = match (true) {
+            is_string($callPhone) && preg_match('/^\+389\d{8}$/', $callPhone) === 1 => preg_replace('/^(\+389)(\d{2})(\d{3})(\d{3})$/', '$1 $2 $3 $4', $callPhone),
+            is_string($callPhone) && preg_match('/^0\d{8}$/', $callPhone) === 1 => preg_replace('/^(0\d{2})(\d{3})(\d{3})$/', '$1 $2 $3', $callPhone),
+            default => $callPhone,
+        };
         $relatedJobs = collect($relatedJobs ?? []);
 
         $companyWords = preg_split('/\s+/u', $companyName, -1, PREG_SPLIT_NO_EMPTY) ?: [];
@@ -59,6 +64,40 @@
             ],
         ];
     @endphp
+
+    @push('styles')
+        <style>
+            [data-phone-reveal] {
+                perspective: 1200px;
+            }
+
+            [data-phone-reveal-card] {
+                position: absolute;
+                inset: 0;
+                transform-style: preserve-3d;
+                transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+            }
+
+            [data-phone-reveal-face] {
+                backface-visibility: hidden;
+                -webkit-backface-visibility: hidden;
+            }
+
+            [data-phone-reveal-face="back"] {
+                transform: rotateY(180deg);
+            }
+
+            [data-phone-reveal].is-revealed [data-phone-reveal-card] {
+                transform: rotateY(180deg);
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                [data-phone-reveal-card] {
+                    transition: none;
+                }
+            }
+        </style>
+    @endpush
 
     <div class="relative isolate overflow-hidden bg-slate-950">
         <div class="absolute inset-0">
@@ -124,9 +163,32 @@
                                     Аплицирај
                                 </a>
                                 @if ($callPhone)
-                                    <a href="tel:{{ $callPhone }}" class="inline-flex w-full items-center justify-center rounded-full bg-sky-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-950/20 transition hover:bg-sky-500 sm:w-auto">
+                                    <a href="tel:{{ $callPhone }}" class="inline-flex w-full items-center justify-center rounded-full bg-sky-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-950/20 transition hover:bg-sky-500 sm:w-auto lg:hidden">
                                         Повикај
                                     </a>
+                                    <button
+                                        type="button"
+                                        class="relative hidden w-full max-w-full overflow-hidden rounded-full text-white shadow-lg shadow-sky-950/20 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-200 sm:w-auto lg:inline-flex"
+                                        data-phone-reveal
+                                        data-collapsed-label="Прикажи телефонски број на компанијата"
+                                        data-expanded-label="Телефонски број: {{ $callPhoneDisplay }}. Активирај повторно за сокривање."
+                                        aria-expanded="false"
+                                        aria-label="Прикажи телефонски број на компанијата"
+                                    >
+                                        <span class="invisible inline-flex items-center justify-center whitespace-nowrap px-8 py-3.5 text-sm font-semibold">
+                                            {{ $callPhoneDisplay }}
+                                        </span>
+                                        <span data-phone-reveal-card>
+                                            <span data-phone-reveal-face="front" aria-hidden="true" class="absolute inset-0 inline-flex items-center justify-center rounded-full bg-sky-600 px-8 py-3.5 text-sm font-semibold text-white transition hover:bg-sky-500">
+                                                Повикај
+                                            </span>
+                                            <span data-phone-reveal-face="back" aria-hidden="true" class="absolute inset-0 inline-flex items-center justify-center rounded-full bg-sky-500 px-6 py-3.5 text-sm font-semibold text-white">
+                                                <span data-phone-reveal-number class="max-w-full select-all overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold tracking-[0.08em]">
+                                                    {{ $callPhoneDisplay }}
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </button>
                                 @endif
                                 <a href="{{ route('jobs.index') }}" class="inline-flex w-full items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto">
                                     Сите огласи
@@ -381,9 +443,32 @@
                             Аплицирај
                         </a>
                         @if ($callPhone)
-                            <a href="tel:{{ $callPhone }}" class="mt-3 inline-flex w-full items-center justify-center rounded-2xl bg-sky-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-950/20 transition hover:bg-sky-500">
+                            <a href="tel:{{ $callPhone }}" class="mt-3 inline-flex w-full items-center justify-center rounded-2xl bg-sky-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-950/20 transition hover:bg-sky-500 lg:hidden">
                                 Повикај
                             </a>
+                            <button
+                                type="button"
+                                class="relative mt-3 hidden w-full max-w-full overflow-hidden rounded-2xl text-white shadow-lg shadow-sky-950/20 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300 lg:inline-flex"
+                                data-phone-reveal
+                                data-collapsed-label="Прикажи телефонски број на компанијата"
+                                data-expanded-label="Телефонски број: {{ $callPhoneDisplay }}. Активирај повторно за сокривање."
+                                aria-expanded="false"
+                                aria-label="Прикажи телефонски број на компанијата"
+                            >
+                                <span class="invisible inline-flex w-full items-center justify-center whitespace-nowrap px-6 py-3.5 text-sm font-semibold">
+                                    {{ $callPhoneDisplay }}
+                                </span>
+                                <span data-phone-reveal-card>
+                                    <span data-phone-reveal-face="front" aria-hidden="true" class="absolute inset-0 inline-flex items-center justify-center rounded-2xl bg-sky-600 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-sky-500">
+                                        Повикај
+                                    </span>
+                                    <span data-phone-reveal-face="back" aria-hidden="true" class="absolute inset-0 inline-flex items-center justify-center rounded-2xl bg-sky-500 px-5 py-3.5 text-sm font-semibold text-white">
+                                        <span data-phone-reveal-number class="max-w-full select-all overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold tracking-[0.08em]">
+                                            {{ $callPhoneDisplay }}
+                                        </span>
+                                    </span>
+                                </span>
+                            </button>
                         @endif
 
                         <p class="mt-4 text-center text-xs font-medium text-slate-500">Вашите податоци се безбедни</p>
@@ -415,26 +500,101 @@
         @endif
     </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('[data-application-form]').forEach((form) => {
-                const submitButton = form.querySelector('[data-application-submit]');
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const phoneRevealButtons = Array.from(document.querySelectorAll('[data-phone-reveal]'));
 
-                if (! submitButton) {
-                    return;
-                }
+                const closePhoneReveal = (button) => {
+                    button.classList.remove('is-revealed');
+                    button.setAttribute('aria-expanded', 'false');
+                    button.setAttribute('aria-label', button.dataset.collapsedLabel || 'Прикажи телефонски број на компанијата');
 
-                form.addEventListener('submit', () => {
-                    if (submitButton.disabled) {
+                    const selection = window.getSelection?.();
+
+                    if (selection && ! selection.isCollapsed && button.contains(selection.anchorNode)) {
+                        selection.removeAllRanges();
+                    }
+                };
+
+                const selectPhoneNumber = (button) => {
+                    const phoneNumber = button.querySelector('[data-phone-reveal-number]');
+
+                    if (! phoneNumber) {
                         return;
                     }
 
-                    submitButton.disabled = true;
-                    submitButton.textContent = submitButton.dataset.loadingText || 'Се испраќа...';
+                    const selection = window.getSelection?.();
+
+                    if (! selection) {
+                        return;
+                    }
+
+                    const range = document.createRange();
+                    range.selectNodeContents(phoneNumber);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                };
+
+                const togglePhoneReveal = (button) => {
+                    const isExpanded = button.classList.toggle('is-revealed');
+
+                    button.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+                    button.setAttribute(
+                        'aria-label',
+                        isExpanded
+                            ? (button.dataset.expandedLabel || 'Телефонскиот број е прикажан.')
+                            : (button.dataset.collapsedLabel || 'Прикажи телефонски број на компанијата')
+                    );
+
+                    if (isExpanded) {
+                        selectPhoneNumber(button);
+                    }
+                };
+
+                phoneRevealButtons.forEach((button) => {
+                    button.addEventListener('click', () => {
+                        togglePhoneReveal(button);
+                    });
+                });
+
+                document.addEventListener('click', (event) => {
+                    phoneRevealButtons.forEach((button) => {
+                        if (! button.contains(event.target)) {
+                            closePhoneReveal(button);
+                        }
+                    });
+                });
+
+                document.addEventListener('keydown', (event) => {
+                    if (event.key !== 'Escape') {
+                        return;
+                    }
+
+                    phoneRevealButtons.forEach((button) => {
+                        closePhoneReveal(button);
+                    });
+                });
+
+                document.querySelectorAll('[data-application-form]').forEach((form) => {
+                    const submitButton = form.querySelector('[data-application-submit]');
+
+                    if (! submitButton) {
+                        return;
+                    }
+
+                    form.addEventListener('submit', () => {
+                        if (submitButton.disabled) {
+                            return;
+                        }
+
+                        submitButton.disabled = true;
+                        submitButton.textContent = submitButton.dataset.loadingText || 'Се испраќа...';
+                    });
                 });
             });
-        });
-    </script>
+        </script>
+    @endpush
 
     @include('partials.footer')
 @endsection
