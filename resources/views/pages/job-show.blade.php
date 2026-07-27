@@ -183,7 +183,7 @@
                                                 Повикај
                                             </span>
                                             <span data-phone-reveal-face="back" aria-hidden="true" class="absolute inset-0 inline-flex items-center justify-center rounded-full bg-sky-500 px-6 py-3.5 text-sm font-semibold text-white">
-                                                <span data-phone-reveal-number class="max-w-full select-all overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold tracking-[0.08em]">
+                                                <span data-phone-reveal-number class="max-w-full select-text overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold tracking-[0.08em]">
                                                     {{ $callPhoneDisplay }}
                                                 </span>
                                             </span>
@@ -463,7 +463,7 @@
                                         Повикај
                                     </span>
                                     <span data-phone-reveal-face="back" aria-hidden="true" class="absolute inset-0 inline-flex items-center justify-center rounded-2xl bg-sky-500 px-5 py-3.5 text-sm font-semibold text-white">
-                                        <span data-phone-reveal-number class="max-w-full select-all overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold tracking-[0.08em]">
+                                        <span data-phone-reveal-number class="max-w-full select-text overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold tracking-[0.08em]">
                                             {{ $callPhoneDisplay }}
                                         </span>
                                     </span>
@@ -509,31 +509,6 @@
                     button.classList.remove('is-revealed');
                     button.setAttribute('aria-expanded', 'false');
                     button.setAttribute('aria-label', button.dataset.collapsedLabel || 'Прикажи телефонски број на компанијата');
-
-                    const selection = window.getSelection?.();
-
-                    if (selection && ! selection.isCollapsed && button.contains(selection.anchorNode)) {
-                        selection.removeAllRanges();
-                    }
-                };
-
-                const selectPhoneNumber = (button) => {
-                    const phoneNumber = button.querySelector('[data-phone-reveal-number]');
-
-                    if (! phoneNumber) {
-                        return;
-                    }
-
-                    const selection = window.getSelection?.();
-
-                    if (! selection) {
-                        return;
-                    }
-
-                    const range = document.createRange();
-                    range.selectNodeContents(phoneNumber);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
                 };
 
                 const togglePhoneReveal = (button) => {
@@ -546,10 +521,6 @@
                             ? (button.dataset.expandedLabel || 'Телефонскиот број е прикажан.')
                             : (button.dataset.collapsedLabel || 'Прикажи телефонски број на компанијата')
                     );
-
-                    if (isExpanded) {
-                        selectPhoneNumber(button);
-                    }
                 };
 
                 phoneRevealButtons.forEach((button) => {
