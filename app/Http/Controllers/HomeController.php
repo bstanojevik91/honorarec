@@ -11,25 +11,30 @@ use App\Models\JobListing;
 use App\Models\Tag;
 use App\Support\DefaultBlogPosts;
 use App\Support\LocationOptions;
+use App\Support\PhoneNormalizer;
 use App\Support\PublicUrl;
 use App\Support\TagSystem;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\View\View;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use Throwable;
 
 class HomeController extends Controller
 {
     private const NO_PUBLIC_CALL_TOKEN = '__NO_PUBLIC_CALL__';
+
     private const SITEMAP_CACHE_KEY = 'public-sitemap.xml.v2';
 
     private const ENGAGEMENT_TYPES = [
@@ -141,7 +146,7 @@ class HomeController extends Controller
             [
                 'question' => 'Какви категории на работа можам да најдам?',
                 'answer' => 'Може да најдете промоции, теренска работа, администрација, магацин, угостителство, сезонски ангажмани и многу други категории.',
-            ]
+            ],
         ];
 
         return view('pages.faq', [
@@ -335,21 +340,68 @@ class HomeController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
         $data = $request->validated();
+        $normalizedPhone = $request->normalizedPhone();
+        $cvPath = null;
 
-        if ($request->hasFile('cv')) {
-            $data['cv_path'] = $request->file('cv')->store('applications/cv', 'public');
+        try {
+            $application = DB::transaction(function () use ($request, $jobListing, $data, $normalizedPhone, &$cvPath): JobApplication {
+                JobListing::query()
+                    ->whereKey($jobListing->id)
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($this->findDuplicateApplication($jobListing, $normalizedPhone) !== null) {
+                    throw new DuplicateJobApplicationException;
+                }
+
+                if ($request->hasFile('cv')) {
+                    $cvPath = $request->file('cv')->store('applications/cv', 'public');
+                    $data['cv_path'] = $cvPath;
+                }
+
+                unset($data['cv']);
+
+                if ($this->jobApplicationsHaveNormalizedPhoneColumn()) {
+                    $data['phone_normalized'] = $normalizedPhone;
+                }
+
+                return $jobListing->applications()->create($data);
+            });
+        } catch (DuplicateJobApplicationException) {
+            $this->deleteFreshCvUpload($cvPath);
+
+            return $this->duplicateApplicationRedirect($slug);
+        } catch (QueryException $exception) {
+            $this->deleteFreshCvUpload($cvPath);
+
+            if ($this->isPhoneUniqueConstraintViolation($exception)) {
+                return $this->duplicateApplicationRedirect($slug);
+            }
+
+            throw $exception;
+        } catch (Throwable $throwable) {
+            $this->deleteFreshCvUpload($cvPath);
+
+            throw $throwable;
         }
 
-        unset($data['cv']);
-
-        $application = $jobListing->applications()->create($data);
         $application->loadMissing('jobListing.company');
-
         $this->notifyCompanyAboutNewApplication($application);
 
         return redirect()
             ->route('jobs.show', $slug)
             ->with('application_status', 'Вашата апликација е успешно испратена.')
+            ->withFragment('apply-form');
+    }
+
+    private function duplicateApplicationRedirect(string $slug): RedirectResponse
+    {
+        return redirect()
+            ->route('jobs.show', $slug)
+            ->withErrors([
+                'phone' => 'Веќе имате испратено апликација за овој оглас со овој телефонски број.',
+            ])
+            ->withInput()
             ->withFragment('apply-form');
     }
 
@@ -390,8 +442,47 @@ class HomeController extends Controller
         }
     }
 
+    private function findDuplicateApplication(JobListing $jobListing, string $normalizedPhone): ?JobApplication
+    {
+        if ($this->jobApplicationsHaveNormalizedPhoneColumn()) {
+            return JobApplication::query()
+                ->where('job_listing_id', $jobListing->id)
+                ->where('phone_normalized', $normalizedPhone)
+                ->first();
+        }
+
+        return JobApplication::query()
+            ->where('job_listing_id', $jobListing->id)
+            ->orderBy('id')
+            ->get(['id', 'job_listing_id', 'phone'])
+            ->first(fn (JobApplication $application): bool => PhoneNormalizer::normalize($application->phone) === $normalizedPhone);
+    }
+
+    private function jobApplicationsHaveNormalizedPhoneColumn(): bool
+    {
+        return Schema::hasColumn('job_applications', 'phone_normalized');
+    }
+
+    private function deleteFreshCvUpload(?string $cvPath): void
+    {
+        if (! is_string($cvPath) || $cvPath === '') {
+            return;
+        }
+
+        Storage::disk('public')->delete($cvPath);
+    }
+
+    private function isPhoneUniqueConstraintViolation(QueryException $exception): bool
+    {
+        $sqlState = (string) $exception->getCode();
+        $message = $exception->getMessage();
+
+        return in_array($sqlState, ['23000', '23505'], true)
+            || str_contains($message, 'job_applications_listing_phone_unique');
+    }
+
     /**
-     * @return \Illuminate\Support\Collection<int, array<string, mixed>>
+     * @return Collection<int, array<string, mixed>>
      */
     private function frontendJobs(): Collection
     {
@@ -588,13 +679,13 @@ class HomeController extends Controller
         $wordCount = max(1, str_word_count(strip_tags($content)));
         $minutes = max(1, (int) ceil($wordCount / 180));
 
-        return $minutes . ' минути читање';
+        return $minutes.' минути читање';
     }
 
     /**
-     * @param \Illuminate\Support\Collection<int, array<string, mixed>> $jobs
-     * @param array{city:string,category:string,engagement_type:string,tags:array<int, string>} $filters
-     * @return \Illuminate\Support\Collection<int, array<string, mixed>>
+     * @param  Collection<int, array<string, mixed>>  $jobs
+     * @param  array{city:string,category:string,engagement_type:string,tags:array<int, string>}  $filters
+     * @return Collection<int, array<string, mixed>>
      */
     private function filterJobs(Collection $jobs, array $filters): Collection
     {
@@ -615,8 +706,8 @@ class HomeController extends Controller
     }
 
     /**
-     * @param array<string, mixed> $job
-     * @param \Illuminate\Support\Collection<int, array<string, mixed>> $jobs
+     * @param  array<string, mixed>  $job
+     * @param  Collection<int, array<string, mixed>>  $jobs
      * @return array<int, array<string, mixed>>
      */
     private function relatedJobsFor(array $job, Collection $jobs): array
@@ -642,8 +733,8 @@ class HomeController extends Controller
     }
 
     /**
-     * @param array<string, mixed> $job
-     * @param array<string, mixed> $candidate
+     * @param  array<string, mixed>  $job
+     * @param  array<string, mixed>  $candidate
      */
     private function relatedJobScore(array $job, array $candidate): int
     {
@@ -732,7 +823,7 @@ class HomeController extends Controller
         return $this->inferEngagementType($job);
     }
 
-    private function normalizeCallPhone(null|string $phone): ?string
+    private function normalizeCallPhone(?string $phone): ?string
     {
         if ($phone === null) {
             return null;
@@ -865,7 +956,7 @@ class HomeController extends Controller
     }
 
     /**
-     * @param  \Illuminate\Support\Collection<int, array<string, mixed>>  $jobs
+     * @param  Collection<int, array<string, mixed>>  $jobs
      * @return array<int, array{name:string,slug:string}>
      */
     private function availablePublicTags(Collection $jobs): array
@@ -921,7 +1012,7 @@ class HomeController extends Controller
     }
 
     /**
-     * @param \Illuminate\Support\Collection<int, array<string, mixed>> $jobs
+     * @param  Collection<int, array<string, mixed>>  $jobs
      * @return array<int, array<string, string>>
      */
     private function homepageCategories(Collection $jobs): array
@@ -937,7 +1028,7 @@ class HomeController extends Controller
                 return [
                     'icon' => $this->homepageCategoryIcon($category),
                     'name' => $category,
-                    'count' => $count . ' ' . ($count === 1 ? 'оглас' : 'огласи'),
+                    'count' => $count.' '.($count === 1 ? 'оглас' : 'огласи'),
                 ];
             })
             ->values()
@@ -961,7 +1052,7 @@ class HomeController extends Controller
     }
 
     /**
-     * @param \Illuminate\Support\Collection<int, array<string, mixed>> $jobs
+     * @param  Collection<int, array<string, mixed>>  $jobs
      * @return array<int, array<string, string|int>>
      */
     private function footerStats(Collection $jobs): array
@@ -987,7 +1078,7 @@ class HomeController extends Controller
 
     private function resolveCompanyLogoUrl(?Company $company): string
     {
-        $placeholder = 'https://placehold.co/96x96/eff6ff/166534?text=' . urlencode(mb_substr($company?->name ?? 'HR', 0, 2));
+        $placeholder = 'https://placehold.co/96x96/eff6ff/166534?text='.urlencode(mb_substr($company?->name ?? 'HR', 0, 2));
 
         if ($company === null || blank($company->logo_path)) {
             return $placeholder;
@@ -996,9 +1087,9 @@ class HomeController extends Controller
         $rawPath = ltrim(trim((string) $company->logo_path), '/');
 
         $candidates = collect([
-            str_starts_with($rawPath, 'storage/') ? $rawPath : 'storage/' . $rawPath,
-            str_starts_with($rawPath, 'companies/') ? 'storage/companies/logos/' . basename($rawPath) : null,
-            str_starts_with($rawPath, 'companies/logos/') ? 'storage/companies/' . basename($rawPath) : null,
+            str_starts_with($rawPath, 'storage/') ? $rawPath : 'storage/'.$rawPath,
+            str_starts_with($rawPath, 'companies/') ? 'storage/companies/logos/'.basename($rawPath) : null,
+            str_starts_with($rawPath, 'companies/logos/') ? 'storage/companies/'.basename($rawPath) : null,
         ])->filter()->unique()->values();
 
         foreach ($candidates as $publicPath) {
@@ -1012,7 +1103,7 @@ class HomeController extends Controller
 
     private function viewLastModified(string $view): ?Carbon
     {
-        $path = resource_path('views/pages/' . $view);
+        $path = resource_path('views/pages/'.$view);
 
         if (! is_file($path)) {
             return null;
@@ -1047,3 +1138,5 @@ class HomeController extends Controller
         return PublicUrl::absolutePath(route($name, $parameters, false));
     }
 }
+
+class DuplicateJobApplicationException extends \RuntimeException {}

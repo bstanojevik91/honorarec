@@ -268,6 +268,7 @@
                                     Пополнете ги основните податоци и испратете кратка порака. Формата е едноставна и апликацијата трае само неколку минути.
                                 </p>
                                 <p class="mt-2 text-sm font-medium text-emerald-700">Ќе бидете контактирани од работодавачот</p>
+                                <p class="mt-2 text-xs font-medium text-slate-500">За истиот оглас е дозволена само една апликација по телефонски број.</p>
                             </div>
                         </div>
 
@@ -284,7 +285,7 @@
                         @endif
 
                         @if ($applicationEnabled)
-                            <form method="POST" action="{{ route('jobs.apply', $job['slug']) }}" enctype="multipart/form-data" class="mt-6 space-y-6">
+                            <form method="POST" action="{{ route('jobs.apply', $job['slug']) }}" enctype="multipart/form-data" class="mt-6 space-y-6" data-application-form>
                                 @csrf
                                 <div class="rounded-[1.25rem] border border-slate-200 p-4 sm:rounded-[1.35rem]">
                                     <p class="text-sm font-semibold text-slate-900">Основни податоци</p>
@@ -338,7 +339,7 @@
                                     </div>
                                 </div>
 
-                                <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500">
+                                <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:bg-emerald-400" data-application-submit data-loading-text="Се испраќа...">
                                     Испрати апликација
                                 </button>
                             </form>
@@ -413,6 +414,27 @@
             </section>
         @endif
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[data-application-form]').forEach((form) => {
+                const submitButton = form.querySelector('[data-application-submit]');
+
+                if (! submitButton) {
+                    return;
+                }
+
+                form.addEventListener('submit', () => {
+                    if (submitButton.disabled) {
+                        return;
+                    }
+
+                    submitButton.disabled = true;
+                    submitButton.textContent = submitButton.dataset.loadingText || 'Се испраќа...';
+                });
+            });
+        });
+    </script>
 
     @include('partials.footer')
 @endsection

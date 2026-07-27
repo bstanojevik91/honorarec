@@ -14,6 +14,7 @@ class JobApplication extends Model
         'job_listing_id',
         'full_name',
         'phone',
+        'phone_normalized',
         'city',
         'message',
         'cv_path',

@@ -26,4 +26,5 @@ deployment:
     - /bin/cp -a public/build/. "$PUBLICPATH/build/"
     - cd "$APPPATH"
     - php artisan migrate --force
+    - php artisan job-applications:deduplicate --apply
     - php artisan optimize:clear

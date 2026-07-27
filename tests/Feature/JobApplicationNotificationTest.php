@@ -49,11 +49,12 @@ class JobApplicationNotificationTest extends TestCase
             'cv' => UploadedFile::fake()->create('cv.pdf', 120, 'application/pdf'),
         ]);
 
-        $response->assertRedirect(route('jobs.show', $job->slug) . '#apply-form');
+        $response->assertRedirect(route('jobs.show', $job->slug).'#apply-form');
         $this->assertDatabaseHas('job_applications', [
             'job_listing_id' => $job->id,
             'full_name' => 'Петар Апликант',
             'phone' => '071111111',
+            'phone_normalized' => '38971111111',
             'city' => 'Битола',
         ]);
 
@@ -99,11 +100,12 @@ class JobApplicationNotificationTest extends TestCase
             'message' => 'Ме интересира работата.',
         ]);
 
-        $response->assertRedirect(route('jobs.show', $job->slug) . '#apply-form');
+        $response->assertRedirect(route('jobs.show', $job->slug).'#apply-form');
         $this->assertDatabaseHas('job_applications', [
             'job_listing_id' => $job->id,
             'full_name' => 'Елена Кандидат',
             'phone' => '072222222',
+            'phone_normalized' => '38972222222',
             'city' => 'Прилеп',
         ]);
 

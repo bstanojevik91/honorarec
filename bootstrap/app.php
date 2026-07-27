@@ -16,6 +16,9 @@ $app = Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withCommands([
+        __DIR__.'/../app/Console/Commands',
+    ])
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->prepend(ForceHttps::class);
 
@@ -59,8 +62,8 @@ $app = Application::configure(basePath: dirname(__DIR__))
         //
     })->create();
 
-$defaultPublicPath = dirname(__DIR__) . '/public';
-$cpanelPublicPath = dirname(__DIR__, 2) . '/public_html';
+$defaultPublicPath = dirname(__DIR__).'/public';
+$cpanelPublicPath = dirname(__DIR__, 2).'/public_html';
 
 $app->usePublicPath(is_dir($cpanelPublicPath) ? $cpanelPublicPath : $defaultPublicPath);
 
