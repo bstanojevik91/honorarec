@@ -155,6 +155,20 @@ class HomeController extends Controller
         ]);
     }
 
+    public function privacyPolicy(): View
+    {
+        return view('pages.privacy-policy', [
+            'title' => 'Политика за приватност | Honorarec.mk',
+            'description' => 'Прочитајте како Honorarec.mk ги собира, користи, доставува и чува личните податоци поврзани со платформата и апликациите за работа.',
+            'canonical' => route('privacy.policy'),
+            'ogTitle' => 'Политика за приватност | Honorarec.mk',
+            'ogDescription' => 'Информации за тоа како Honorarec.mk ги собира, користи, доставува и чува личните податоци.',
+            'ogUrl' => route('privacy.policy'),
+            'ogImage' => asset('images/honorarec-logo.png'),
+            'footerStats' => $this->footerStats($this->frontendJobs()),
+        ]);
+    }
+
     public function blog(): View
     {
         $posts = collect($this->publicBlogPosts());
@@ -364,6 +378,9 @@ class HomeController extends Controller
                 if ($this->jobApplicationsHaveNormalizedPhoneColumn()) {
                     $data['phone_normalized'] = $normalizedPhone;
                 }
+
+                $data['privacy_policy_version'] = (string) config('privacy.policy_version');
+                $data['privacy_acknowledged_at'] = now();
 
                 return $jobListing->applications()->create($data);
             });

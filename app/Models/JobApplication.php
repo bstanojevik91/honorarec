@@ -18,7 +18,16 @@ class JobApplication extends Model
         'city',
         'message',
         'cv_path',
+        'privacy_policy_version',
+        'privacy_acknowledged_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'privacy_acknowledged_at' => 'datetime',
+        ];
+    }
 
     public function jobListing(): BelongsTo
     {

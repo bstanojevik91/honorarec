@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\JobApplicationController;
 use App\Http\Controllers\Admin\JobListingController;
 use App\Http\Controllers\Admin\TagController;
@@ -21,6 +21,7 @@ Route::get('/sitemap.xml', [HomeController::class, 'sitemap'])->name('sitemap');
 Route::get('/media/{path}', [PublicMediaController::class, 'show'])->where('path', '.*')->name('media.public');
 Route::get('/blog', [HomeController::class, 'blog'])->name('blog.index');
 Route::get('/chpp', [HomeController::class, 'faq'])->name('faq');
+Route::get('/politika-na-privatnost', [HomeController::class, 'privacyPolicy'])->name('privacy.policy');
 Route::get('/blog/{slug}', [HomeController::class, 'showBlogPost'])->name('blog.show');
 Route::get('/oglasi', [HomeController::class, 'jobs'])->name('jobs.index');
 Route::get('/oglasi/{slug}', [HomeController::class, 'showJob'])->name('jobs.show');

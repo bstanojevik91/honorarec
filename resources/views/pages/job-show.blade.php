@@ -401,6 +401,19 @@
                                     </div>
                                 </div>
 
+                                <p class="text-xs leading-6 text-slate-500 sm:text-sm">
+                                    „Со клик на „Испрати апликација“, потврдувате дека сте ја прочитале
+                                    <a
+                                        href="{{ route('privacy.policy') }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="font-semibold text-slate-700 underline decoration-emerald-300 underline-2 underline-offset-2 transition hover:text-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+                                    >
+                                        Политиката за приватност
+                                    </a>
+                                    и дека сте информирани дека внесените податоци и, доколку е приложено, CV-то ќе бидат обработени од Honorarec.mk и доставени до работодавачот исклучиво за потребите на оваа апликација.“
+                                </p>
+
                                 <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:bg-emerald-400" data-application-submit data-loading-text="Се испраќа...">
                                     Испрати апликација
                                 </button>

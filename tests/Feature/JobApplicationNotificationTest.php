@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Mail\NewJobApplicationNotification;
 use App\Models\Company;
+use App\Models\JobApplication;
 use App\Models\JobListing;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -47,6 +48,8 @@ class JobApplicationNotificationTest extends TestCase
             'city' => 'Битола',
             'message' => 'Заинтересиран сум за огласот.',
             'cv' => UploadedFile::fake()->create('cv.pdf', 120, 'application/pdf'),
+            'privacy_policy_version' => 'client-value',
+            'privacy_acknowledged_at' => '2000-01-01 00:00:00',
         ]);
 
         $response->assertRedirect(route('jobs.show', $job->slug).'#apply-form');
@@ -56,7 +59,15 @@ class JobApplicationNotificationTest extends TestCase
             'phone' => '071111111',
             'phone_normalized' => '38971111111',
             'city' => 'Битола',
+            'privacy_policy_version' => config('privacy.policy_version'),
         ]);
+        $this->assertDatabaseMissing('job_applications', [
+            'job_listing_id' => $job->id,
+            'privacy_policy_version' => 'client-value',
+        ]);
+
+        $application = JobApplication::query()->where('job_listing_id', $job->id)->firstOrFail();
+        $this->assertNotNull($application->privacy_acknowledged_at);
 
         Mail::assertSent(NewJobApplicationNotification::class, function (NewJobApplicationNotification $mail) use ($company, $job): bool {
             return $mail->hasTo($company->email)
@@ -107,6 +118,7 @@ class JobApplicationNotificationTest extends TestCase
             'phone' => '072222222',
             'phone_normalized' => '38972222222',
             'city' => 'Прилеп',
+            'privacy_policy_version' => config('privacy.policy_version'),
         ]);
 
         Log::shouldHaveReceived('error')

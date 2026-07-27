@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Mail\NewJobApplicationNotification;
 use App\Models\Company;
+use App\Models\JobApplication;
 use App\Models\JobListing;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -51,7 +52,10 @@ class JobApplicationDuplicateProtectionTest extends TestCase
             'job_listing_id' => $job->id,
             'phone' => '075 295 137',
             'phone_normalized' => '38975295137',
+            'privacy_policy_version' => config('privacy.policy_version'),
         ]);
+        $this->assertEquals(1, JobApplication::query()->count());
+        $this->assertNotNull(JobApplication::query()->first()?->privacy_acknowledged_at);
 
         Mail::assertSent(NewJobApplicationNotification::class, 1);
     }

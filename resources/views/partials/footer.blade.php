@@ -58,6 +58,7 @@
             <a href="{{ route('jobs.index') }}" class="transition hover:text-white">Сите огласи</a>
             <a href="{{ route('blog.index') }}" class="transition hover:text-white">Блог</a>
             <a href="{{ route('faq') }}" class="transition hover:text-white">ЧПП</a>
+            <a href="{{ route('privacy.policy') }}" class="transition hover:text-white">Политика за приватност</a>
             <a href="{{ route('faq') }}" class="transition hover:text-white">Контакт</a>
             <a href="{{ $companyRegisterRoute }}" class="transition hover:text-white">{{ $companyRegisterLabel }}</a>
             <a href="{{ $companyAccessRoute }}" class="col-span-2 font-medium text-emerald-300 transition hover:text-white sm:col-auto">{{ $companyAccessLabel }}</a>
