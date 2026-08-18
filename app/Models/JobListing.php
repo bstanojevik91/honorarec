@@ -83,6 +83,11 @@ class JobListing extends Model
         return $this->hasMany(JobApplication::class);
     }
 
+    public function callClicks(): HasMany
+    {
+        return $this->hasMany(JobCallClick::class);
+    }
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'job_listing_tag', 'job_listing_id', 'tag_id')->withTimestamps();

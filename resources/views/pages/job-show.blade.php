@@ -12,6 +12,7 @@
         $companyName = trim((string) ($job['company'] ?? 'Компанија'));
         $logoUrl = trim((string) ($job['logo'] ?? ''));
         $callPhone = $callPhone ?? null;
+        $callClickTrackingUrl = $callClickTrackingUrl ?? null;
         $callPhoneDisplay = match (true) {
             is_string($callPhone) && preg_match('/^\+389\d{8}$/', $callPhone) === 1 => preg_replace('/^(\+389)(\d{2})(\d{3})(\d{3})$/', '$1 $2 $3 $4', $callPhone),
             is_string($callPhone) && preg_match('/^0\d{8}$/', $callPhone) === 1 => preg_replace('/^(0\d{2})(\d{3})(\d{3})$/', '$1 $2 $3', $callPhone),
@@ -163,13 +164,14 @@
                                     Аплицирај
                                 </a>
                                 @if ($callPhone)
-                                    <a href="tel:{{ $callPhone }}" class="inline-flex w-full items-center justify-center rounded-full bg-sky-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-950/20 transition hover:bg-sky-500 sm:w-auto lg:hidden">
+                                    <a href="tel:{{ $callPhone }}" class="inline-flex w-full items-center justify-center rounded-full bg-sky-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-950/20 transition hover:bg-sky-500 sm:w-auto lg:hidden" @if ($callClickTrackingUrl) data-call-click-track data-call-click-url="{{ $callClickTrackingUrl }}" @endif>
                                         Повикај
                                     </a>
                                     <button
                                         type="button"
                                         class="relative hidden w-full max-w-full overflow-hidden rounded-full text-white shadow-lg shadow-sky-950/20 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-200 sm:w-auto lg:inline-flex"
                                         data-phone-reveal
+                                        @if ($callClickTrackingUrl) data-call-click-track data-call-click-url="{{ $callClickTrackingUrl }}" @endif
                                         data-collapsed-label="Прикажи телефонски број на компанијата"
                                         data-expanded-label="Телефонски број: {{ $callPhoneDisplay }}. Активирај повторно за сокривање."
                                         aria-expanded="false"
@@ -456,13 +458,14 @@
                             Аплицирај
                         </a>
                         @if ($callPhone)
-                            <a href="tel:{{ $callPhone }}" class="mt-3 inline-flex w-full items-center justify-center rounded-2xl bg-sky-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-950/20 transition hover:bg-sky-500 lg:hidden">
+                            <a href="tel:{{ $callPhone }}" class="mt-3 inline-flex w-full items-center justify-center rounded-2xl bg-sky-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-950/20 transition hover:bg-sky-500 lg:hidden" @if ($callClickTrackingUrl) data-call-click-track data-call-click-url="{{ $callClickTrackingUrl }}" @endif>
                                 Повикај
                             </a>
                             <button
                                 type="button"
                                 class="relative mt-3 hidden w-full max-w-full overflow-hidden rounded-2xl text-white shadow-lg shadow-sky-950/20 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300 lg:inline-flex"
                                 data-phone-reveal
+                                @if ($callClickTrackingUrl) data-call-click-track data-call-click-url="{{ $callClickTrackingUrl }}" @endif
                                 data-collapsed-label="Прикажи телефонски број на компанијата"
                                 data-expanded-label="Телефонски број: {{ $callPhoneDisplay }}. Активирај повторно за сокривање."
                                 aria-expanded="false"
@@ -517,6 +520,94 @@
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const phoneRevealButtons = Array.from(document.querySelectorAll('[data-phone-reveal]'));
+                const trackedCallControls = Array.from(document.querySelectorAll('[data-call-click-track]'));
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+                const duplicateWindowMs = 10_000;
+                const visitorTokenStorageKey = 'job-call-click-visitor-token';
+
+                const resolveVisitorToken = () => {
+                    if (! window.sessionStorage) {
+                        return '';
+                    }
+
+                    try {
+                        const existingToken = window.sessionStorage.getItem(visitorTokenStorageKey);
+
+                        if (existingToken) {
+                            return existingToken;
+                        }
+
+                        const generatedToken = window.crypto?.randomUUID?.()
+                            || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+                        window.sessionStorage.setItem(visitorTokenStorageKey, generatedToken);
+
+                        return generatedToken;
+                    } catch (error) {
+                        return '';
+                    }
+                };
+
+                const markAndCheckRecentTracking = (url) => {
+                    if (! url || ! window.sessionStorage) {
+                        return false;
+                    }
+
+                    const storageKey = `job-call-click:${url}`;
+                    const now = Date.now();
+
+                    try {
+                        const lastTrackedAt = Number(window.sessionStorage.getItem(storageKey) || '0');
+
+                        if (lastTrackedAt > 0 && (now - lastTrackedAt) < duplicateWindowMs) {
+                            return true;
+                        }
+
+                        window.sessionStorage.setItem(storageKey, String(now));
+                    } catch (error) {
+                        return false;
+                    }
+
+                    return false;
+                };
+
+                const trackCallClick = (url) => {
+                    if (! url || ! csrfToken || markAndCheckRecentTracking(url)) {
+                        return;
+                    }
+
+                    const payload = new URLSearchParams({
+                        _token: csrfToken,
+                        visitor_token: resolveVisitorToken(),
+                    });
+
+                    try {
+                        if (navigator.sendBeacon) {
+                            const sent = navigator.sendBeacon(url, payload);
+
+                            if (sent) {
+                                return;
+                            }
+                        }
+                    } catch (error) {
+                        // Ignore tracking failures so the phone interaction stays uninterrupted.
+                    }
+
+                    try {
+                        void fetch(url, {
+                            method: 'POST',
+                            body: payload.toString(),
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                                'X-CSRF-TOKEN': csrfToken,
+                            },
+                            credentials: 'same-origin',
+                            keepalive: true,
+                        }).catch(() => {});
+                    } catch (error) {
+                        // Ignore tracking failures so the phone interaction stays uninterrupted.
+                    }
+                };
 
                 const closePhoneReveal = (button) => {
                     button.classList.remove('is-revealed');
@@ -534,13 +625,27 @@
                             ? (button.dataset.expandedLabel || 'Телефонскиот број е прикажан.')
                             : (button.dataset.collapsedLabel || 'Прикажи телефонски број на компанијата')
                     );
+
+                    return isExpanded;
                 };
 
                 phoneRevealButtons.forEach((button) => {
                     button.addEventListener('click', () => {
-                        togglePhoneReveal(button);
+                        const isExpanded = togglePhoneReveal(button);
+
+                        if (isExpanded) {
+                            trackCallClick(button.dataset.callClickUrl || '');
+                        }
                     });
                 });
+
+                trackedCallControls
+                    .filter((control) => control.tagName === 'A')
+                    .forEach((control) => {
+                        control.addEventListener('click', () => {
+                            trackCallClick(control.dataset.callClickUrl || '');
+                        });
+                    });
 
                 document.addEventListener('click', (event) => {
                     phoneRevealButtons.forEach((button) => {

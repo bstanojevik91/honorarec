@@ -219,6 +219,12 @@ class JobListingController extends Controller
     {
         $query = JobListing::query()->with('company');
 
+        if (Schema::hasTable('job_call_clicks')) {
+            $query->withCount('callClicks');
+        } else {
+            $query->select('job_listings.*')->selectRaw('0 as call_clicks_count');
+        }
+
         if (TagSystem::enabled()) {
             $query->with('tags');
         }

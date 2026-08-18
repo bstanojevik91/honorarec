@@ -39,6 +39,9 @@
                                         По договор
                                     @endif
                                 </div>
+                                <div class="mt-1 text-xs font-medium text-slate-500">
+                                    Кликови на „Повикај“: {{ $job->call_clicks_count ?? 0 }}
+                                </div>
                                 @if ($job->relationLoaded('tags') && $job->tags->isNotEmpty())
                                     <div class="mt-2 flex flex-wrap gap-2">
                                         @foreach ($job->tags as $tag)

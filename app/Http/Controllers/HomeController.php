@@ -12,6 +12,7 @@ use App\Models\Tag;
 use App\Support\DefaultBlogPosts;
 use App\Support\LocationOptions;
 use App\Support\PhoneNormalizer;
+use App\Support\PublicCallPhone;
 use App\Support\PublicUrl;
 use App\Support\TagSystem;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,8 +34,6 @@ use Throwable;
 
 class HomeController extends Controller
 {
-    private const NO_PUBLIC_CALL_TOKEN = '__NO_PUBLIC_CALL__';
-
     private const SITEMAP_CACHE_KEY = 'public-sitemap.xml.v2';
 
     private const ENGAGEMENT_TYPES = [
@@ -293,6 +292,7 @@ class HomeController extends Controller
         $jobListing = $this->publicJobListingsQuery()
             ->where('slug', $slug)
             ->firstOrFail();
+        $callPhone = PublicCallPhone::normalize($jobListing?->company?->phone);
         $job = $this->mapFrontendJob($jobListing);
         $jobs = $this->frontendJobs();
 
@@ -300,7 +300,8 @@ class HomeController extends Controller
             'job' => $job,
             'relatedJobs' => $this->relatedJobsFor($job, $jobs),
             'applicationEnabled' => Schema::hasTable('job_applications'),
-            'callPhone' => $this->normalizeCallPhone($jobListing?->company?->phone),
+            'callPhone' => $callPhone,
+            'callClickTrackingUrl' => $callPhone !== null ? route('jobs.call-click', $jobListing->slug) : null,
             'footerStats' => $this->footerStats($jobs),
         ]);
     }
@@ -842,36 +843,7 @@ class HomeController extends Controller
 
     private function normalizeCallPhone(?string $phone): ?string
     {
-        if ($phone === null) {
-            return null;
-        }
-
-        $candidates = collect(preg_split('/(?:\r\n|\r|\n|,|;|\|)+/', $phone) ?: [])
-            ->map(fn (string $candidate): string => trim($candidate))
-            ->filter();
-
-        // If publishing is disabled, hide the call button regardless of any stored phone number.
-        if ($candidates->map(fn (string $candidate): string => mb_strtoupper($candidate))->contains(self::NO_PUBLIC_CALL_TOKEN)) {
-            return null;
-        }
-
-        foreach ($candidates as $candidate) {
-            if (str_starts_with($candidate, '+')) {
-                $normalized = '+'.preg_replace('/\D+/', '', substr($candidate, 1));
-            } else {
-                $normalized = preg_replace('/\D+/', '', $candidate);
-            }
-
-            if (! is_string($normalized) || $normalized === '') {
-                continue;
-            }
-
-            if (preg_match('/^(?:\+389\d{8}|0\d{8})$/', $normalized) === 1) {
-                return $normalized;
-            }
-        }
-
-        return null;
+        return PublicCallPhone::normalize($phone);
     }
 
     /**
