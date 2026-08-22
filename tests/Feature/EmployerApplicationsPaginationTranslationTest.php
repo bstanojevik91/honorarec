@@ -15,10 +15,17 @@ class EmployerApplicationsPaginationTranslationTest extends TestCase
 
     public function test_pagination_translation_keys_resolve_to_macedonian_labels_for_the_active_locale(): void
     {
+        $previous = __('pagination.previous');
+        $next = __('pagination.next');
+
         $this->assertSame('en', app()->getLocale());
         $this->assertSame('en', config('app.fallback_locale'));
-        $this->assertSame('Претходнo', __('pagination.previous'));
-        $this->assertSame('Следнo', __('pagination.next'));
+        $this->assertSame('Претходно', $previous);
+        $this->assertSame('Следно', $next);
+        $this->assertDoesNotMatchRegularExpression('/[A-Za-z]/', $previous);
+        $this->assertDoesNotMatchRegularExpression('/[A-Za-z]/', $next);
+        $this->assertSame(0x043E, mb_ord(mb_substr($previous, -1, 1)));
+        $this->assertSame(0x043E, mb_ord(mb_substr($next, -1, 1)));
     }
 
     public function test_employer_applications_pagination_uses_translated_labels_instead_of_raw_keys(): void
@@ -69,16 +76,16 @@ class EmployerApplicationsPaginationTranslationTest extends TestCase
         $firstPage = $this->actingAs($user)->get(route('employer.applications.index'));
 
         $firstPage->assertOk()
-            ->assertSeeText('Претходнo')
-            ->assertSeeText('Следнo')
+            ->assertSeeText('Претходно')
+            ->assertSeeText('Следно')
             ->assertDontSeeText('pagination.previous')
             ->assertDontSeeText('pagination.next');
 
         $laterPage = $this->actingAs($user)->get(route('employer.applications.index', ['page' => 2]));
 
         $laterPage->assertOk()
-            ->assertSeeText('Претходнo')
-            ->assertSeeText('Следнo')
+            ->assertSeeText('Претходно')
+            ->assertSeeText('Следно')
             ->assertDontSeeText('pagination.previous')
             ->assertDontSeeText('pagination.next');
     }

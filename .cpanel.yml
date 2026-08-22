@@ -9,6 +9,7 @@ deployment:
     - /bin/cp -a database "$APPPATH"
     - /bin/cp -a public "$APPPATH"
     - /bin/cp -a resources "$APPPATH"
+    - /bin/cp -a lang "$APPPATH"
     - /bin/cp -a routes "$APPPATH"
     - /bin/cp -a artisan "$APPPATH"
     - /bin/cp -a composer.json "$APPPATH"
