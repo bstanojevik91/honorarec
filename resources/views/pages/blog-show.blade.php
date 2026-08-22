@@ -53,10 +53,6 @@
                                 {!! $post['content'] !!}
                             </div>
 
-                            <div class="rounded-[1.2rem] border border-slate-200 bg-slate-50 px-5 py-4 sm:rounded-[1.4rem] sm:px-6 sm:py-5">
-                                <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Корисен совет</p>
-                                <p class="mt-3 text-[0.98rem] leading-8 text-slate-600">Пред објава секогаш префрли го текстот уште еднаш за да бидеш сигурен дека пораката е јасна, структурирана и лесна за читање.</p>
-                            </div>
                         </div>
                     @else
                         <div class="mt-8 max-w-3xl space-y-10 sm:mt-12 sm:space-y-14">
