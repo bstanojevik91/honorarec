@@ -15,11 +15,13 @@ class EmployerApplicationsPaginationTranslationTest extends TestCase
 
     public function test_pagination_translation_keys_resolve_to_macedonian_labels_for_the_active_locale(): void
     {
+        $this->useMacedonianLocale();
+
         $previous = __('pagination.previous');
         $next = __('pagination.next');
 
-        $this->assertSame('en', app()->getLocale());
-        $this->assertSame('en', config('app.fallback_locale'));
+        $this->assertSame('mk', app()->getLocale());
+        $this->assertSame('mk', config('app.fallback_locale'));
         $this->assertSame('Претходно', $previous);
         $this->assertSame('Следно', $next);
         $this->assertDoesNotMatchRegularExpression('/[A-Za-z]/', $previous);
@@ -30,6 +32,8 @@ class EmployerApplicationsPaginationTranslationTest extends TestCase
 
     public function test_employer_applications_pagination_uses_translated_labels_instead_of_raw_keys(): void
     {
+        $this->useMacedonianLocale();
+
         $company = Company::create([
             'name' => 'Employer Company',
             'email' => 'employer-applications@test.mk',
@@ -88,5 +92,16 @@ class EmployerApplicationsPaginationTranslationTest extends TestCase
             ->assertSeeText('Следно')
             ->assertDontSeeText('pagination.previous')
             ->assertDontSeeText('pagination.next');
+    }
+
+    private function useMacedonianLocale(): void
+    {
+        config([
+            'app.locale' => 'mk',
+            'app.fallback_locale' => 'mk',
+        ]);
+
+        app()->setLocale('mk');
+        $this->app['translator']->setFallback('mk');
     }
 }
