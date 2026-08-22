@@ -37,7 +37,7 @@
                 </details>
 
                 <a href="{{ route('home') }}" class="inline-flex min-w-0 items-center justify-center self-center px-2 text-white">
-                    <img src="{{ asset('images/honorarec-logo.png') }}" alt="Хонорарец" class="h-12 w-auto max-w-[12.5rem] object-contain">
+                    <img src="{{ asset('images/honorarec-logo.png') }}" alt="Хонорарец" class="h-12 w-auto max-w-[10.5rem] object-contain sm:max-w-[12.5rem]">
                 </a>
 
                 <a href="{{ $companyAccessRoute }}" class="inline-flex h-[2.9rem] w-[2.9rem] items-center justify-center justify-self-end rounded-[1rem] border border-white/12 bg-emerald-600 text-white shadow-[0_20px_35px_-20px_rgba(5,150,105,0.9)] ring-1 ring-white/8 transition hover:bg-emerald-500 active:scale-[0.98]" aria-label="{{ $companyAccessLabel }}">
