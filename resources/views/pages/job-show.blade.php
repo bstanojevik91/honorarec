@@ -128,7 +128,7 @@
                                 <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-slate-100">{{ $companyName }}</span>
                             </div>
 
-                            <h1 class="mt-4 max-w-4xl text-[1.8rem] font-extrabold tracking-tight sm:mt-5 sm:text-5xl lg:text-[3.7rem] lg:leading-[1.03]">{{ $job['title'] }}</h1>
+                            <h1 class="mt-4 max-w-4xl text-[1.8rem] font-extrabold tracking-tight sm:mt-5 sm:text-5xl lg:text-[2.7rem] lg:leading-[1.03]">{{ $job['title'] }}</h1>
 
                             <div class="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-sm text-slate-200 sm:mt-6 sm:gap-x-6 sm:text-base lg:justify-start">
                                 <div class="inline-flex items-center gap-2">
@@ -216,13 +216,13 @@
                     </div>
                 </div>
 
-                <div class="rounded-[1.6rem] border border-white/10 bg-white/10 p-5 text-center text-white shadow-[0_24px_70px_-36px_rgba(15,23,42,0.9)] backdrop-blur sm:rounded-[1.9rem] sm:p-6 lg:text-left">
-                    <p class="mx-auto w-fit text-center text-xs font-semibold uppercase tracking-[0.28em] text-emerald-300 lg:mx-0 lg:w-auto lg:text-left">Брз преглед</p>
-                    <div class="mx-auto mt-4 flex max-w-xs flex-col items-center text-center lg:mx-0 lg:max-w-none lg:items-start lg:text-left">
+                <div class="rounded-[1.6rem] border border-white/10 bg-white/10 p-5 text-center text-white shadow-[0_24px_70px_-36px_rgba(15,23,42,0.9)] backdrop-blur sm:rounded-[1.9rem] sm:p-6">
+                    <p class="mx-auto w-fit text-center text-xs font-semibold uppercase tracking-[0.28em] text-emerald-300">Брз преглед</p>
+                    <div class="mx-auto mt-4 flex max-w-xs flex-col items-center text-center lg:max-w-none">
                         <p class="text-sm text-slate-300">Дневница / плата</p>
-                        <p class="mt-2 text-center text-2xl font-extrabold tracking-tight sm:text-3xl lg:text-left">{{ $salaryLabel }}</p>
+                        <p class="mt-2 text-center text-2xl font-extrabold tracking-tight sm:text-3xl">{{ $salaryLabel }}</p>
                     </div>
-                        <div class="mt-6 grid gap-4 text-center sm:grid-cols-3 lg:grid-cols-1 lg:text-left">
+                        <div class="mt-6 grid gap-4 text-center sm:grid-cols-3 lg:grid-cols-1">
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Локација</p>
                                 <p class="mt-2 text-sm font-semibold text-white">{{ $job['location'] ?: 'По договор' }}</p>
@@ -238,7 +238,7 @@
                         @if (! empty($job['tags']))
                             <div class="sm:col-span-3 lg:col-span-1">
                                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Тагови</p>
-                                <div class="mt-2 flex flex-wrap justify-center gap-2 lg:justify-start">
+                                <div class="mt-2 flex flex-wrap justify-center gap-2">
                                     @foreach ($job['tags'] as $tag)
                                         <a href="{{ route('jobs.index', ['tag' => $tag['slug']]) }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-100 transition hover:bg-white/10">
                                             {{ $tag['name'] }}
