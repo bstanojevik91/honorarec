@@ -79,18 +79,21 @@
                             'border-slate-200' => ! $package['highlighted'],
                             'border-emerald-200 ring-1 ring-emerald-100 shadow-[0_28px_52px_-32px_rgba(5,150,105,0.32)]' => $package['highlighted'],
                         ])>
-                            <div class="flex items-start justify-between gap-4">
-                                <div>
+                            <div>
+                                <div class="flex items-start justify-between gap-3">
                                     <h2 class="text-2xl font-bold tracking-tight text-slate-900">{{ $package['name'] }}</h2>
-                                    <p class="mt-3 text-4xl font-extrabold tracking-tight text-slate-900">{{ $package['price'] }}</p>
-                                    <p class="mt-2 text-sm font-medium text-slate-500">{{ $package['duration'] }}</p>
+
+                                    @if ($package['badge'])
+                                        <span class="inline-flex shrink-0 rounded-full border px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.22em] {{ $package['badgeClass'] }}">
+                                            {{ $package['badge'] }}
+                                        </span>
+                                    @endif
                                 </div>
 
-                                @if ($package['badge'])
-                                    <span class="inline-flex shrink-0 rounded-full border px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.22em] {{ $package['badgeClass'] }}">
-                                        {{ $package['badge'] }}
-                                    </span>
-                                @endif
+                                <div>
+                                    <p class="mt-3 whitespace-nowrap text-center text-4xl font-extrabold tracking-tight text-slate-900">{{ $package['price'] }}</p>
+                                    <p class="mt-2 text-center text-sm font-medium text-slate-500">{{ $package['duration'] }}</p>
+                                </div>
                             </div>
 
                             <ul class="mt-6 space-y-3 text-sm leading-7 text-slate-600 sm:text-[0.95rem]">
@@ -106,7 +109,7 @@
                                 @endforeach
                             </ul>
 
-                            <div class="mt-8 pt-2">
+                            <div class="mt-auto pt-10">
                                 <a
                                     href="#pricing-contact"
                                     class="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_32px_-16px_rgba(5,150,105,0.6)] transition hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
