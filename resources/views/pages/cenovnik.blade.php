@@ -121,7 +121,7 @@
                 <section id="pricing-contact" class="mt-8 rounded-[1.8rem] border border-slate-200 bg-white p-6 text-center shadow-[0_20px_45px_-34px_rgba(15,23,42,0.18)] sm:mt-10 sm:p-8 lg:p-10">
                     <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-emerald-600">Контакт</p>
                     <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-[1.9rem]">
-                        Доколку сте заинтересирани за некој од пакетите, контактирајте нè на 070 214 325.
+                        Доколку сте заинтересирани за некој од пакетите, контактирајте нe:
                     </h2>
                     <a
                         href="tel:+38970214325"
