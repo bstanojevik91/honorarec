@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Company;
+use App\Models\JobListing;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\CompanyController;
@@ -14,6 +16,7 @@ use App\Http\Controllers\Employer\JobController as EmployerJobController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JobCallClickController;
 use App\Http\Controllers\PublicMediaController;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -23,6 +26,31 @@ Route::get('/media/{path}', [PublicMediaController::class, 'show'])->where('path
 Route::get('/blog', [HomeController::class, 'blog'])->name('blog.index');
 Route::get('/chpp', [HomeController::class, 'faq'])->name('faq');
 Route::get('/politika-na-privatnost', [HomeController::class, 'privacyPolicy'])->name('privacy.policy');
+Route::get('/cenovnik', function () {
+    $footerStats = [
+        [
+            'value' => Schema::hasTable('job_listings') && Schema::hasTable('companies')
+                ? JobListing::query()->where('status', JobListing::STATUS_ACTIVE)->count()
+                : 0,
+            'label' => 'Огласи за работа',
+        ],
+        [
+            'value' => Schema::hasTable('companies') ? Company::query()->count() : 0,
+            'label' => 'Компании',
+        ],
+    ];
+
+    return view('pages.cenovnik', [
+        'title' => 'Ценовник за работодавачи | Honorarec.mk',
+        'description' => 'Преглед на ценовните пакети за работодавачи на Honorarec.mk.',
+        'canonical' => route('pricing'),
+        'ogTitle' => 'Ценовник за работодавачи | Honorarec.mk',
+        'ogDescription' => 'Изберете пакет според бројот на огласи и поддршката што ѝ е потребна на вашата компанија.',
+        'ogUrl' => route('pricing'),
+        'ogImage' => asset('images/honorarec-logo.png'),
+        'footerStats' => $footerStats,
+    ]);
+})->name('pricing');
 Route::get('/blog/{slug}', [HomeController::class, 'showBlogPost'])->name('blog.show');
 Route::get('/oglasi', [HomeController::class, 'jobs'])->name('jobs.index');
 Route::get('/oglasi/{slug}', [HomeController::class, 'showJob'])->name('jobs.show');
