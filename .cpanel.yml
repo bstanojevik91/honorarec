@@ -26,5 +26,7 @@ deployment:
     - /bin/cp -a public/images/. "$PUBLICPATH/images/"
     - /bin/cp -a public/build/. "$PUBLICPATH/build/"
     - cd "$APPPATH"
+    - /bin/mkdir -p "$APPPATH/database/migrations"
+    - /bin/cp -a database/migrations/. "$APPPATH/database/migrations/"
     - php artisan migrate --force
     - php artisan optimize:clear
