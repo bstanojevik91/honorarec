@@ -5,10 +5,12 @@ use App\Models\JobListing;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\CandidateProfileController as AdminCandidateProfileController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\JobApplicationController;
 use App\Http\Controllers\Admin\JobListingController;
 use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\CandidateProfileController;
 use App\Http\Controllers\Employer\ApplicationController as EmployerApplicationController;
 use App\Http\Controllers\Employer\DashboardController as EmployerDashboardController;
 use App\Http\Controllers\Employer\EmployerAuthController;
@@ -26,6 +28,10 @@ Route::get('/media/{path}', [PublicMediaController::class, 'show'])->where('path
 Route::get('/blog', [HomeController::class, 'blog'])->name('blog.index');
 Route::get('/chpp', [HomeController::class, 'faq'])->name('faq');
 Route::get('/politika-na-privatnost', [HomeController::class, 'privacyPolicy'])->name('privacy.policy');
+Route::get('/bidi-honorarec', [CandidateProfileController::class, 'create'])->name('candidate-profiles.create');
+Route::post('/bidi-honorarec', [CandidateProfileController::class, 'store'])
+    ->middleware('throttle:candidate-submissions')
+    ->name('candidate-profiles.store');
 Route::get('/cenovnik', function () {
     $footerStats = [
         [
@@ -90,6 +96,11 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
         Route::get('/applications', [JobApplicationController::class, 'index'])->name('applications.index');
         Route::get('/applications/{application}', [JobApplicationController::class, 'show'])->name('applications.show');
         Route::get('/applications/{application}/cv', [JobApplicationController::class, 'cv'])->name('applications.cv');
+        Route::get('/candidates', [AdminCandidateProfileController::class, 'index'])->name('candidates.index');
+        Route::get('/candidates/{candidate}', [AdminCandidateProfileController::class, 'show'])->name('candidates.show');
+        Route::put('/candidates/{candidate}', [AdminCandidateProfileController::class, 'update'])->name('candidates.update');
+        Route::delete('/candidates/{candidate}', [AdminCandidateProfileController::class, 'destroy'])->name('candidates.destroy');
+        Route::post('/candidates/{candidate}/restore', [AdminCandidateProfileController::class, 'restore'])->name('candidates.restore');
     });
 });
 
