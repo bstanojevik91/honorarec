@@ -27,7 +27,7 @@
                         <div class="grid gap-1">
                             <a href="{{ route('jobs.index') }}" class="rounded-[0.95rem] px-3.5 py-3 leading-5 text-slate-100 transition hover:bg-white/6">Сите огласи</a>
                             <a href="{{ route('faq') }}" class="rounded-[0.95rem] px-3.5 py-3 leading-5 text-slate-100 transition hover:bg-white/6">ЧПП</a>
-                            <a href="{{ route('faq') }}" class="rounded-[0.95rem] px-3.5 py-3 leading-5 text-slate-100 transition hover:bg-white/6">Објави оглас / Контакт</a>
+                            <a href="{{ route('pricing') }}" class="rounded-[0.95rem] px-3.5 py-3 leading-5 text-slate-100 transition hover:bg-white/6">Објави оглас / Контакт</a>
                             <a href="{{ $companyRegisterRoute }}" class="rounded-[0.95rem] px-3.5 py-3 leading-5 text-slate-200 transition hover:bg-white/6">{{ $companyRegisterLabel }}</a>
                             <div class="mt-1 border-t border-white/8 pt-2">
                                 <a href="{{ $companyAccessRoute }}" class="inline-flex w-full items-center justify-center rounded-[0.95rem] bg-emerald-600 px-4 py-3 text-center text-sm font-semibold text-white shadow-[0_14px_24px_-18px_rgba(5,150,105,0.9)] transition hover:bg-emerald-500 active:scale-[0.99]">{{ $companyAccessLabel }}</a>
@@ -56,7 +56,7 @@
             <nav class="hidden items-center gap-1 rounded-full border border-white/10 bg-slate-950/40 px-2 py-2 text-sm font-medium text-slate-100 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.75)] backdrop-blur md:flex">
                 <a href="{{ route('jobs.index') }}" class="rounded-full px-4 py-2.5 transition hover:bg-white/10">Сите огласи</a>
                 <a href="{{ route('faq') }}" class="rounded-full px-4 py-2.5 transition hover:bg-white/10">ЧПП</a>
-                <a href="{{ route('faq') }}" class="rounded-full bg-white/10 px-4 py-2.5 transition hover:bg-white/15">Објави оглас / Контакт</a>
+                <a href="{{ route('pricing') }}" class="rounded-full bg-white/10 px-4 py-2.5 transition hover:bg-white/15">Објави оглас / Контакт</a>
                 <a href="{{ $companyRegisterRoute }}" class="rounded-full px-4 py-2.5 transition hover:bg-white/10">{{ $companyRegisterLabel }}</a>
                 <a href="{{ $companyAccessRoute }}" class="rounded-full border border-white/10 bg-emerald-600 px-4 py-2.5 text-white transition hover:bg-emerald-500">{{ $companyAccessLabel }}</a>
             </nav>

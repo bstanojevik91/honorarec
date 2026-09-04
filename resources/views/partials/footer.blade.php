@@ -56,6 +56,7 @@
         <div class="mt-8 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-white/10 pt-6 text-center text-sm text-slate-400 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-6">
             <a href="{{ route('home') }}" class="transition hover:text-white">Почетна</a>
             <a href="{{ route('jobs.index') }}" class="transition hover:text-white">Сите огласи</a>
+            <a href="{{ route('pricing') }}" class="transition hover:text-white">Објави оглас</a>
             <a href="{{ route('blog.index') }}" class="transition hover:text-white">Блог</a>
             <a href="{{ route('faq') }}" class="transition hover:text-white">ЧПП</a>
             <a href="{{ route('privacy.policy') }}" class="transition hover:text-white">Политика за приватност</a>
