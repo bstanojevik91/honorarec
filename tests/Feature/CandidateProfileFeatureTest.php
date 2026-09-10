@@ -14,7 +14,7 @@ class CandidateProfileFeatureTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_public_candidate_page_is_hidden_from_navigation_and_noindexed(): void
+    public function test_public_candidate_page_is_linked_from_navigation_and_noindexed(): void
     {
         $this->get(route('candidate-profiles.create'))
             ->assertOk()
@@ -23,7 +23,7 @@ class CandidateProfileFeatureTest extends TestCase
 
         $this->get('/')
             ->assertOk()
-            ->assertDontSee('/bidi-honorarec', false);
+            ->assertSee('/bidi-honorarec', false);
 
         $this->get('/sitemap.xml')
             ->assertOk()

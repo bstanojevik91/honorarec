@@ -11,9 +11,9 @@
     $companyRegisterLabel = auth()->check() ? $companyAccessLabel : 'Регистрација за компании';
 @endphp
 
-<header class="absolute inset-x-0 top-0 z-[140] md:z-20">
+<header class="absolute inset-x-0 top-0 z-[140] xl:z-20">
     <div class="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-5 lg:px-8">
-        <div class="relative z-[150] md:hidden">
+        <div class="relative z-[150] xl:hidden">
             <div class="grid grid-cols-[2.9rem_1fr_2.9rem] items-center gap-3 px-0.5">
                 <details class="relative z-[160]">
                     <summary class="flex h-[2.9rem] w-[2.9rem] cursor-pointer list-none items-center justify-center rounded-[1rem] border border-white/12 bg-slate-950/50 text-white shadow-[0_18px_40px_-24px_rgba(0,0,0,0.8)] ring-1 ring-white/8 backdrop-blur-md transition hover:bg-white/10 active:scale-[0.98]">
@@ -26,6 +26,7 @@
                     <div class="absolute left-0 top-full z-[170] mt-3 w-[min(17.5rem,calc(100vw-2rem))] overflow-hidden rounded-[1.3rem] border border-white/8 bg-slate-950 p-2.5 text-sm font-medium text-slate-100 shadow-[0_26px_46px_-24px_rgba(2,6,23,0.92)]">
                         <div class="grid gap-1">
                             <a href="{{ route('jobs.index') }}" class="rounded-[0.95rem] px-3.5 py-3 leading-5 text-slate-100 transition hover:bg-white/6">Сите огласи</a>
+                            <a href="{{ route('candidate-profiles.create') }}" class="rounded-[0.95rem] px-3.5 py-3 leading-5 text-slate-100 transition hover:bg-white/6">Биди Хонорарец</a>
                             <a href="{{ route('faq') }}" class="rounded-[0.95rem] px-3.5 py-3 leading-5 text-slate-100 transition hover:bg-white/6">ЧПП</a>
                             <a href="{{ route('pricing') }}" class="rounded-[0.95rem] px-3.5 py-3 leading-5 text-slate-100 transition hover:bg-white/6">Објави оглас / Контакт</a>
                             <a href="{{ $companyRegisterRoute }}" class="rounded-[0.95rem] px-3.5 py-3 leading-5 text-slate-200 transition hover:bg-white/6">{{ $companyRegisterLabel }}</a>
@@ -48,13 +49,14 @@
             </div>
         </div>
 
-        <div class="hidden items-center justify-between md:flex">
+        <div class="hidden items-center justify-between xl:flex">
             <a href="{{ route('home') }}" class="inline-flex min-w-0 items-center text-white">
                 <img src="{{ asset('images/honorarec-logo.png') }}" alt="Хонорарец" class="h-10.5 w-auto max-w-[15.75rem] object-contain lg:h-[3rem]">
             </a>
 
-            <nav class="hidden items-center gap-1 rounded-full border border-white/10 bg-slate-950/40 px-2 py-2 text-sm font-medium text-slate-100 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.75)] backdrop-blur md:flex">
+            <nav class="hidden items-center gap-1 rounded-full border border-white/10 bg-slate-950/40 px-2 py-2 text-sm font-medium text-slate-100 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.75)] backdrop-blur xl:flex">
                 <a href="{{ route('jobs.index') }}" class="rounded-full px-4 py-2.5 transition hover:bg-white/10">Сите огласи</a>
+                <a href="{{ route('candidate-profiles.create') }}" class="rounded-full px-4 py-2.5 transition hover:bg-white/10">Биди Хонорарец</a>
                 <a href="{{ route('faq') }}" class="rounded-full px-4 py-2.5 transition hover:bg-white/10">ЧПП</a>
                 <a href="{{ route('pricing') }}" class="rounded-full bg-white/10 px-4 py-2.5 transition hover:bg-white/15">Објави оглас / Контакт</a>
                 <a href="{{ $companyRegisterRoute }}" class="rounded-full px-4 py-2.5 transition hover:bg-white/10">{{ $companyRegisterLabel }}</a>
