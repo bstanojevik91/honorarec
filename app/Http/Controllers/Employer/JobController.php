@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Employer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employer\StoreEmployerJobRequest;
 use App\Http\Requests\Employer\UpdateEmployerJobRequest;
+use App\Models\JobCategory;
 use App\Models\JobListing;
 use App\Models\Tag;
 use App\Support\JobImageManager;
@@ -33,6 +34,7 @@ class JobController extends Controller
     public function create(): View
     {
         return view('employer.jobs.create', [
+            'availableCategories' => JobCategory::query()->orderBy('name')->pluck('name'),
             'availableTags' => $this->availableTags(),
         ]);
     }
@@ -88,6 +90,7 @@ class JobController extends Controller
 
         return view('employer.jobs.edit', [
             'job' => $job,
+            'availableCategories' => JobCategory::query()->orderBy('name')->pluck('name'),
             'availableTags' => $this->availableTags(),
         ]);
     }

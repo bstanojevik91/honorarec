@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreJobListingRequest;
 use App\Http\Requests\Admin\UpdateJobListingRequest;
 use App\Models\Company;
+use App\Models\JobCategory;
 use App\Models\JobListing;
 use App\Models\Tag;
 use App\Support\JobImageManager;
@@ -31,6 +32,7 @@ class JobListingController extends Controller
     {
         return view('admin.jobs.create', [
             'companies' => Company::orderBy('name')->get(),
+            'availableCategories' => JobCategory::query()->orderBy('name')->pluck('name'),
             'availableTags' => $this->availableTags(),
         ]);
     }
@@ -70,6 +72,7 @@ class JobListingController extends Controller
         return view('admin.jobs.edit', [
             'job' => $job,
             'companies' => Company::orderBy('name')->get(),
+            'availableCategories' => JobCategory::query()->orderBy('name')->pluck('name'),
             'availableTags' => $this->availableTags(),
         ]);
     }

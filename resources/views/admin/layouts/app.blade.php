@@ -53,6 +53,9 @@
                 <a href="{{ route('admin.jobs.index') }}" class="{{ request()->routeIs('admin.jobs.*') ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white' }} rounded-xl px-4 py-3 font-medium transition">
                     Огласи
                 </a>
+                <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white' }} rounded-xl px-4 py-3 font-medium transition">
+                    Категории
+                </a>
                 @if (\App\Support\TagSystem::enabled())
                     <a href="{{ route('admin.tags.index') }}" class="{{ request()->routeIs('admin.tags.*') ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white' }} rounded-xl px-4 py-3 font-medium transition">
                         Тагови

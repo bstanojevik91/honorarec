@@ -9,6 +9,7 @@ use App\Models\Company;
 use App\Models\JobApplication;
 use App\Models\JobListing;
 use App\Models\Tag;
+use App\Support\CategoryName;
 use App\Support\DefaultBlogPosts;
 use App\Support\LocationOptions;
 use App\Support\PhoneNormalizer;
@@ -196,10 +197,15 @@ class HomeController extends Controller
 
         $filters = [
             'city' => trim((string) $request->string('city')),
-            'category' => trim((string) $request->string('category')),
+            'category' => CategoryName::clean((string) $request->string('category')),
             'engagement_type' => trim((string) $request->string('engagement_type')),
             'tags' => $selectedTags,
         ];
+
+        // Old category query strings still select the canonical category after cleanup.
+        $filters['category'] = $allJobs->pluck('category')->first(
+            fn (string $name): bool => CategoryName::normalize($name) === CategoryName::normalize($filters['category'])
+        ) ?? $filters['category'];
 
         $jobs = $this->filterJobs($allJobs, $filters);
         $availableCategories = $allJobs
@@ -711,7 +717,7 @@ class HomeController extends Controller
             ->filter(function (array $job) use ($filters): bool {
                 $matchesCity = LocationOptions::matches($job['location'] ?? null, $filters['city']);
 
-                $matchesCategory = $filters['category'] === '' || mb_strtolower((string) ($job['category'] ?? '')) === mb_strtolower($filters['category']);
+                $matchesCategory = $filters['category'] === '' || CategoryName::normalize((string) ($job['category'] ?? '')) === CategoryName::normalize($filters['category']);
                 $matchesEngagementType = $filters['engagement_type'] === '' || mb_strtolower((string) ($job['engagement_type'] ?? '')) === mb_strtolower($filters['engagement_type']);
                 $jobTags = collect($job['tags'] ?? [])
                     ->map(fn (array $tag): string => mb_strtolower((string) ($tag['slug'] ?? '')));
@@ -760,7 +766,7 @@ class HomeController extends Controller
 
         if (
             filled($job['category'] ?? null) &&
-            mb_strtolower((string) $candidate['category']) === mb_strtolower((string) $job['category'])
+            CategoryName::normalize((string) $candidate['category']) === CategoryName::normalize((string) $job['category'])
         ) {
             $score += 4;
         }

@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\CandidateProfileController as AdminCandidateProfi
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\JobApplicationController;
 use App\Http\Controllers\Admin\JobListingController;
+use App\Http\Controllers\Admin\JobCategoryController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\CandidateProfileController;
 use App\Http\Controllers\Employer\ApplicationController as EmployerApplicationController;
@@ -88,6 +89,7 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
         Route::patch('/jobs/{job}/approve', [JobListingController::class, 'approve'])->name('jobs.approve');
         Route::patch('/jobs/{job}/reject', [JobListingController::class, 'reject'])->name('jobs.reject');
         Route::resource('jobs', JobListingController::class)->except('show');
+        Route::resource('categories', JobCategoryController::class)->only(['index', 'store']);
         Route::resource('tags', TagController::class)->except('show');
         Route::resource('blog-posts', BlogPostController::class)->parameters(['blog-posts' => 'blog_post'])->except('show');
         Route::post('/blog-posts/import-defaults', [BlogPostController::class, 'importDefaults'])->name('blog-posts.import-defaults');

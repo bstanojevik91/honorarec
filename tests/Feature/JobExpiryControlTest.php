@@ -3,15 +3,25 @@
 namespace Tests\Feature;
 
 use App\Models\Company;
+use App\Models\JobCategory;
 use App\Models\JobListing;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
+use Tests\Concerns\CreatesJobCategoryTable;
 use Tests\TestCase;
 
 class JobExpiryControlTest extends TestCase
 {
+    use CreatesJobCategoryTable;
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->createJobCategoryTable();
+    }
 
     public function test_employer_create_and_edit_forms_do_not_show_expiry_date_field(): void
     {
@@ -95,6 +105,8 @@ class JobExpiryControlTest extends TestCase
 
     public function test_employer_store_ignores_manual_expiry_and_sets_default_thirty_days(): void
     {
+        JobCategory::create(['name' => 'Промоции']);
+
         Carbon::setTestNow('2026-05-09 10:00:00');
 
         $company = Company::create([
@@ -131,6 +143,8 @@ class JobExpiryControlTest extends TestCase
 
     public function test_employer_update_cannot_change_existing_expiry_date(): void
     {
+        JobCategory::create(['name' => 'Магацин']);
+
         $company = Company::create([
             'name' => 'Update Company',
             'email' => 'update-company@test.mk',

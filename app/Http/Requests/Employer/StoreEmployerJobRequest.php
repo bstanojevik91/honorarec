@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Employer;
 
+use App\Models\JobCategory;
 use App\Models\JobListing;
 use App\Support\TagSystem;
 use Illuminate\Foundation\Http\FormRequest;
@@ -17,6 +18,10 @@ class StoreEmployerJobRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        if (is_string($this->input('category'))) {
+            $this->merge(['category' => JobCategory::canonicalName($this->input('category')) ?? $this->input('category')]);
+        }
+
         $slug = $this->input('slug');
         $dailyPayMode = (string) $this->input('daily_pay_mode', '');
         $dailyPay = $this->input('daily_pay');
@@ -59,7 +64,7 @@ class StoreEmployerJobRequest extends FormRequest
             'daily_pay_mode' => ['nullable', Rule::in(['amount', 'agreement'])],
             'daily_pay' => ['nullable', 'numeric', 'min:0'],
             'location' => ['nullable', 'string', 'max:255'],
-            'category' => ['nullable', 'string', 'max:255'],
+            'category' => ['nullable', 'string', 'max:255', Rule::in(JobCategory::query()->pluck('name')->all())],
             'engagement_type' => ['nullable', Rule::in(JobListing::engagementTypeOptions())],
             'job_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
             'featured' => ['nullable', 'boolean'],
@@ -79,6 +84,8 @@ class StoreEmployerJobRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'category.in' => 'Изберете постоечка категорија од листата.',
+            'category.string' => 'Изберете постоечка категорија од листата.',
             'job_image.image' => 'Прикачениот фајл за огласот мора да биде слика.',
             'job_image.mimes' => 'Сликата за огласот мора да биде во JPG, PNG или WEBP формат.',
             'job_image.max' => 'Сликата за огласот не смее да биде поголема од 3MB.',

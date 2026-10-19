@@ -3,17 +3,27 @@
 namespace Tests\Feature;
 
 use App\Models\Company;
+use App\Models\JobCategory;
 use App\Models\JobListing;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
+use Tests\Concerns\CreatesJobCategoryTable;
 use Tests\TestCase;
 
 class JobTagsFeatureTest extends TestCase
 {
+    use CreatesJobCategoryTable;
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->createJobCategoryTable();
+    }
 
     public function test_admin_can_create_update_and_delete_tags(): void
     {
@@ -57,6 +67,8 @@ class JobTagsFeatureTest extends TestCase
 
     public function test_employer_can_assign_multiple_tags_to_job_listing(): void
     {
+        JobCategory::create(['name' => 'Промоции']);
+
         $this->createTagTables();
 
         $company = Company::create([

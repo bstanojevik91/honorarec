@@ -62,7 +62,12 @@
 
     <div>
         <label for="category" class="mb-2 block text-sm font-semibold text-slate-700">Категорија</label>
-        <input id="category" name="category" type="text" value="{{ old('category', $job->category ?? '') }}" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
+        <select id="category" name="category" class="block w-full rounded-2xl border-slate-200 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-emerald-100">
+            <option value="">Избери категорија</option>
+            @foreach ($availableCategories as $category)
+                <option value="{{ $category }}" @selected(old('category', $job->category ?? '') === $category)>{{ $category }}</option>
+            @endforeach
+        </select>
     </div>
 
     <div>
